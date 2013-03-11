@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 	<head>
 		<meta name="layout" content="main"/>
@@ -29,10 +29,6 @@
 				margin-bottom: 0.6em;
 				padding: 0;
 			}
-            
-			#status li {
-				line-height: 1.3;
-			}
 
 			#status h1 {
 				text-transform: uppercase;
@@ -51,7 +47,6 @@
 			}
 
 			p {
-				line-height: 1.5;
 				margin: 0.25em 0;
 			}
 
@@ -60,7 +55,6 @@
 			}
 
 			#controller-list li {
-				line-height: 1.3;
 				list-style-position: inside;
 				margin: 0.25em 0;
 			}

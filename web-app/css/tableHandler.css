@@ -1,0 +1,19 @@
+.selected {
+    border : solid 2px #8a2be2 !important;
+}
+
+td.precio, th.precio {
+    width : 150px;
+}
+
+td.delete, th.delete {
+    width : 60px;
+}
+
+.ok {
+    background : #55AB55 !important;
+}
+
+.no {
+    background : #C23A33 !important;
+}
