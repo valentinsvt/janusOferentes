@@ -1,6 +1,7 @@
 package janus
 
 class Obra implements Serializable {
+    int idJanus
     Persona responsableObra
     Persona revisor
     Persona inspector
@@ -88,6 +89,7 @@ class Obra implements Serializable {
         version false
         columns {
             id column: 'obra__id'
+            idJanus column: 'obrajnid'
             responsableObra column: 'prsn__id'
             revisor column: 'obrarvsr'
             inspector column: 'obrainsp'

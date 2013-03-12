@@ -25,6 +25,7 @@ class Item implements Serializable {
     String foto
     TipoLista tipoLista
     String especificaciones
+    Persona persona
 
     static mapping = {
         table 'item'
@@ -58,6 +59,7 @@ class Item implements Serializable {
             foto column: 'itemfoto'
             tipoLista column: 'tpls__id'
             especificaciones column: 'itemespc'
+            persona column: 'prsn__id'
         }
     }
     static constraints = {
@@ -85,6 +87,7 @@ class Item implements Serializable {
         foto(size: 1..100, blank: true, nullable: true)
         tipoLista(blank: true, nullable: true)
         especificaciones(blank: true, nullable: true, size: 1..1024)
+        persona(nullable: true,blank:true)
     }
 
     String toString() {
