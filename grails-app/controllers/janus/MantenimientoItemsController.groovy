@@ -43,29 +43,7 @@ class MantenimientoItemsController extends Shield {
             case "item_equipo":
                 def tipoLista = Item.get(id).tipoLista
                 if (precios) {
-                    if (ignore) {
-                        hijos = ["Todos"]
-                    } else {
-                        hijos = Lugar.findAllByTipoLista(tipoLista)
-//                        hijos = Lugar.list([sort: "descripcion"])
-//                        hijos = Lugar.withCriteria {
-//                            and {
-//                                order("tipo", "asc")
-//                                order("descripcion", "asc")
-//                            }
-//                        }
-//                        if (all) {
-//                            hijos = Lugar.withCriteria {
-//                                and {
-//                                    order("tipo", "asc")
-//                                    order("descripcion", "asc")
-//                                }
-//                            }
-//                        } else {
-//                            hijos = Lugar.findAllByTipo("C", [sort: 'descripcion'])
-//                            /*hijos = Lugar.findAll([sort: 'descripcion'])*/
-//                        }
-                    }
+                    hijos = ["Precio"]
                 }
                 break;
         }
@@ -131,25 +109,9 @@ class MantenimientoItemsController extends Shield {
                 case "item_equipo":
                     if (precios) {
                         hijosH = []
-                        if (ignore) {
-                            desc = "Todos los lugares"
-                            rel = "lugar_all"
-                            liId = "lg_" + id + "_all"
-                        } else {
-                            if (all) {
-                                desc = hijo.descripcion + " (" + hijo.tipo + ")"
-                            } else {
-                                desc = hijo.descripcion
-                            }
-//                            rel = "lugar_" + hijo.tipo
-                            rel = "lugar"
-                            liId = "lg_" + id + "_" + hijo.id
-
-                            def obras = Obra.countByLugar(hijo)
-//                            println "lugar " + hijo.tipo + " " + hijo.id + " " + hijo.descripcion + "    o: " + obras
-                            extra = "data-obras='${obras}'"
-
-                        }
+                        desc = "Precio"
+                        rel = "lugar_all"
+                        liId = "lg_" + id + "_all"
                     }
                     break;
             }
@@ -643,90 +605,53 @@ class MantenimientoItemsController extends Shield {
 
     def formPrecio_ajax() {
         def item = Item.get(params.item)
-        def lugar = null
-        if (params.lugar != "all") {
-            lugar = Lugar.get(params.lugar)
+        def usu = session.usuario
+        def precio = new Precio()
+        if (params.id) {
+            precio = Precio.get(params.id)
         }
-        def precioRubrosItemsInstance = new PrecioRubrosItems()
-        precioRubrosItemsInstance.item = item
-        if (lugar) {
-            precioRubrosItemsInstance.lugar = lugar
-        }
-        return [precioRubrosItemsInstance: precioRubrosItemsInstance, lugar: lugar, lugarNombre: params.nombreLugar, fecha: params.fecha, params: params]
+        precio.persona = usu
+        precio.item = item
+        return [params: params, precio: precio]
     }
 
     def checkFcPr_ajax() {
 //        println params
-        if (!params.lugar) {
+        def usu = session.usuario
+        def precios = Precio.withCriteria {
+            and {
+                eq("persona", usu)
+                eq("fecha", new Date().parse("dd-MM-yyyy", params.fecha))
+                eq("item", Item.get(params.item))
+            }
+        }
+        if (precios.size() == 0) {
             render true
         } else {
-            def precios = PrecioRubrosItems.withCriteria {
-                and {
-                    eq("lugar", Lugar.get(params.lugar))
-                    eq("fecha", new Date().parse("dd-MM-yyyy", params.fecha))
-                    eq("item", Item.get(params.item))
-                }
-            }
-            if (precios.size() == 0) {
-                render true
-            } else {
-                render false
-            }
+            render false
         }
     }
 
     def savePrecio_ajax() {
 //        println params
-        def item = Item.get(params.item.id)
-        params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-        if (params.lugar.id != "-1") {
-            def precioRubrosItemsInstance = new PrecioRubrosItems(params)
-            if (precioRubrosItemsInstance.save(flush: true)) {
+        def usu = session.usuario
+        params.fecha = new Date()
+        if (Precio.countByFechaAndPersona(params.fecha, usu) == 0) {
+            def precio = new Precio(params)
+            precio.persona = usu
+            if (precio.save(flush: true)) {
                 render "OK"
             } else {
-                println precioRubrosItemsInstance.errors
+                println precio.errors
                 render "NO"
             }
         } else {
-//            def tipo = ["C"]
-            if (params.ignore == "true") {
-//                if (params.all == "true") {
-//                    tipo.add("V")
-//                }
-                def error = 0
-                Lugar.findAllByTipoLista(item.tipoLista).each { lugar ->
-                    def precios = PrecioRubrosItems.withCriteria {
-                        and {
-                            eq("lugar", lugar)
-                            eq("fecha", params.fecha)
-                            eq("item", item)
-                        }
-                    }
-                    if (precios.size() == 0) {
-                        def precioRubrosItemsInstance = new PrecioRubrosItems()
-                        precioRubrosItemsInstance.precioUnitario = params.precioUnitario.toDouble()
-                        precioRubrosItemsInstance.lugar = lugar
-                        precioRubrosItemsInstance.item = Item.get(params.item.id)
-                        precioRubrosItemsInstance.fecha = params.fecha
-                        if (precioRubrosItemsInstance.save(flush: true)) {
-                            println "OK"
-                        } else {
-                            println precioRubrosItemsInstance.errors
-                            error++
-                        }
-                    }
-                }
-                if (error == 0) {
-                    render "OK"
-                } else {
-                    render "NO"
-                }
-            }
+            render "NO_Ya existe un precio para la fecha seleccionada"
         }
     }
 
     def deletePrecio_ajax() {
-        def rubroPrecioInstance = PrecioRubrosItems.get(params.id);
+        def rubroPrecioInstance = Precio.get(params.id);
         try {
             rubroPrecioInstance.delete(flush: true)
             render "OK"
@@ -752,9 +677,9 @@ class MantenimientoItemsController extends Shield {
             def rubroId = parts[0]
             def nuevoPrecio = parts[1]
 
-            def rubroPrecioInstance = PrecioRubrosItems.get(rubroId);
-            rubroPrecioInstance.precioUnitario = nuevoPrecio.toDouble();
-            println rubroPrecioInstance.precioUnitario
+            def rubroPrecioInstance = Precio.get(rubroId);
+            rubroPrecioInstance.precio = nuevoPrecio.toDouble();
+//            println rubroPrecioInstance.precio
             if (!rubroPrecioInstance.save(flush: true)) {
                 println "error " + parts
                 if (nos != "") {
@@ -773,58 +698,14 @@ class MantenimientoItemsController extends Shield {
     }
 
     def showLg_ajax() {
-//        params.tipo = "C"
-//        params.operador = "<"
-        if (params.fecha == "all") {
-            params.todasLasFechas = "true"
-        } else {
-            params.todasLasFechas = "false"
-            params.fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-        }
-//        println "show lg" + params
-
         def parts = params.id.split("_")
         def itemId = parts[0]
-        def lugarId = parts[1]
         def item = Item.get(itemId)
-        def lugar = []
-        def precios = []
-        def operador = params.operador
-        def fecha = params.fecha
+        def usu = session.usuario
 
-        def lugarNombre
+        def precios = Precio.findAllByPersonaAndItem(usu, item)
 
-        if (params.todasLasFechas == "true") {
-            fecha = null
-        }
-//        if (params.all == "true") {
-//            params.tipo = ['C', 'V']
-//            lugarTipo = " (C y V)"
-//        } else {
-//            params.tipo = ['C']
-//            lugarTipo = " (C)"
-//        }
-        if (lugarId == "all") {
-//            lugar = Lugar.findAllByTipoInList(params.tipo, [sort: "descripcion"])
-            lugar = Lugar.list([sort: "descripcion"])
-            lugarNombre = "todos los lugares"
-        } else {
-            lugar.add(Lugar.get(lugarId))
-            lugarNombre = lugar[0].descripcion + " <i>(" + (lugar[0].tipoLista ? lugar[0].tipoLista?.descripcion : 'sin tipo') + ")</i>"
-        }
-//        println "parametros busqueda "+fecha+" - "+itemId+" - "+operador
-        lugar.each {
-            def tmp = preciosService.getPrecioRubroItemOperador(fecha, it, itemId, operador)
-            if (tmp.size() > 0)
-                precios += tmp
-        }
-        def res = []
-        precios.each {
-            res.add(PrecioRubrosItems.get(it))
-        }
-        precios = res
-
-        return [item: item, lugarNombre: lugarNombre, lugarId: lugarId, precios: precios, lgar: lugarId == "all", fecha: operador == "=" ? fecha.format("dd-MM-yyyy") : null, params: params]
+        return [item: item, precios: precios, params: params]
     }
 
     def formLg_ajax() {

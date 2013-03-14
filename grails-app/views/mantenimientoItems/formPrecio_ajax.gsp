@@ -2,38 +2,11 @@
 
 <div id="create-precioRubrosItemsInstance" class="span" role="main">
     <g:form class="form-horizontal" name="frmSave" action="savePrecio_ajax">
-        <g:hiddenField name="id" value="${precioRubrosItemsInstance?.id}"/>
-        <g:hiddenField id="lugar" name="lugar.id" value="${lugar ? precioRubrosItemsInstance?.lugar?.id : -1}"/>
-        <g:hiddenField id="item" name="item.id" value="${precioRubrosItemsInstance?.item?.id}"/>
-        <g:hiddenField name="all" value="${params.all}"/>
-        <g:hiddenField name="ignore" value="${params.ignore}"/>
+        <g:hiddenField name="id" value="${precio?.id}"/>
+        <g:hiddenField name="item.id" value="${precio?.itemId}"/>
 
         <div class="tituloTree">
-            Nuevo precio de ${precioRubrosItemsInstance.item.nombre} en ${lugarNombre}%{--${lugar ? precioRubrosItemsInstance.lugar.descripcion : "todos los lugares"}--}%
-        </div>
-
-        <div class="control-group">
-            <div>
-                <span class="control-label label label-inverse">
-                    Fecha
-                </span>
-            </div>
-
-            <div class="controls">
-                <g:if test="${fecha}">
-                    ${fecha}
-                    <g:hiddenField name="fecha" value="${fecha}"/>
-                </g:if>
-                <g:else>
-                    <elm:datepicker name="fecha" id="fechaPrecio" class="datepicker required" style="width: 90px"
-                                    yearRange="${(new Date().format('yyyy').toInteger() - 40).toString() + ':' + new Date().format('yyyy')}"
-                                    maxDate="new Date()"/>
-                </g:else>
-
-                <span class="mandatory">*</span>
-
-                <p class="help-block ui-helper-hidden"></p>
-            </div>
+            Nuevo precio de ${precio?.item.nombre}
         </div>
 
         <div class="control-group">
@@ -45,12 +18,12 @@
 
             <div class="controls">
                 <div class="input-append">
-                    <g:field type="number" name="precioUnitario" class=" required input-small" value="${fieldValue(bean: precioRubrosItemsInstance, field: 'precioUnitario')}"/>
+                    <g:field type="number" name="precio" class=" required input-small" value="${fieldValue(bean: precio, field: 'precio')}"/>
                     <span class="add-on" id="spanPeso">
                         $
                     </span>
                 </div>
-                por ${precioRubrosItemsInstance.item.unidad.descripcion}
+                por ${precio.item.unidad.descripcion}
                 <span class="mandatory">*</span>
 
                 <p class="help-block ui-helper-hidden"></p>
@@ -68,8 +41,7 @@
                     url  : "${createLink(action:'checkFcPr_ajax')}",
                     type : "post",
                     data : {
-                        item  : "${precioRubrosItemsInstance.itemId}",
-                        lugar : "${lugar?.id}"
+                        item : "${precio.itemId}"
                     }
                 }
             }

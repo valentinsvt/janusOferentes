@@ -1,29 +1,32 @@
-<div class="tituloTree">Precios de ${item.nombre} en ${lugarNombre}</div>
+<div class="tituloTree">Precios de ${item.nombre}</div>
 
 <div style="height: 35px; width: 100%;">
     <div class="btn-group pull-left">
-        <a href="#" class="btn btn-ajax" id="btnNew">
-            <i class="icon-money"></i>
-            Nuevo Precio
-        </a>
-        %{--<a href="#" class="btn" id="btnCopy">--}%
-        %{--<i class="icon-copy"></i>--}%
-        %{--Copiar Precios--}%
-        %{--</a>--}%
-        <a href="#" class="btn btn-success btn-ajax" id="btnSave">
-            <i class="icon-save"></i>
-            Guardar
-        </a>
+        <g:if test="${precios.size() == 0}">
+            <a href="#" class="btn btn-ajax" id="btnNew">
+                <i class="icon-money"></i>
+                Nuevo Precio
+            </a>
+        </g:if>
+        <g:else>
+            <a href="#" class="btn btn-success btn-ajax" id="btnSave">
+                <i class="icon-save"></i>
+                Guardar
+            </a>
+        </g:else>
     </div>
 </div>
+
+<g:if test="${precios.size() > 0}">
+    <div class="alert">
+        Haga doble click en el precio para modificarlo, y click en el botón "Guardar" para guardar su cambio.
+    </div>
+</g:if>
 
 <div id="divTabla" style="height: 630px; width: 100%; overflow-x: hidden; overflow-y: auto;">
     <table class="table table-striped table-bordered table-hover table-condensed" id="tablaPrecios">
         <thead>
             <tr>
-                <g:if test="${lgar}">
-                    <th>Lugar</th>
-                </g:if>
                 <th>Fecha</th>
                 <th class="precio">Precio</th>
                 <th class="delete"></th>
@@ -32,24 +35,17 @@
         <tbody>
             <g:each in="${precios}" var="precio" status="i">
                 <tr>
-                    <g:if test="${lgar}">
-                        <td>
-                            ${precio.lugar.descripcion} (${precio.lugar.tipo})
-                        </td>
-                    </g:if>
                     <td>
                         <g:formatDate date="${precio.fecha}" format="dd-MM-yyyy"/>
                     </td>
-                    <td class="precio textRight editable ${i == 0 ? 'selected' : ''}" data-original="${precio.precioUnitario}" id="${precio.id}">
-                        <g:formatNumber number="${precio.precioUnitario}" maxFractionDigits="5" minFractionDigits="5" format="##,#####0" locale='ec'/>
+                    <td class="precio textRight editable ${i == 0 ? 'selected' : ''}" data-original="${precio.precio}" id="${precio.id}">
+                        <g:formatNumber number="${precio.precio}" maxFractionDigits="5" minFractionDigits="5" format="##,#####0" locale='ec'/>
                     </td>
                     <td class="delete">
                         %{--<g:if test="${precio.fechaIngreso == new java.util.Date().clearTime()}">--}%
-                        <g:if test="${precio.registrado != 'R'}">
-                            <a href="#" class="btn btn-danger btn-small btnDelete" rel="tooltip" title="Eliminar" id="${precio.id}">
-                                <i class="icon-trash icon-large"></i>
-                            </a>
-                        </g:if>
+                        <a href="#" class="btn btn-danger btn-small btnDelete" rel="tooltip" title="Eliminar" id="${precio.id}">
+                            <i class="icon-trash icon-large"></i>
+                        </a>
                     </td>
                 </tr>
             </g:each>
@@ -72,7 +68,7 @@
 </div>
 
 <div class="modal hide fade" id="modal-tree1">
-    <div class="modal-header-tree1">
+    <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">×</button>
 
         <h3 id="modalTitle-tree1"></h3>
@@ -93,12 +89,7 @@
             type    : "POST",
             url     : "${createLink(action:'formPrecio_ajax')}",
             data    : {
-                item        : "${item.id}",
-                lugar       : "${lugarId}",
-                nombreLugar : "${lugarNombre}",
-                fecha       : "${fecha}",
-                all         : "${params.all}",
-                ignore      : "${params.ignore}"
+                item : "${item.id}"
             },
             success : function (msg) {
                 var btnOk = $('<a href="#" data-dismiss="modal" class="btn">Cancelar</a>');
@@ -107,46 +98,40 @@
                 btnSave.click(function () {
                     if ($("#frmSave").valid()) {
                         btnSave.replaceWith(spinner);
-                    }
-//                    $("#frmSave").submit();
 
-                    $.ajax({
-                        type    : "POST",
-                        url     : $("#frmSave").attr("action"),
-                        data    : $("#frmSave").serialize(),
-                        success : function (msg) {
-                            if (msg == "OK") {
-                                $("#modal-tree").modal("hide");
-                                var loading = $("<div></div>");
-                                loading.css({
-                                    textAlign : "center",
-                                    width     : "100%"
-                                });
-                                loading.append("Cargando....Por favor espere...<br/>").append(spinnerBg);
-                                $("#info").html(loading);
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : "${createLink(action:'showLg_ajax')}",
-                                    data    : {
-                                        id       : "${params.id}",
-                                        all      : "${params.all}",
-                                        ignore   : "${params.ignore}",
-                                        fecha    : "${params.fecha}",
-                                        operador : "${params.operador}"
-                                    },
-                                    success : function (msg) {
-                                        $("#info").html(msg);
-                                    }
-                                });
-                            } else {
-                                var btnClose = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
-                                $("#modalTitle").html("Error");
-                                $("#modalBody").html("Ha ocurrido un error al guardar");
-                                $("#modalFooter").html("").append(btnClose);
+                        $.ajax({
+                            type    : "POST",
+                            url     : $("#frmSave").attr("action"),
+                            data    : $("#frmSave").serialize(),
+                            success : function (msg) {
+                                if (msg == "OK") {
+                                    $("#modal-tree").modal("hide");
+                                    var loading = $("<div></div>");
+                                    loading.css({
+                                        textAlign : "center",
+                                        width     : "100%"
+                                    });
+                                    loading.append("Cargando....Por favor espere...<br/>").append(spinnerBg);
+                                    $("#info").html(loading);
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(action:'showLg_ajax')}",
+                                        data    : {
+                                            id : "${params.id}"
+                                        },
+                                        success : function (msg) {
+                                            $("#info").html(msg);
+                                        }
+                                    });
+                                } else {
+                                    var btnClose = $('<a href="#" data-dismiss="modal" class="btn">Cerrar</a>');
+                                    $("#modalTitle").html("Error");
+                                    $("#modalBody").html("Ha ocurrido un error al guardar");
+                                    $("#modalFooter").html("").append(btnClose);
+                                }
                             }
-                        }
-                    });
-
+                        });
+                    }
                     return false;
                 });
 
@@ -163,6 +148,12 @@
         $("#dlgLoad").dialog("open");
         var data = "";
         $(".editable").each(function () {
+            if ($(this).find(".editando").length > 0) {
+                var value = $(".editando").val();
+                if (value) {
+                    $(".selected").html(number_format(value, 5, ".", "")).data("valor", value);
+                }
+            }
             var id = $(this).attr("id");
             var valor = $(this).data("valor");
 

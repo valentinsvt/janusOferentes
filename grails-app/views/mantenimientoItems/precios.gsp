@@ -188,7 +188,7 @@
                 lugar     : "${resource(dir: 'images/tree', file: 'lugar_c.png')}",
                 lugar_c   : "${resource(dir: 'images/tree', file: 'lugar_c.png')}",
                 lugar_v   : "${resource(dir: 'images/tree', file: 'lugar_v.png')}",
-                lugar_all : "${resource(dir: 'images/tree', file: 'lugar_all.png')}"
+                lugar_all : "${resource(dir: 'images/tree', file: 'US-dollar.png')}"
             };
 
             function cambiaFecha(dateText, inst) {
