@@ -49,10 +49,10 @@
         <i class="icon-table"></i>
         Calcular
     </a>
-    <a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">
-        <i class="icon-truck"></i>
-        Transporte
-    </a>
+    %{--<a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">--}%
+    %{--<i class="icon-truck"></i>--}%
+    %{--Transporte--}%
+    %{--</a>--}%
     <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
         <i class="icon-print"></i>
         Imprimir
@@ -121,27 +121,27 @@
                 <g:select name="rubro.grupo.id" id="selClase" from="${grupos}" class="span12" optionKey="id" optionValue="descripcion"
                           value="${rubro?.departamento?.subgrupo?.grupo?.id}" noSelection="['': '--Seleccione--']"/>
             </div>
-            <div class="span2">
-                Grupo
-                <g:if test="${rubro?.departamento?.subgrupo?.id}">
-                    <g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"
-                              class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>
-                </g:if>
-                <g:else>
-                    <select id="selGrupo" class="span12"></select>
-                </g:else>
-            </div>
+            %{--<div class="span2">--}%
+            %{--Grupo--}%
+            %{--<g:if test="${rubro?.departamento?.subgrupo?.id}">--}%
+            %{--<g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"--}%
+            %{--class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>--}%
+            %{--</g:if>--}%
+            %{--<g:else>--}%
+            %{--<select id="selGrupo" class="span12"></select>--}%
+            %{--</g:else>--}%
+            %{--</div>--}%
 
-            <div class="span3">
-                Sub grupo
-                <g:if test="${rubro?.departamento?.id}">
-                    <g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"
-                              class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>
-                </g:if>
-                <g:else>
-                    <select id="selSubgrupo" class="span12"></select>
-                </g:else>
-            </div>
+            %{--<div class="span3">--}%
+            %{--Sub grupo--}%
+            %{--<g:if test="${rubro?.departamento?.id}">--}%
+            %{--<g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"--}%
+            %{--class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>--}%
+            %{--</g:if>--}%
+            %{--<g:else>--}%
+            %{--<select id="selSubgrupo" class="span12"></select>--}%
+            %{--</g:else>--}%
+            %{--</div>--}%
 
             <div class="span3">
                 Unidad
@@ -164,24 +164,24 @@
     <div class="linea" style="height: 100px;"></div>
 
     <div class="row-fluid">
-        %{--<div class="span3">--}%
-        %{--<div style="height: 40px;float: left;width: 100px">Lista de precios</div>--}%
+    %{--<div class="span3">--}%
+    %{--<div style="height: 40px;float: left;width: 100px">Lista de precios</div>--}%
 
-        %{--<div class="btn-group span7" data-toggle="buttons-radio" style="float: right;">--}%
-        %{--<button type="button" class="btn btn-info active tipoPrecio" id="C">Civiles</button>--}%
-        %{--<button type="button" class="btn btn-info tipoPrecio" id="V">Viales</button>--}%
-        %{--</div>--}%
-        %{--</div>--}%
+    %{--<div class="btn-group span7" data-toggle="buttons-radio" style="float: right;">--}%
+    %{--<button type="button" class="btn btn-info active tipoPrecio" id="C">Civiles</button>--}%
+    %{--<button type="button" class="btn btn-info tipoPrecio" id="V">Viales</button>--}%
+    %{--</div>--}%
+    %{--</div>--}%
 
-        <div class="span7">
-            Lista de precios de equipos y mano de obra
-            <g:select name="item.ciudad.id" from="${janus.Lugar.list()}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 350px"/>
-        </div>
+    %{--<div class="span7">--}%
+    %{--Lista de precios de equipos y mano de obra--}%
+    %{--<g:select name="item.ciudad.id" from="${janus.Lugar.list()}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 350px"/>--}%
+    %{--</div>--}%
 
-        <div class="span2">
-            Fecha
-            <elm:datepicker name="item.fecha" class="span8" id="fecha_precios" value="${new java.util.Date()}" format="dd-MM-yyyy"/>
-        </div>
+    %{--<div class="span2">--}%
+    %{--Fecha--}%
+    %{--<elm:datepicker name="item.fecha" class="span8" id="fecha_precios" value="${new java.util.Date()}" format="dd-MM-yyyy"/>--}%
+    %{--</div>--}%
 
         <g:if test="${!items}">
             <div class="span2">
@@ -198,21 +198,25 @@
     </div>
 
     <div class="row-fluid" style="margin-bottom: 5px">
-        <div class="span2">
+        <div class="span2" style="margin-right: 0px">
             Código
-            <input type="text" name="item.codigo" id="cdgo_buscar" class="span24">
+            <input type="text" name="item.codigo" id="cdgo_buscar" style="width: 105px;">
             <input type="hidden" id="item_id">
             <input type="hidden" id="item_tipoLista">
         </div>
 
-        <div class="span6">
+        <div class="span5" style="margin-left: -20px" >
             Descripción
-            <input type="text" name="item.descripcion" id="item_desc" class="span72">
+            <input type="text" name="item.descripcion" id="item_desc" style="width: 430px">
         </div>
 
         <div class="span1">
             Unidad
             <input type="text" name="item.unidad" id="item_unidad" class="span8">
+        </div>
+        <div class="span2" style="margin-left: -3px">
+            Precio
+            <input type="text" name="item.precio" class="span12" id="item_precio" value="1" style="text-align: right">
         </div>
 
         <div class="span1">
@@ -225,7 +229,7 @@
             <input type="text" name="item.rendimiento" class="span12" id="item_rendimiento" value="1" style="text-align: right">
         </div>
 
-        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px">
+        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 5px">
             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btn_agregarItem">
                 <i class="icon-plus"></i>
             </a>
@@ -573,6 +577,18 @@
 
 </div>
 <script type="text/javascript">
+
+    function getPrecio(){
+//      console.log("getPrecio")
+
+        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecioOferente')}",
+            data     : "id="+$("#item_id").val(),
+            success  : function (msg) {
+                  $("#item_precio").val(number_format(msg, 2, ".", ""))
+            }
+        });
+    }
+
     function enviarItem() {
         var data = "";
         $("#buscarDialog").hide();
@@ -620,25 +636,25 @@
         });
     }
 
-    function transporte(){
-        var dsp0=$("#dist_p1").val()
-        var dsp1=$("#dist_p2").val()
-        var dsv0=$("#dist_v1").val()
-        var dsv1=$("#dist_v2").val()
-        var dsv2=$("#dist_v3").val()
-        var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
-        var volqueta=$("#costo_volqueta").val()
-        var chofer=$("#costo_chofer").val()
+    %{--function transporte(){--}%
+    %{--var dsp0=$("#dist_p1").val()--}%
+    %{--var dsp1=$("#dist_p2").val()--}%
+    %{--var dsv0=$("#dist_v1").val()--}%
+    %{--var dsv1=$("#dist_v2").val()--}%
+    %{--var dsv2=$("#dist_v3").val()--}%
+    %{--var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()--}%
+    %{--var volqueta=$("#costo_volqueta").val()--}%
+    %{--var chofer=$("#costo_chofer").val()--}%
 
-        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'transporte')}",
-            data     : "dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val(),
-            success  : function (msg) {
-                $("#tabla_transporte").html(msg)
-                tablaIndirectos();
-            }
-        });
+    %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'transporte')}",--}%
+    %{--data     : "dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val(),--}%
+    %{--success  : function (msg) {--}%
+    %{--$("#tabla_transporte").html(msg)--}%
+    %{--tablaIndirectos();--}%
+    %{--}--}%
+    %{--});--}%
 
-    }
+    %{--}--}%
 
     function totalEquipos(){
         var trE=$("<tr id='total_equipo' class='total'>")
@@ -660,7 +676,7 @@
         td.html(number_format(totalE, 5, ".", ""))
         trE.append(td)
         $("#tabla_equipo").append(trE)
-        transporte()
+        tablaIndirectos();
     }
 
 
@@ -670,61 +686,70 @@
         var h3 = $("#i_3492")
         var h5 = $("#i_3491")
         var h
-        if(h2.html())
+        var precio =0
+        if(h2.html()){
             h=h2
-        if(h3.html())
+            precio=0.02
+        }
+        if(h3.html()){
             h=h3
-        if(h5.html())
-            h=h5
+            precio=0.03
 
+        }
+        if(h5.html()){
+            h=h5
+            precio=0.05
+        }
 
         if(h){
 
-            var precio = 0
-            var listas =""+$("#lista_1").val()+"#"+$("#lista_2").val()+"#"+$("#lista_3").val()+"#"+$("#lista_4").val()+"#"+$("#lista_5").val()+"#"+$("#ciudad").val()
+//            var listas =""+$("#lista_1").val()+"#"+$("#lista_2").val()+"#"+$("#lista_3").val()+"#"+$("#lista_4").val()+"#"+$("#lista_5").val()+"#"+$("#ciudad").val()
 
-            var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&tipo=C"+"&listas="+listas+"&ids="+ str_replace("i_","",h.attr("id"))
+            var datos = "tipo=C"+"&ids="+ str_replace("i_","",h.attr("id"))
 //            $.each(items, function () {
 //                datos += $(this).attr("id") + "#"
 //            });
 //            var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&ids="+ str_replace("i_","",h.attr("id"))
 //            console.log("si h",h,h.attr("id"))
 //            console.log("si h",str_replace("i_","",h.attr("id")) )
-            $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPreciosItem')}",
-                data     : datos,
-                success  : function (msg) {
-                    var precios = msg.split("&")
-//                     console.log(msg)
-                    for(i=0;i<precios.length;i++){
-                        var parts = precios[i].split(";")
-//                        console.log(parts,parts.length)
-                        if(parts.length>1){
-                            precio = parseFloat(parts[1].trim())
+            %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPreciosItem')}",--}%
+            %{--data     : datos,--}%
+            %{--success  : function (msg) {--}%
+            %{--var precios = msg.split("&")--}%
+            %{--//                     console.log(msg)--}%
+            %{--for(i=0;i<precios.length;i++){--}%
+            %{--var parts = precios[i].split(";")--}%
+            %{--//                        console.log(parts,parts.length)--}%
+            %{--if(parts.length>1){--}%
+            %{--precio = parseFloat(parts[1].trim())--}%
 
-                        }
+            %{--}--}%
 
 
-                    }
-                    var padre = h.parent()
-                    var rend = padre.find(".rend")
-                    var hora = padre.find(".col_hora")
-                    var total= padre.find(".col_total")
-                    var cant = padre.find(".cant")
-                    var tarifa = padre.find(".col_tarifa")
-                    rend.html(number_format(1, 5, ".", ""))
-                    cant.html(number_format($("#total_mano").find(".valor_total").html(), 5, ".", ""))
+            %{--}--}%
+
+            var padre = h.parent()
+            var rend = padre.find(".rend")
+            var hora = padre.find(".col_hora")
+            var total= padre.find(".col_total")
+            var cant = padre.find(".cant")
+            var tarifa = padre.find(".col_tarifa")
+            rend.html(number_format(1, 5, ".", ""))
+            cant.html(number_format($("#total_mano").find(".valor_total").html(), 5, ".", ""))
 //                    console.log("cantidad",$("#total_mano").find(".valor_total").html())
 //                    console.log(number_format($("#total_mano").find(".valor_total").html(), 5, ".", ""))
-                    tarifa.html(number_format(precio, 5, ".", ""))
-                    hora.html(number_format(parseFloat(cant.html())*parseFloat(tarifa.html()), 5, ".", ""))
-                    total.html(number_format(parseFloat(hora.html())*parseFloat(rend.html()), 5, ".", ""))
-
-                }
-            });
-
-
+            tarifa.html(number_format(precio, 5, ".", ""))
+            hora.html(number_format(parseFloat(cant.html())*parseFloat(tarifa.html()), 5, ".", ""))
+            total.html(number_format(parseFloat(hora.html())*parseFloat(rend.html()), 5, ".", ""))
+            totalEquipos()
+        } else{
+            totalEquipos()
         }
-        totalEquipos()
+//            });
+//
+//
+//        }
+
     }
 
 
@@ -961,7 +986,7 @@
             var volqueta=$("#costo_volqueta").val()
             var chofer=$("#costo_chofer").val()
 
-            datos="?dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val()+"&indi="+$("#costo_indi").val()
+            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()
 
 
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}"+datos
@@ -1054,7 +1079,7 @@
             }
 
         })
-        $("#cmb_vol").change()
+//        $("#cmb_vol").change()
         $("#cmb_chof").change(function(){
             if($("#cmb_chof").val()!="-1"){
                 var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val()  + "&ids="+$("#cmb_chof").val()
@@ -1076,7 +1101,7 @@
             }
 
         })
-        $("#cmb_chof").change()
+//        $("#cmb_chof").change()
 
         $(".item_row").dblclick(function(){
             var hijos = $(this).children()
@@ -1113,7 +1138,7 @@
             $("#cdgo_buscar").val(codigo)
             $("#item_desc").val(desc)
             $("#item_unidad").val(unidad)
-
+            getPrecio();
 
 
         })
@@ -1180,11 +1205,13 @@
                 $("#tabla_transporte").html("")
             } else {
                 $(this).addClass("active")
-                var fecha = $("#fecha_precios").val()
-                if (fecha.length < 8) {
+
+
+                var items = $(".item_row")
+                if (items.size() < 1) {
                     $.box({
                         imageClass : "box_info",
-                        text       : "Seleccione una fecha para determinar la lista de precios",
+                        text       : "Añada items a la composición del rubro antes de calcular los precios",
                         title      : "Alerta",
                         iconClose  : false,
                         dialog     : {
@@ -1199,50 +1226,31 @@
                     });
                     $(this).removeClass("active")
                 } else {
-                    var items = $(".item_row")
-                    if (items.size() < 1) {
-                        $.box({
-                            imageClass : "box_info",
-                            text       : "Añada items a la composición del rubro antes de calcular los precios",
-                            title      : "Alerta",
-                            iconClose  : false,
-                            dialog     : {
-                                resizable : false,
-                                draggable : false,
-                                buttons   : {
-                                    "Aceptar" : function () {
-                                    }
-                                },
-                                width     : 500
-                            }
-                        });
-                        $(this).removeClass("active")
-                    } else {
-                        var tipo = "C"
-                        if ($("#V").hasClass("active"))
-                            tipo = "V"
-                        var listas =""
-                        listas+=$("#lista_1").val()+"#"+$("#lista_2").val()+"#"+$("#lista_3").val()+"#"+$("#lista_4").val()+"#"+$("#lista_5").val()+"#"+$("#ciudad").val()
+                    var tipo = "C"
+                    if ($("#V").hasClass("active"))
+                        tipo = "V"
+                    var listas =""
+                    listas+=$("#lista_1").val()+"#"+$("#lista_2").val()+"#"+$("#lista_3").val()+"#"+$("#lista_4").val()+"#"+$("#lista_5").val()+"#"+$("#ciudad").val()
 
-                        var datos = "fecha=" + $("#fecha_precios").val() + "&ciudad=" + $("#ciudad").val() + "&tipo=" + tipo+"&listas="+listas+"&ids="
-                        $.each(items, function () {
-                            datos += $(this).attr("id") + "#"
-                        });
+                    var datos = "tipo=" + tipo+"&listas="+listas+"&ids="
+                    $.each(items, function () {
+                        datos += $(this).attr("id") + "#"
+                    });
 
-                        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecios')}",
-                            data     : datos,
-                            success  : function (msg) {
-                                var precios = msg.split("&")
-                                for(i=0;i<precios.length;i++){
-                                    var parts = precios[i].split(";")
-                                    var celda =$("#i_"+parts[0])
-                                    celda.html(number_format(parts[1], 5, ".", ""))
-                                    var padre = celda.parent()
+                    $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecios')}",
+                        data     : datos,
+                        success  : function (msg) {
+                            var precios = msg.split("&")
+                            for(i=0;i<precios.length;i++){
+                                var parts = precios[i].split(";")
+                                var celda =$("#i_"+parts[0])
+                                celda.html(number_format(parts[1], 5, ".", ""))
+                                var padre = celda.parent()
 //                                    console.log(parts,padre)
-                                    var celdaRend = padre.find(".col_rend")
-                                    var celdaTotal = padre.find(".col_total")
-                                    var celdaCant = padre.find(".cant")
-                                    var celdaHora =  padre.find(".col_hora")
+                                var celdaRend = padre.find(".col_rend")
+                                var celdaTotal = padre.find(".col_total")
+                                var celdaCant = padre.find(".cant")
+                                var celdaHora =  padre.find(".col_hora")
 //                                    console.log(celdaHora)
 //                                    console.log(,,"rend "+celdaRend.html(),"total "+ celdaTotal.html(),"multi "+parseFloat(celda.html())*parseFloat(celdaCant.html()))
 //                                    console.log("----")
@@ -1250,31 +1258,31 @@
 //                                    console.log("cant sin mun "+celdaCant.html() )
 //                                    console.log("cant "+parseFloat(celdaCant.html()) )
 //                                    console.log(" multi "+parseFloat(celda.html())*parseFloat(celdaCant.html()))
-                                    var rend = 1
-                                    if(celdaHora.hasClass("col_hora")){
-                                        celdaHora.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html()), 5, ".", ""))
-                                    }
-                                    if(celdaRend.html()){
-                                        rend=celdaRend.html()*1
-                                    }
-                                    celdaTotal.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html())*parseFloat(rend), 5, ".", ""))
-
+                                var rend = 1
+                                if(celdaHora.hasClass("col_hora")){
+                                    celdaHora.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html()), 5, ".", ""))
                                 }
-                                calcularTotales()
+                                if(celdaRend.html()){
+                                    rend=celdaRend.html()*1
+                                }
+                                celdaTotal.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html())*parseFloat(rend), 5, ".", ""))
 
                             }
-                        });
+                            calcularTotales()
 
-                        $(".col_delete").hide()
+                        }
+                    });
+
+                    $(".col_delete").hide()
 //                        $(".col_unidad").hide()
-                        $(".col_tarifa").show()
-                        $(".col_hora").show()
-                        $(".col_total").show()
-                        $(".col_jornal").show()
-                        $(".col_precioUnit").show()
-                        $(".col_vacio").show()
-                    }
+                    $(".col_tarifa").show()
+                    $(".col_hora").show()
+                    $(".col_total").show()
+                    $(".col_jornal").show()
+                    $(".col_precioUnit").show()
+                    $(".col_vacio").show()
                 }
+
             }
         });
 
@@ -1355,7 +1363,7 @@
                     success  : function (msg) {
                         if (msg !="-1") {
 //                            console.log("msg "+msg)
-                           var parts = msg.split("&&")
+                            var parts = msg.split("&&")
                             $("#item_tipoLista").val(parts[1])
                             $("#item_id").val(parts[0])
                             $("#item_desc").val(parts[2])
@@ -1481,11 +1489,14 @@
             if (isNaN(cant))
                 cant = 0
             var rend = $("#item_rendimiento").val()
+            var precio = $("#item_precio").val()
+            if (isNaN(precio))
+                precio = 0
             if (isNaN(rend))
                 rend = 1
             if ($("#item_id").val() * 1 > 0) {
-                if (cant > 0) {
-                    var data = "rubro=${rubro.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend
+                if (cant > 0 && precio>0) {
+                    var data = "rubro=${rubro.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
                     $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'addItem')}",
                         data     : data,
                         success  : function (msg) {
@@ -1606,7 +1617,7 @@
                                 }
                             }
 
-                           tr.bind("dblclick",function(){
+                            tr.bind("dblclick",function(){
                                 var hijos = $(this).children()
                                 var desc=$(hijos[1]).html()
                                 var cant
@@ -1677,14 +1688,15 @@
                             $("#item_id").val("")
                             $("#item_cantidad").val("1")
                             $("#cdgo_buscar").val("")
-                            $("#cdgo_unidad").val("")
+                            $("#item_unidad").val("")
                             $("#item_rendimiento").val("1")
+                            $("#item_precio").val("1")
                         }
                     });
                 } else {
                     $.box({
                         imageClass : "box_info",
-                        text       : "La cantidad debe ser un número positivo",
+                        text       : "La cantidad y el precio deben ser un números positivos",
                         title      : "Alerta",
                         iconClose  : false,
                         dialog     : {

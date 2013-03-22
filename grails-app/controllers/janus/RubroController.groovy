@@ -125,8 +125,26 @@ class RubroController extends janus.seguridad.Shield {
         } else {
             rubro.fechaModificacion = new Date()
             rubro.save(flush: true)
-            render "" + item.departamento.subgrupo.grupo.id + ";" + detalle.id + ";" + detalle.item.id + ";" + detalle.cantidad + ";" + detalle.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")
+            def precio = Precio.findByItemAndPersona(item,session.usuario)
+            if (!precio){
+                precio = new Precio()
+                precio.item=item
+                precio.persona= Persona.get(session.usuario.id)
+                precio.fecha=new Date()
+            }
+            precio.precio=params.precio.toDouble()
+            if (precio.save(flush: true))
+                render "" + item.departamento.subgrupo.grupo.id + ";" + detalle.id + ";" + detalle.item.id + ";" + detalle.cantidad + ";" + detalle.rendimiento + ";" + ((item.tipoLista) ? item.tipoLista?.id : "0")
         }
+    }
+
+    def getPrecioOferente(){
+        def item = Item.get(params.id)
+        def precio = 0
+        def tmp = Precio.findByItemAndPersona(item,session.usuario)
+        if (tmp)
+            precio = tmp.precio
+        render ""+precio
     }
 
     def buscaItem() {
@@ -147,6 +165,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += '$("#item_unidad").val(parts[3]);'
         funcionJs += '$("#item_tipoLista").val(parts[5]);'
         funcionJs += '$("#modal-rubro").modal("hide");'
+        funcionJs += 'getPrecio();'
         funcionJs += '}'
         funcionJs += '});'
         funcionJs += '}'
@@ -177,7 +196,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += 'location.href="' + g.createLink(action: 'rubroPrincipal', controller: 'rubro') + '?idRubro="+$(this).attr("regId");'
         funcionJs += '}'
         def numRegistros = 20
-        def extras = " and tipoItem = 2"
+        def extras = " and tipoItem = 2 and persona = ${session.usuario.id}"
         if (!params.reporte) {
             def lista = buscadorService.buscar(Item, "Item", "excluyente", params, true, extras) /* Dominio, nombre del dominio , excluyente o incluyente ,params tal cual llegan de la interfaz del buscador, ignore case */
             lista.pop()
@@ -311,7 +330,8 @@ class RubroController extends janus.seguridad.Shield {
         }
         rubro.properties = params.rubro
         rubro.tipoItem = TipoItem.get(2)
-        println "ren " + rubro.rendimiento
+        rubro.persona=Persona.get(session.usuario.id)
+//        println "ren " + rubro.rendimiento
         if (!rubro.save(flush: true)) {
             println "error " + rubro.errors
         }
@@ -364,11 +384,11 @@ class RubroController extends janus.seguridad.Shield {
 //        println "obras "+obras
         def ob = [:]
         if (vo.size() + obras.size() > 0) {
-             vo.each {v->
+            vo.each {v->
 
-                    ob.put(v.obra.codigo,v.obra.nombre)
+                ob.put(v.obra.codigo,v.obra.nombre)
 
-             }
+            }
             obras.each {o->
                 ob.put(o.codigo,o.nombre)
             }
@@ -398,87 +418,85 @@ class RubroController extends janus.seguridad.Shield {
     } //delete
 
     def getPrecios() {
-        println "get precios " + params
-        def lugar = Lugar.get(params.ciudad)
-        def fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-        def tipo = params.tipo
+        println "get precios sin item " + params
         def items = []
         def parts = params.ids.split("#")
-        def listas = []
-        def conLista = []
-        listas = params.listas.split("#")
+        def res =""
 //        println "listas " + listas
         parts.each {
             if (it.size() > 0) {
-                def item = Rubro.get(it).item
-                if (item.tipoLista) {
-                    conLista.add(item)
-//                    println "con lista "+item.tipoLista
-                } else {
-                    items.add(item)
+                def item=Rubro.get(it).item
+                def precio = Precio.findByItemAndPersona(item,session.usuario)
+                if (!precio){
+                    res+=item.id+";0&"
+                }else{
+                    res+=item.id+";"+precio.precio+"&"
                 }
-
             }
-
-        }
-        def precios = ""
-//        println "items " + items + "  con lista " + conLista
-        if (items.size() > 0) {
-            precios = preciosService.getPrecioItemsString(fecha, lugar, items)
-        }
-//        println "precios "+precios
-
-
-        conLista.each {
-//            println "tipo "+ it.tipoLista.id.toInteger()
-            precios += preciosService.getPrecioItemStringListaDefinida(fecha, listas[it.tipoLista.id.toInteger() - 1], it.id)
         }
 
-//        println "precios final " + precios
+
+
+        println "precios final " + res
 //        println "--------------------------------------------------------------------------"
-        render precios
+        render res
     }
 
     def getPreciosItem() {
-//        println "get precios item " + params
-        def lugar = Lugar.get(params.ciudad)
-        def fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-        def tipo = params.tipo
+        println "get precios item " + params
+
+//        def tipo = params.tipo
+//        def items = []
+//        def parts = params.ids.split("#")
+//        def listas = []
+//        def conLista = []
+//        listas = params.listas.split("#")
+////        println "listas " + listas
+//        parts.each {
+//            if (it.size() > 0) {
+//                def item = Item.get(it)
+//                if (item.tipoLista) {
+//                    conLista.add(item)
+////                    println "con lista "+item.tipoLista
+//                } else {
+//                    items.add(item)
+//                }
+//
+//            }
+//
+//        }
+//        def precios = ""
+////        println "items " + items + "  con lista " + conLista
+//        if (items.size() > 0) {
+//            precios = preciosService.getPrecioItemsString(fecha, lugar, items)
+//        }
+////        println "precios "+precios
+//
+//
+//        conLista.each {
+////            println "tipo "+ it.tipoLista.id.toInteger()
+//            precios += preciosService.getPrecioItemStringListaDefinida(fecha, listas[it.tipoLista.id.toInteger() - 1], it.id)
+//        }
+
         def items = []
         def parts = params.ids.split("#")
-        def listas = []
-        def conLista = []
-        listas = params.listas.split("#")
+        def res =""
 //        println "listas " + listas
         parts.each {
             if (it.size() > 0) {
-                def item = Item.get(it)
-                if (item.tipoLista) {
-                    conLista.add(item)
-//                    println "con lista "+item.tipoLista
-                } else {
-                    items.add(item)
+                def item=Item.get(it)
+                def precio = Precio.findByItemAndPersona(item,session.usuario)
+                if (!precio){
+                    res+=item.id+";0&"
+                }else{
+                    res+=item.id+";"+precio.precio+"&"
                 }
-
             }
-
-        }
-        def precios = ""
-//        println "items " + items + "  con lista " + conLista
-        if (items.size() > 0) {
-            precios = preciosService.getPrecioItemsString(fecha, lugar, items)
-        }
-//        println "precios "+precios
-
-
-        conLista.each {
-//            println "tipo "+ it.tipoLista.id.toInteger()
-            precios += preciosService.getPrecioItemStringListaDefinida(fecha, listas[it.tipoLista.id.toInteger() - 1], it.id)
         }
 
-//        println "precios final " + precios
-//        println "--------------------------------------------------------------------------"
-        render precios
+        println "precios final item " + res
+        println "--------------------------------------------------------------------------"
+        render res
     }
 
     def getPreciosTransporte() {
@@ -493,7 +511,7 @@ class RubroController extends janus.seguridad.Shield {
                 items.add(Item.get(it))
         }
         def precios = preciosService.getPrecioItemsString(fecha, lugar, items)
-//        println "precios " + precios
+        println "precios transporte " + precios
         render precios
     }
 
@@ -554,6 +572,7 @@ class RubroController extends janus.seguridad.Shield {
         tabla += "</tbody></table>"
 
         render(tabla)
+
 //
 //        pg: select * from rb_precios(293, 4, '1-feb-2008', 50, 70, 0.1015477897561282, 0.1710401760227313);
     }

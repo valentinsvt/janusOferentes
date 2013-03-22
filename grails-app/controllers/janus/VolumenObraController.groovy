@@ -18,7 +18,10 @@ class VolumenObraController extends janus.seguridad.Shield{
     def buscarRubroCodigo(){
         def rubro = Item.findByCodigoAndTipoItem(params.codigo?.trim(),TipoItem.get(2))
         if (rubro){
-            render ""+rubro.id+"&&"+rubro.tipoLista?.id+"&&"+rubro.nombre+"&&"+rubro.unidad?.codigo
+            if (rubro.persona.id.toInteger()==session.usuario.id.toInteger())
+                render ""+rubro.id+"&&"+rubro.tipoLista?.id+"&&"+rubro.nombre+"&&"+rubro.unidad?.codigo
+            else
+                render "-1"
             return
         } else{
             render "-1"
@@ -75,10 +78,10 @@ class VolumenObraController extends janus.seguridad.Shield{
         def indirecto = obra.totales/100
 //        println "indirecto "+indirecto
         preciosService.ac_rbroObra(obra.id)
-
+        println "paso!!! ac_rbroObra"
         detalle.each{
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",obra.id,it.item.id)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,session.usuario.id)
 //            println "res "+res+" "+it.item.id+"  "+obra.id
 //            println "r->" + (res["precio"][0]+res["precio"][0]*indirecto)+"   <<<>>> "+res
             precios.put(it.id.toString(),(res["precio"][0]+res["precio"][0]*indirecto).toDouble().round(2))
@@ -112,7 +115,7 @@ class VolumenObraController extends janus.seguridad.Shield{
         funcionJs += '$("#item_id").val($(this).attr("regId"));$("#item_codigo").val($(this).attr("prop_codigo"));$("#item_nombre").val($(this).attr("prop_nombre"))'
         funcionJs += '}'
         def numRegistros = 20
-        def extras = " and tipoItem = 2"
+        def extras = " and tipoItem = 2 and persona = ${session.usuario.id}"
         if (!params.reporte) {
             def lista = buscadorService.buscar(Item, "Item", "excluyente", params, true, extras) /* Dominio, nombre del dominio , excluyente o incluyente ,params tal cual llegan de la interfaz del buscador, ignore case */
             lista.pop()
