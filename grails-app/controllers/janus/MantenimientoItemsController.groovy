@@ -117,10 +117,11 @@ class MantenimientoItemsController extends Shield {
             }
 
             clase = (hijosH.size() > 0) ? "jstree-closed hasChildren" : ""
-
-            tree += "<li id='" + liId + "' class='" + clase + "' rel='" + rel + "' " + extra + ">"
-            tree += "<a href='#' class='label_arbol'>" + desc + "</a>"
-            tree += "</li>"
+            if (liId != "sg_23") {
+                tree += "<li id='" + liId + "' class='" + clase + "' rel='" + rel + "' " + extra + ">"
+                tree += "<a href='#' class='label_arbol'>" + desc + "</a>"
+                tree += "</li>"
+            }
         }
         tree += "</ul>"
         return tree
