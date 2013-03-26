@@ -80,6 +80,7 @@ class Obra implements Serializable {
     Lugar listaVolumen1
     Lugar listaVolumen2
     Lugar listaManoObra
+    Persona oferente
 
     static mapping = {
         table 'obra'
@@ -169,6 +170,8 @@ class Obra implements Serializable {
             listaVolumen1 column: 'lgarvl01'
             listaVolumen2 column: 'lgarvl02'
             listaManoObra column: 'lgarlsmq'
+
+            oferente column: 'ofrt__id'
         }
     }
     static constraints = {
@@ -253,6 +256,7 @@ class Obra implements Serializable {
         distanciaVolumenCarpetaAsfaltica(blank: true, nullable: true, attributes: [title: 'distanciaVolumenCarpetaAsfaltica'])
         barrio(size: 1..127, blank: true, nullable: true, attributes: [title: 'barrio'])
 
+        oferente(blank: true, nullable: true, attributes: [title: 'oferente'])
 
     }
 }

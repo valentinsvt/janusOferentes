@@ -55,6 +55,7 @@ class ObraController extends janus.seguridad.Shield {
             return
         }
 
+/*
         def res = obrafp.verificaMatriz(obra.id)
         if (res != "") {
             msg = res
@@ -72,6 +73,7 @@ class ObraController extends janus.seguridad.Shield {
         }
 //        println "2 res "+msg
 
+*/
 
         def fps = FormulaPolinomica.findAllByObra(obra)
 //        println "fps "+fps

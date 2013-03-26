@@ -91,7 +91,7 @@
 
         <p class="css-vertical-text">Rubro</p>
 
-        <div class="linea" style="height: 100px;"></div>
+        <div class="linea" style="height: 60px;"></div>
 
         <div class="row-fluid">
             <div class="span2">
@@ -99,54 +99,58 @@
                 <input type="text" name="rubro.codigo" class="span24" value="${rubro?.codigo}" id="input_codigo">
             </div>
 
-            <div class="span6">
+            <div class="span7">
                 Descripción
                 <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion">
             </div>
+            <div class="span2" style="width: 200px;">
+                Unidad
+                <g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}"/>
+            </div>
 
-            <div class="span2" style="">
+%{--
+            <div class="span2" style="visibility:hidden" >
                 Fecha Creación
                 <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fecha}" disabled="true" id="fechaCreacion"/>
             </div>
 
-            <div class="span2">
+            <div class="span2" style="visibility: hidden">
                 Fecha Modificación
                 <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fechaModificacion}"  format="dd-MM-yyyy hh:mm " disabled="true" id="fchaMod"/>
             </div>
+--}%
 
         </div>
         <div class="row-fluid">
+%{--
             <div class="span2"  >
                 Solicitante
                 <g:select name="rubro.grupo.id" id="selClase" from="${grupos}" class="span12" optionKey="id" optionValue="descripcion"
                           value="${rubro?.departamento?.subgrupo?.grupo?.id}" noSelection="['': '--Seleccione--']"/>
             </div>
-            %{--<div class="span2">--}%
-            %{--Grupo--}%
-            %{--<g:if test="${rubro?.departamento?.subgrupo?.id}">--}%
-            %{--<g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"--}%
-            %{--class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>--}%
-            %{--</g:if>--}%
-            %{--<g:else>--}%
-            %{--<select id="selGrupo" class="span12"></select>--}%
-            %{--</g:else>--}%
-            %{--</div>--}%
-
-            %{--<div class="span3">--}%
-            %{--Sub grupo--}%
-            %{--<g:if test="${rubro?.departamento?.id}">--}%
-            %{--<g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"--}%
-            %{--class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>--}%
-            %{--</g:if>--}%
-            %{--<g:else>--}%
-            %{--<select id="selSubgrupo" class="span12"></select>--}%
-            %{--</g:else>--}%
-            %{--</div>--}%
+            <div class="span2">
+            Grupo
+            <g:if test="${rubro?.departamento?.subgrupo?.id}">
+            <g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"
+            class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>
+            </g:if>
+            <g:else>
+            <select id="selGrupo" class="span12"></select>
+            </g:else>
+            </div>
 
             <div class="span3">
-                Unidad
-                <g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}"/>
+            Sub grupo
+            <g:if test="${rubro?.departamento?.id}">
+            <g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"
+            class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>
+            </g:if>
+            <g:else>
+            <select id="selSubgrupo" class="span12"></select>
+            </g:else>
             </div>
+
+--}%
 
 
             %{--<div class="span2"  >--}%
@@ -1437,12 +1441,14 @@
                     msg+="<br>La propiedad descripción debe tener entre 1 y 160 caracteres."
             }
 
+/*
             if(isNaN(subGr) || subGr*1<1){
                 if(msg=="")
                     msg="<br>Error: Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
                 else
                     msg+="<br>Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
             }
+*/
             if(msg==""){
                 $(".frmRubro").submit()
             }else{
