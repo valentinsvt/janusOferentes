@@ -63,7 +63,7 @@ class ObraFPController {
         //if (Obra.get(obra__id).estado == "N") ejecutaSQL("select * from sp_obra(${obra__id}, ${sbpr})")
 
         //ejecutaSQL("select * from sp_obra(${obra__id}, ${sbpr})")
-        ejecutaSQL("select * from sp_obra_of(${obra__id}, ${sbpr})")    /* TODO xxxxxx */
+        ejecutaSQL("select * from sp_obra_of(${obra__id}, ${sbpr})")
         println "ejecutó sp_obra"
 //
         println "verificaMatriz" + verificaMatriz(obra__id)
