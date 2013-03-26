@@ -44,146 +44,318 @@
     <body>
     %{--Todo Por hacer: imprimir, Formula pol, Fp liquidacion, rubros , documentos, composicion, tramites--}%
         <g:if test="${flash.message}">
-            <div class="span12" style="height: 35px;margin-bottom: 10px;">
-                <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
-                    <a class="close" data-dismiss="alert" href="#">×</a>
-                    ${flash.message}
+            <div class="row">
+                <div class="span12" style="height: 35px;margin-bottom: 10px;">
+                    <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
+                        <a class="close" data-dismiss="alert" href="#">×</a>
+                        ${flash.message}
+                    </div>
                 </div>
             </div>
         </g:if>
 
-        <div class="span12 hide" style="height: 35px;margin-bottom: 10px;" id="divError">
-            <div class="alert alert-error" role="status">
-                <a class="close" data-dismiss="alert" href="#">×</a>
-                <span id="spanError"></span>
+        <div class="row">
+            <div class="span12 btn-group" role="navigation" style="margin-bottom: 15px;">
+                <button class="btn" id="lista"><i class="icon-book"></i> Lista</button>
+                <g:if test="${obra?.id != null}">
+                    <button class="btn" id="btnImprimir"><i class="icon-print"></i> Imprimir</button>
+                </g:if>
             </div>
         </div>
 
-        <div class="span12 hide" style="height: 35px;margin-bottom: 10px;" id="divOk">
-            <div class="alert alert-info" role="status">
-                <a class="close" data-dismiss="alert" href="#">×</a>
-                <span id="spanOk"></span>
-            </div>
-        </div>
+        <g:form class="form-horizontal" name="frmSave-Lugar" action="save">
+            <fieldset class="borde" style="padding: 10px;">
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Código
+                                </span>
+                            </div>
 
-        <div class="span12 btn-group" role="navigation" style="margin-left: 0px;width: 100%;float: left;height: 35px;">
-            <button class="btn" id="lista"><i class="icon-book"></i> Lista</button>
-            <g:if test="${obra?.id != null}">
-                <button class="btn" id="btnImprimir"><i class="icon-print"></i> Imprimir</button>
-            </g:if>
-        </div>
-
-        <g:form class="registroObra" name="frm-registroObra" action="save">
-            <g:hiddenField name="crono" value="0"/>
-
-            <fieldset class="borde" style="float: left; padding-bottom: 10px;">
-                <div class="span12" style="margin-top: 10px">
-                    <div class="span1 bold">Código</div>
-
-                    <div class="span3">${obra?.codigo}</div>
-
-                    <div class="span1 bold">Nombre</div>
-
-                    <div class="span6">${obra?.nombre}</div>
-                </div>
-
-                <div class="span12">
-                    <div class="span1 bold">Programa</div>
-
-                    <div class="span3">${obra?.programacion?.descripcion}</div>
-
-                    <div class="span1 bold">Tipo</div>
-
-                    <div class="span2">${obra?.tipoObjetivo?.descripcion}</div>
-
-                    <div class="span1 bold">Clase</div>
-
-                    <div class="span2">${obra?.claseObra?.descripcion}</div>
-                </div>
-
-                <div class="span12">
-                    <div class="span1 bold">Referencias</div>
-
-                    <div class="span6">${obra?.referencia}</div>
-                </div>
-
-                <div class="span12">
-                    <div class="span1 bold">Descripción</div>
-
-                    <div class="span6">${obra?.descripcion}</div>
-                </div>
-
-                <div class="span12">
-
-                    <div class="span1 bold">Cantón</div>
-
-                    <div class="span3">${obra?.comunidad?.parroquia?.canton?.nombre}</div>
-
-                    <div class="span1 bold">Parroquia</div>
-
-                    <div class="span2">${obra?.comunidad?.parroquia?.nombre}</div>
-
-                    <div class="span1 bold">Comunidad</div>
-
-                    <div class="span2">${obra?.comunidad?.nombre}</div>
-                </div>
-
-                <div class="span12">
-
-                    <div class="span1 bold">Sitio</div>
-
-                    <div class="span3">${obra?.sitio}</div>
-
-                    <div class="span1 bold">Barrio</div>
-
-                    <div class="span2">${obra?.barrio}</div>
-
-                    <div class="span1 bold">Plazo</div>
-
-                    <div class="span2">
-                        ${obra?.plazoEjecucionMeses} Meses
-                        ${obra?.plazoEjecucionDias} Días
+                            <div class="controls">
+                                ${obra?.codigo}
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Nombre
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.nombre}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="span12">
-                    <div class="span1 bold">Observaciones</div>
+                <div class="row">
+                    <div class="span10">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Descripción
+                                </span>
+                            </div>
 
-                    <div class="span6">${obra?.observaciones}</div>
-
-                    <div class="span1 bold">Anticipo</div>
-
-                    <div class="span2">${obra?.porcentajeAnticipo}%</div>
-
+                            <div class="controls">
+                                ${obra?.descripcion}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="span12">
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Programa
+                                </span>
+                            </div>
 
-                    <div class="span2 bold">Precios para MO y Equipos</div>
-                    %{--todo esto es un combo--}%
-                    %{--<div class="span2" style="margin-right: 70px"><g:textField name="lugar.id" class="lugar" value="${obra?.lugar?.id}" optionKey="id"/></div>--}%
+                            <div class="controls">
+                                ${obra?.programacion?.descripcion}
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="span2">${obra?.listaManoObra?.descripcion}</div>
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Tipo
+                                </span>
+                            </div>
 
-
-                    <div class="span1 bold">Fecha</div>
-
-                    <div class="span2"><g:formatDate date="${obra?.fechaPreciosRubros}" format="dd-MM-yyyy"/></div>
-
-                    <div class="span1 bold">Latitud</div>
-
-                    <div class="span1">${formatNumber(number: obra?.latitud, format: '####.##', minFractionDigits: 5, maxFractionDigits: 8, locale: 'ec')}</div>
-
-                    <div class="span1 bold">Longitud</div>
-
-                    <div class="span1">${formatNumber(number: obra?.longitud, format: '####.##', minFractionDigits: 5, maxFractionDigits: 8, locale: 'ec')}</div>
-
+                            <div class="controls">
+                                ${obra?.tipoObjetivo?.descripcion}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Clase
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.claseObra?.descripcion}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Referencias
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.referencia}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Cantón
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.comunidad?.parroquia?.canton?.nombre}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Parroquia
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.comunidad?.parroquia?.nombre}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Comunidad
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.comunidad?.nombre}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Sitio
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.sitio}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Barrio
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.barrio}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Fecha
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                <g:formatDate date="${obra?.fechaPreciosRubros}" format="dd-MM-yyyy"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Plazo
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.plazoEjecucionMeses} Mes${obra?.plazoEjecucionMeses == 1 ? '' : 'es'}
+                                ${obra?.plazoEjecucionDias} Día${obra?.plazoEjecucionDias == 1 ? '' : 's'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Anticipo
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.porcentajeAnticipo}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Latitud
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                <g:formatNumber number="${obra?.latitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Longitud
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                <g:formatNumber number="${obra?.longitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span5">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Precios para MO y Equipos
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.listaManoObra?.descripcion}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="span10">
+                        <div class="control-group">
+                            <div>
+                                <span class="control-label label label-inverse">
+                                    Observaciones
+                                </span>
+                            </div>
+
+                            <div class="controls">
+                                ${obra?.observaciones}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
-
         </g:form>
+
 
         <div id="busqueda" class="hide">
 
