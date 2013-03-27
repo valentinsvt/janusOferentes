@@ -182,7 +182,7 @@ class PrflController extends janus.seguridad.Shield  {
       def exst = []
       def actl = []
 
-      if(ids.size()<1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
+      if (ids.size() < 1) ids = '1000000' // este valor no existe como accn__id, y sirve para el IN del SQL
       // eliminar los permisos que no estén chequeados
       def cn = dbConnectionService.getConnection()
       def cn1 = dbConnectionService.getConnection()
@@ -196,7 +196,7 @@ class PrflController extends janus.seguridad.Shield  {
       println "grabar SQL: ${tx}"
       cn.eachRow(tx) { d ->
         params.id = d.prms__id
-        println "parametro para borrar: $params"
+        println "parametro para borrar: $params" +  "seesion: " + session.perfil
         kerberosoldService.delete(params, Prms, session.perfil, session.usuario)
       }
       //println "-------------borrado de permisos----------"

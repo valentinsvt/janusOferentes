@@ -43,7 +43,7 @@
     $("#aceptaAJX").click(function() {
         if (confirm("Actualizar los permisos.. \n Seguro??")) {
             var data = armarAccn()
-            //alert("armado: " + data);
+            alert("armado: " + data);
             $.ajax({
                 type: "POST", url: "../grabar",
                 data: "&ids=" + data + "&tpac=" + $('#tpac__id').val() + "&prfl=" + $('#perfil').val(),

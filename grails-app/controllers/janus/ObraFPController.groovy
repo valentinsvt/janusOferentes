@@ -193,6 +193,8 @@ class ObraFPController {
 
         if (nombresCortos()) errr += "<br><span class='label-azul'>Existen Items con nombres cortos repetidos: </span>" + nombresCortos()
 
+        if (valorMecanico(id) == 0) errr += "No hay precio unitario para Mecánico</br>"
+
         if (errr) errr = "<b><span style='color:red'>Errores detectados</span></b> " + errr
         else errr = ""
         return errr
@@ -208,6 +210,20 @@ class ObraFPController {
         cn.close()
         return er
     }
+
+    def valorMecanico(id) {
+        def obra = Obra.get(id)
+        def cn = dbConnectionService.getConnection()
+        def er = 0;
+        def tx_sql = "select count(*) nada from prco, item where item.item__id = prco.item__id and " +
+                "itemcdgo = '009.001' and prco.prsn__id = ${obra.oferente.id}"
+        cn.eachRow(tx_sql.toString()) {row ->
+            er = row.nada
+        }
+        cn.close()
+        return er
+    }
+
 
     def nombresCortos() {
         // sería mejor limitarse a sólo los items de la obra
@@ -298,7 +314,7 @@ class ObraFPController {
         tx_sql += "where item.item__id = vlobitem.item__id and obra__id = ${id} and "
         tx_sql += "dprt.dprt__id = item.dprt__id and sbgr.sbgr__id = dprt.sbgr__id and grpo__id = 3"
         def eqpo = 0.0
-        //println "calculaEquipos: " + tx_sql
+        println "calculaEquipos: " + tx_sql
         cn.eachRow(tx_sql) {row ->
             eqpo = row.equipos
         }
@@ -824,7 +840,7 @@ class ObraFPController {
         tx_sql =  "select clmndscr from mfcl where obra__id = ${id} and clmntipo = 'O'"
         cn.eachRow(tx_sql.toString()) {row ->
             tx_cr = "select item__id, itemcdgo, itemnmbr from item where itemcmpo = '${row.clmndscr[0..-3]}'"
-            println "tx_cr..... campo:" + tx_cr
+            //println "tx_cr..... campo:" + tx_cr
             cn1.eachRow(tx_cr.toString()) {d ->
                 item__id = d.item__id
                 item     = d.itemcdgo
@@ -835,12 +851,12 @@ class ObraFPController {
                 tx_cr = "select rbpcpcun pcun from item_pcun (${item__id}, ${obra.lugarId}, '${obra.fechaPreciosRubros}')"
 */
                 tx_cr = "select rbpcpcun pcun from item_pcun_of (${item__id}, ${obra.oferente.id})"
-                println "tarifaHoraria:" + tx_cr
+                //println "tarifaHoraria:" + tx_cr
             } else {
                 tx_cr = "select itempcun pcun from obit where item__id = ${item__id}"
             }
 
-            println "...... segunda: " + tx_cr
+            //println "...... segunda: " + tx_cr
 
             cn1.eachRow(tx_cr.toString()) {d ->
                 if (d.pcun == 0) errr = "No existe precio para el item ${item}: ${tx}"

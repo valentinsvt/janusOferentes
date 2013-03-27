@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>Sistema Janus</title>
+    <title>GADPP - Sistema para Oferentes</title>
     <meta name="layout" content="main"/>
     <style type="text/css">
     @page {
