@@ -94,6 +94,11 @@ class ObraController extends janus.seguridad.Shield {
 
         obraService.registrarObra(obra)
         obra.estado = "R"
+
+        println(obra.id)
+        println(obra.estado)
+
+
         if (obra.save(flush: true)) {
             render "ok"
             return

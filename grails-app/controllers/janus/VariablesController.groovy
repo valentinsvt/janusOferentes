@@ -29,7 +29,48 @@ class VariablesController {
         println "save vars aqui"
         println params
 
-        def obra = Obra.get(params.id)
+        def itemMecanico = Item.get(3978)
+
+        def precioMecanico = Precio.findByItemAndPersona(itemMecanico, session.usuario)
+
+
+
+        if (precioMecanico) {
+
+            precioMecanico.precio = params.mecanico.toDouble()
+            precioMecanico.save(flush: true)
+//            render "OK"
+
+
+        } else {
+
+            precioMecanico = new Precio()
+
+            precioMecanico.fecha = new Date()
+            precioMecanico.item = itemMecanico
+            precioMecanico.precio = params.mecanico.toDouble()
+            precioMecanico.persona = session.usuario
+
+            precioMecanico.save(flush: true)
+//            render "OK"
+////
+            if (precioMecanico.save(flush: true)) {
+
+//                println("ok")
+            } else {
+
+//               println("no")
+                println(precioMecanico.errors)
+
+            }
+
+//            println(precioMecanico.item)
+//            println(precioMecanico.precio)
+//            println(precioMecanico.persona)
+        }
+
+
+        def obra = Obra.get(params.idObra)
         obra.properties = params
 //        obra.capacidadVolquete=params.asdas.toDouble()
 //        obra.factorVolumen=params.factorVolumen.toDouble()

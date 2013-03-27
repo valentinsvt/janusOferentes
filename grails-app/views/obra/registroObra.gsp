@@ -62,7 +62,7 @@
 
             <g:if test="${obra?.estado == 'N'}">
 
-                <button class="btn" id="btnCambiarEstado"><i class="icon-refresh"></i> Cambiar Estado</button>
+                <button class="btn" id="cambiarEstado"><i class="icon-refresh"></i> Cambiar Estado</button>
 
             </g:if>
 
@@ -505,6 +505,25 @@
     <div class="modal-footer" id="modalFooter_busqueda">
     </div>
 </div>
+
+
+<div id="estadoDialog">
+
+    <fieldset>
+        <div class="span3">
+            Está seguro de querer cambiar el estado de la obra:<div style="font-weight: bold;">${obra?.nombre} ?
+
+        </div>
+            <br>
+            <span style="color: red">
+                Una vez registrada los datos de la obra no podrán ser editados.
+            </span>
+
+        </div>
+    </fieldset>
+</div>
+
+
 
 <g:if test="${obra}">
     <div class="modal hide fade mediumModal" id="modal-matriz" style=";overflow: hidden;">
@@ -1030,8 +1049,12 @@
 //
                     var estadoCambiado = $("#estado").val();
 
-                    if (estadoCambiado == 'N') {
-                        estadoCambiado = 'R';
+                    %{--var estadoCambiado1 = ${obra?.estado}--}%
+
+                    %{--console.log(${obra?.estado})--}%
+
+                    if (${obra?.estado == 'N'}) {
+//                        estadoCambiado = 'R';
                         $.ajax({
                             type: "POST",
                             url: "${g.createLink(action: 'regitrarObra')}",
