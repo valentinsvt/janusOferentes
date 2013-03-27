@@ -224,7 +224,6 @@ class ObraFPController {
         return er
     }
 
-
     def nombresCortos() {
         // sería mejor limitarse a sólo los items de la obra
         def cn = dbConnectionService.getConnection()
