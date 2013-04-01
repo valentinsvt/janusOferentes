@@ -49,15 +49,26 @@
     .desactivado{
         color: #bbc;
     }
-    h1 {
-        font-size: 24px;
+    /*h1 {*/
+        /*font-size: 24px;*/
+    /*}*/
+    .titulo {
+        font-family: 'open sans condensed';
+        font-weight: bold;
+        font-size: 35px;
+        text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);
+        color:#0088CC;
     }
     </style>
 </head>
 <body>
 <div class="dialog">
-    <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC;">Control de Proyectos, Contratación, Ejecución y Seguimiento de Obras del GADPP</h1></div>
-    <div class="body" style="width: 100%;height: 540px;position: relative;margin: auto;overflow-y: auto;">
+    <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC;">
+        Control de Proyectos, Contratación, Ejecución y Seguimiento de Obras del GADPP</h1>
+        <h1 style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC;">
+            Registro de Ofertas</h1>
+    </div>
+    <div class="body" style="width: 100%;height: 540px;position: relative;margin: auto;overflow-y: auto; margin-left: 180px;">
 
             %{--<g:link  controller="proyecto" action="list" title="Gestión de proyectos">--}%
                 <div  class="ui-corner-all  item fuera">
@@ -83,38 +94,38 @@
             %{--</g:link>--}%
 
             %{--<g:link  controller="entidad" action="arbol_asg"  id="${session.unidad.id}" title="Plan Anual de Compras - gasto corriente ">--}%
-                <div  class="ui-corner-all item fuera">
-                    <div  class="ui-corner-all ui-widget-content item">
-                        <div class="imagen">
-                            <img src="${resource(dir: 'images', file: 'compras.png')}" width="100%" height="100%"/>
-                        </div>
-                        <div class="texto"><b>Compras Públicas</b>: plan anual de contrataciones, gestión de pliegos y
-                        control y seguimiento del PAC de obras ...</div>
-                    </div>
-                </div>
+                %{--<div  class="ui-corner-all item fuera">--}%
+                    %{--<div  class="ui-corner-all ui-widget-content item">--}%
+                        %{--<div class="imagen">--}%
+                            %{--<img src="${resource(dir: 'images', file: 'compras.png')}" width="100%" height="100%"/>--}%
+                        %{--</div>--}%
+                        %{--<div class="texto"><b>Compras Públicas</b>: plan anual de contrataciones, gestión de pliegos y--}%
+                        %{--control y seguimiento del PAC de obras ...</div>--}%
+                    %{--</div>--}%
+                %{--</div>--}%
             %{--</g:link>--}%
 
             %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
-                <div  class="ui-corner-all  item fuera">
-                    <div  class="ui-corner-all ui-widget-content item">
-                        <div class="imagen">
-                            <img src="${resource(dir: 'images', file: 'fiscalizar.png')}" width="100%" height="100%"/>
-                        </div>
-                        <div class="texto"><b>Fiscalización</b>: seguimiento a la ejecución de las obras: incio de obra,
-                        planillas, reajuste de precios, cronograma ...</div>
-                    </div>
-                </div>
+                %{--<div  class="ui-corner-all  item fuera">--}%
+                    %{--<div  class="ui-corner-all ui-widget-content item">--}%
+                        %{--<div class="imagen">--}%
+                            %{--<img src="${resource(dir: 'images', file: 'fiscalizar.png')}" width="100%" height="100%"/>--}%
+                        %{--</div>--}%
+                        %{--<div class="texto"><b>Fiscalización</b>: seguimiento a la ejecución de las obras: incio de obra,--}%
+                        %{--planillas, reajuste de precios, cronograma ...</div>--}%
+                    %{--</div>--}%
+                %{--</div>--}%
             %{--</g:link>--}%
             %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
-            <div  class="ui-corner-all  item fuera">
-                <div  class="ui-corner-all ui-widget-content item">
-                    <div class="imagen">
-                        <img src="${resource(dir: 'images', file: 'reporte.png')}" width="100%" height="100%"/>
-                    </div>
-                    <div class="texto"><b>Reportes</b>: formatos pdf, hoja de cálculo, texto plano y html.
-                    obras, concursos, contratos, contratistas, avance de obra...</div>
-                </div>
-            </div>
+            %{--<div  class="ui-corner-all  item fuera">--}%
+                %{--<div  class="ui-corner-all ui-widget-content item">--}%
+                    %{--<div class="imagen">--}%
+                        %{--<img src="${resource(dir: 'images', file: 'reporte.png')}" width="100%" height="100%"/>--}%
+                    %{--</div>--}%
+                    %{--<div class="texto"><b>Reportes</b>: formatos pdf, hoja de cálculo, texto plano y html.--}%
+                    %{--obras, concursos, contratos, contratistas, avance de obra...</div>--}%
+                %{--</div>--}%
+            %{--</div>--}%
             %{--</g:link>--}%
             %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
             <div  class="ui-corner-all  item fuera">
@@ -122,8 +133,8 @@
                     <div class="imagen">
                         <img src="${resource(dir: 'images', file: 'oferta.png')}" width="100%" height="100%"/>
                     </div>
-                    <div class="texto"><b>Oferentes ganadores</b>:registro en línea los valores de precios unitarios,
-                    rubros, volúmenes de obra y cronograma de las ofertas </div>
+                    <div class="texto"><b>Documentos de la Oferta</b>: generación de los documentos para respaldo de la oferta
+                    a entregar: rubros, volúmenes de obra y cronograma </div>
                 </div>
             </div>
             %{--</g:link>--}%

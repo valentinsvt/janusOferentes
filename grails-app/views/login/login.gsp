@@ -145,8 +145,8 @@
                 <div class="imagen">
                     <img src="${resource(dir: 'images', file: 'oferta.png')}" width="100%" height="100%"/>
                 </div>
-                <div class="texto"><b>Oferentes ganadores</b>:registro en línea los valores de precios unitarios,
-                rubros, volúmenes de obra y cronograma de las ofertas </div>
+                <div class="texto"><b>Documentos de la Oferta</b>: generación de los documentos para respaldo de la oferta
+                a entregar: rubros, volúmenes de obra y cronograma </div>
             </div>
         </div>
         %{--</g:link>--}%
