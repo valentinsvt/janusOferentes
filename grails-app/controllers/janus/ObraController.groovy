@@ -122,7 +122,6 @@ class ObraController extends janus.seguridad.Shield {
 
         def persona = Persona.get(usuario)
 
-
         def prov = Provincia.list();
         def campos = ["codigo": ["Código", "string"], "nombre": ["Nombre", "string"], "descripcion": ["Descripción", "string"], "oficioIngreso": ["Memo ingreso", "string"], "oficioSalida": ["Memo salida", "string"], "sitio": ["Sitio", "string"], "plazo": ["Plazo", "int"], "parroquia": ["Parroquia", "string"], "comunidad": ["Comunidad", "string"], "canton": ["Canton", "string"]]
         if (params.obra) {
@@ -135,7 +134,13 @@ class ObraController extends janus.seguridad.Shield {
 
             [campos: campos, prov: prov, obra: obra, subs: subs, persona: persona, formula: formula, volumen: volumen]
         } else {
-            [campos: campos, prov: prov, persona: persona]
+            // si no se listan las obras, carga la primera obra que halle
+            obra = Obra.findByOferente(persona)
+            def subs = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+            def volumen = VolumenesObra.findByObra(obra)
+            def formula = FormulaPolinomica.findByObra(obra)
+            //[campos: campos, prov: prov, persona: persona, obra: obra]
+            [campos: campos, prov: prov, obra: obra, subs: subs, persona: persona, formula: formula, volumen: volumen]
         }
 
 
