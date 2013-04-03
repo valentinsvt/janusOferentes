@@ -370,8 +370,8 @@ class Reportes2Controller {
                 "  v.voitcntd                            cantidad,\n" +
                 "  v.voitpcun                            punitario,\n" +
                 "  v.voittrnp                            transporte,\n" +
-                "  v.voitpcun + v.voittrnp               costo,\n" +
-                "  (v.voitpcun + v.voittrnp)*v.voitcntd  total,\n" +
+                "  v.voitpcun                            costo,\n" +
+                "  (v.voitpcun)*v.voitcntd               total,\n" +
                 "  d.dprtdscr                            departamento,\n" +
                 "  s.sbgrdscr                            subgrupo,\n" +
                 "  g.grpodscr                            grupo,\n" +
@@ -414,8 +414,8 @@ class Reportes2Controller {
         sheet.setColumnView(4, 20)
         sheet.setColumnView(5, 20)
         sheet.setColumnView(6, 20)
-        sheet.setColumnView(7, 20)
-        sheet.setColumnView(8, 25)
+        sheet.setColumnView(7, 25)
+//        sheet.setColumnView(8, 25)
 
         def label
         def number
@@ -436,10 +436,10 @@ class Reportes2Controller {
         label = new Label(2, 6, "UNIDAD", times16format); sheet.addCell(label);
         label = new Label(3, 6, "CANTIDAD", times16format); sheet.addCell(label);
         label = new Label(4, 6, "P.UNITARIO", times16format); sheet.addCell(label);
-        label = new Label(5, 6, "TRANSPORTE", times16format); sheet.addCell(label);
-        label = new Label(6, 6, "COSTO", times16format); sheet.addCell(label);
-        label = new Label(7, 6, "TOTAL", times16format); sheet.addCell(label);
-        label = new Label(8, 6, "TIPO", times16format); sheet.addCell(label);
+//        label = new Label(5, 6, "TRANSPORTE", times16format); sheet.addCell(label);
+        label = new Label(5, 6, "COSTO", times16format); sheet.addCell(label);
+        label = new Label(6, 6, "TOTAL", times16format); sheet.addCell(label);
+        label = new Label(7, 6, "TIPO", times16format); sheet.addCell(label);
 
         res.each {
 
@@ -449,35 +449,24 @@ class Reportes2Controller {
             label = new Label(2, fila, it?.unidad.toString()); sheet.addCell(label);
             number = new jxl.write.Number(3, fila, it?.cantidad); sheet.addCell(number);
             number = new jxl.write.Number(4, fila, it?.punitario); sheet.addCell(number);
-            number = new jxl.write.Number(5, fila, it?.transporte); sheet.addCell(number);
-            number = new jxl.write.Number(6, fila, it?.costo); sheet.addCell(number);
-            number = new jxl.write.Number(7, fila, it?.total); sheet.addCell(number);
-            label = new Label(8, fila, it?.grupo.toString()); sheet.addCell(label);
+//            number = new jxl.write.Number(5, fila, it?.transporte); sheet.addCell(number);
+            number = new jxl.write.Number(5, fila, it?.costo); sheet.addCell(number);
+            number = new jxl.write.Number(6, fila, it?.total); sheet.addCell(number);
+            label = new Label(7, fila, it?.grupo.toString()); sheet.addCell(label);
 
             fila++
 
             if (it?.grid == 1) {
-
                 totalMaterial = (totalM += it?.total)
-
             }
             if (it?.grid == 2) {
-
                 totalManoObra = (totalMO += it?.total)
             }
-
             if (it?.grid == 3) {
-
                 totalEquipo = (totalE += it?.total)
-
             }
-
             totalDirecto = totalEquipo + totalManoObra + totalMaterial;
-
-
             ultimaFila = fila
-
-
         }
 
         label = new Label(6, ultimaFila, "Total Materiales: ", times16format); sheet.addCell(label);

@@ -82,6 +82,10 @@ class Obra implements Serializable {
     Lugar listaManoObra
     Persona oferente
 
+    int plazoPersonas = 1
+    int plazoMaquinas = 8
+
+
     static mapping = {
         table 'obra'
         cache usage: 'read-write', include: 'non-lazy'
@@ -172,6 +176,9 @@ class Obra implements Serializable {
             listaManoObra column: 'lgarlsmq'
 
             oferente column: 'ofrt__id'
+
+            plazoPersonas column: 'obraplpr'
+            plazoMaquinas column: 'obraplmq'
         }
     }
     static constraints = {
@@ -258,5 +265,7 @@ class Obra implements Serializable {
 
         oferente(blank: true, nullable: true, attributes: [title: 'oferente'])
 
+        plazoPersonas(attributes: [title: 'Número de integrantes de cuadrillas'])
+        plazoPersonas(attributes: [title: 'Número de equipos completos de maquinaria'])
     }
 }

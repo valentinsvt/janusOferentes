@@ -164,7 +164,7 @@
                             <i class="icon-print"></i>
                             Pdf
                         </g:link>
-                        %{--<g:link action="composicion" id="${obra.id}" params="[tipo: tipo, rend: 'xls']" class="btn btn-print btnExcel"> </g:link>--}%
+                    %{--<g:link action="composicion" id="${obra.id}" params="[tipo: tipo, rend: 'xls']" class="btn btn-print btnExcel"> </g:link>--}%
                         <g:link controller="reportes2" action="reporteExcelComposicion" class="btn btn-print btnExcel" id="${obra?.id}"><i class="icon-table"></i>Excel</g:link>
                     </div>
                 </div>
@@ -180,7 +180,7 @@
                                 <th>U</th>
                                 <th>Cantidad</th>
                                 <th>P. Unitario</th>
-                                <th>Transporte</th>
+                            %{--<th>Transporte</th>--}%
                                 <th>Costo</th>
                                 <th>Total</th>
                                 <g:if test="${tipo.contains(",")}">
@@ -213,7 +213,7 @@
                         <g:set var="totalMaterial" value="${0}"/>
                         <g:each in="${res}" var="r">
                             <tr>
-                                <td>${r.codigo}</td>
+                                <td>%{--${r}<hr/>--}%${r.codigo}</td>
                                 <td>${r.item}</td>
                                 <td>${r.unidad}</td>
                                 <td class="numero">
@@ -222,25 +222,25 @@
                                 <td class="numero">
                                     <g:formatNumber number="${r.punitario}" minFractionDigits="3" maxFractionDigits="3" format="##,###0" locale="ec"/>
                                 </td>
-                                <g:if test="${tipo.contains(",") || tipo == '1'}">
-                                    <td class="numero">
-                                        <g:formatNumber number="${r.transporte}" minFractionDigits="4" maxFractionDigits="4" format="##,####0" locale="ec"/>
-                                    </td>
-                                </g:if>
+                                %{--<g:if test="${tipo.contains(",") || tipo == '1'}">--}%
+                                %{--<td class="numero">--}%
+                                %{--<g:formatNumber number="${r.transporte}" minFractionDigits="4" maxFractionDigits="4" format="##,####0" locale="ec"/>--}%
+                                %{--</td>--}%
+                                %{--</g:if>--}%
                                 <td class="numero">
                                     <g:formatNumber number="${r.costo}" minFractionDigits="4" maxFractionDigits="4" format="##,####0" locale="ec"/>
                                 </td>
                                 <td class="numero">
-                                    <g:formatNumber number="${r.total}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/>
+                                    <g:formatNumber number="${r?.total ?: 0}" minFractionDigits="2" maxFractionDigits="2" format="##,##0" locale="ec"/>
 
                                     <g:if test="${r.grid == 1}">
-                                        <g:set var="totalMaterial" value="${totalMaterial + r.total}"/>
+                                        <g:set var="totalMaterial" value="${totalMaterial + r.total ?: 0}"/>
                                     </g:if>
                                     <g:elseif test="${r.grid == 2}">
-                                        <g:set var="totalMano" value="${totalMano + r.total}"/>
+                                        <g:set var="totalMano" value="${totalMano + r.total ?: 0}"/>
                                     </g:elseif>
                                     <g:elseif test="${r.grid == 3}">
-                                        <g:set var="totalEquipo" value="${totalEquipo + r.total}"/>
+                                        <g:set var="totalEquipo" value="${totalEquipo + r.total ?: 0}"/>
                                     </g:elseif>
 
                                 </td>
@@ -307,9 +307,6 @@
 
                         return false;
                     });
-
-
-
 
                 });
             </script>

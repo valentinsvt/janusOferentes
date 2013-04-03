@@ -337,7 +337,7 @@ class CronogramaController extends janus.seguridad.Shield {
 //        if (rendimientos["rdvl"].toString() == "NaN")
 //            rendimientos["rdvl"] = 0
         def indirecto = obra.totales / 100
-//        println "indirecto "+indirecto
+//        println "indirecto " + indirecto
 
         preciosService.ac_rbroObra(obra.id)
 
@@ -347,8 +347,13 @@ class CronogramaController extends janus.seguridad.Shield {
 //            def res = preciosService.rb_precios("sum(parcial)+sum(parcial_t) precio ", parametros, "")
 //            precios.put(it.id.toString(), res["precio"][0] + res["precio"][0] * indirecto)
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
-            precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", it.item.id, session.usuario.id)
+            println "\t " + it.id + " " + res
+            if (res["precio"][0]) {
+                precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
+            } else {
+                precios.put(it.id.toString(), -1)
+            }
         }
 //
 //        println "precios "+precios

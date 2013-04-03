@@ -106,8 +106,8 @@ class VariablesController {
                 "  v.voitcntd                            cantidad,\n" +
                 "  v.voitpcun                            punitario,\n" +
                 "  v.voittrnp                            transporte,\n" +
-                "  v.voitpcun + v.voittrnp               costo,\n" +
-                "  (v.voitpcun + v.voittrnp)*v.voitcntd  total,\n" +
+                "  v.voitpcun                            costo,\n" +
+                "  (v.voitpcun)*v.voitcntd               total,\n" +
                 "  d.dprtdscr                            departamento,\n" +
                 "  s.sbgrdscr                            subgrupo,\n" +
                 "  g.grpodscr                            grupo,\n" +
