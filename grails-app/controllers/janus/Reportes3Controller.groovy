@@ -41,7 +41,7 @@ class Reportes3Controller {
         detalle.each{
 //            def parametros = ""+it.item.id+","+lugar.id+",'"+fecha.format("yyyy-MM-dd")+"',"+dsps.toDouble()+","+dsvl.toDouble()+","+rendimientos["rdps"]+","+rendimientos["rdvl"]
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",obra.id,it.item.id)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
 //            def res = preciosService.rb_precios("sum(parcial)+sum(parcial_t) precio ",parametros,"")
             precios.put(it.id.toString(),(res["precio"][0]+res["precio"][0]*indirecto).toDouble().round(2))
         }
@@ -55,7 +55,7 @@ class Reportes3Controller {
 //        println "imprimir rubro "+params
         def rubro =Item.get(params.id)
         def obra=Obra.get(params.obra)
-        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
+//        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
         def indi = obra.totales
         try{
             indi=indi.toDouble()
@@ -65,7 +65,7 @@ class Reportes3Controller {
         }
 
         preciosService.ac_rbroObra(obra.id)
-        def res = preciosService.presioUnitarioVolumenObra("*",obra.id,rubro.id)
+        def res = preciosService.presioUnitarioVolumenObra("*",rubro.id,params.oferente)
         def tablaHer='<table class="table table-bordered table-striped table-condensed table-hover"> '
         def tablaMano='<table class="table table-bordered table-striped table-condensed table-hover"> '
         def tablaMat='<table class="table table-bordered table-striped table-condensed table-hover"> '
@@ -158,19 +158,19 @@ class Reportes3Controller {
         if(totalMat==0)
             tablaMat=""
         println "fin reporte rubro"
-        [rubro:rubro,fechaPrecios:fecha,tablaTrans:tablaTrans,tablaHer:tablaHer,tablaMano:tablaMano,tablaMat:tablaMat,tablaIndi:tablaIndi,totalRubro:totalRubro,totalIndi:totalIndi]
+        [rubro:rubro,tablaTrans:tablaTrans,tablaHer:tablaHer,tablaMano:tablaMano,tablaMat:tablaMat,tablaIndi:tablaIndi,totalRubro:totalRubro,totalIndi:totalIndi]
 
 
 
     }
 
     def imprimirRubroExcel(){
-//        println "imprimir rubro excel "+params
+        println "imprimir rubro  excel "+params
         def rubro = Item.get(params.id)
-        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
-        def lugar = params.lugar
+//        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
+//        def lugar = params.lugar
         def indi = params.indi
-        def listas = params.listas
+//        def listas = params.listas
 
         try{
             indi=indi.toDouble()
@@ -181,8 +181,8 @@ class Reportes3Controller {
 
 
 //        def parametros = ""+params.id+","+params.lugar+",'"+fecha.format("yyyy-MM-dd")+"',"+params.dsps.toDouble()+","+params.dsvs.toDouble()+","+rendimientos["rdps"]+","+rendimientos["rdvl"]
-        def parametros = ""+rubro.id+",'"+fecha.format("yyyy-MM-dd")+"',"+listas+","+params.dsp0+","+params.dsp1+","+params.dsv0+","+params.dsv1+","+params.dsv2+","+params.chof+","+params.volq
-        preciosService.ac_rbroV2(params.id,fecha.format("yyyy-MM-dd"),params.lugar)
+        def parametros = ""+rubro.id+","+params.oferente
+        preciosService.ac_rbroV2(params.id,params.oferente)
         def res = preciosService.rb_precios(parametros,"order by grpocdgo desc")
 
         WorkbookSettings workbookSettings = new WorkbookSettings()
@@ -221,8 +221,8 @@ class Reportes3Controller {
         sheet.mergeCells(0,6, 1, 6)
         label = new Label(0, 7, "Descripción: "+rubro.nombre, times16format); sheet.addCell(label);
         sheet.mergeCells(0,7, 1, 7)
-        label = new Label(5, 5, "Fecha Act. P.U: "+fecha?.format("dd-MM-yyyy"), times16format); sheet.addCell(label);
-        sheet.mergeCells(5,5, 6, 5)
+//        label = new Label(5, 5, "Fecha Act. P.U: "+fecha?.format("dd-MM-yyyy"), times16format); sheet.addCell(label);
+//        sheet.mergeCells(5,5, 6, 5)
         label = new Label(5, 6, "Unidad: "+rubro.unidad?.codigo, times16format); sheet.addCell(label);
         sheet.mergeCells(5,6, 6, 6)
 
@@ -413,10 +413,10 @@ class Reportes3Controller {
     def imprimirRubro(){
         println "imprimir rubro "+params
         def rubro = Item.get(params.id)
-        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
-        def lugar = params.lugar
+//        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
+//        def lugar = params.lugar
         def indi = params.indi
-        def listas = params.listas
+//        def listas = params.listas
         try{
             indi=indi.toDouble()
         } catch (e){
@@ -428,8 +428,8 @@ class Reportes3Controller {
             obra = Obra.get(params.obra)
         }
 
-        def parametros = ""+rubro.id+",'"+fecha.format("yyyy-MM-dd")+"',"+listas+","+params.dsp0+","+params.dsp1+","+params.dsv0+","+params.dsv1+","+params.dsv2+","+params.chof+","+params.volq
-        preciosService.ac_rbroV2(params.id,fecha.format("yyyy-MM-dd"),params.lugar)
+        def parametros = ""+rubro.id+","+params.oferente
+        preciosService.ac_rbroV2(params.id,params.oferente)
         def res = preciosService.rb_precios(parametros,"")
         def tablaHer='<table class=""> '
         def tablaMano='<table class=""> '
@@ -538,7 +538,7 @@ class Reportes3Controller {
         if(totalMat==0)
             tablaMat=""
         println "fin reporte rubro"
-        [rubro:rubro,fechaPrecios:fecha,tablaTrans:tablaTrans,tablaHer:tablaHer,tablaMano:tablaMano,tablaMat:tablaMat,tablaIndi:tablaIndi,totalRubro:totalRubro,totalIndi:totalIndi,obra: obra]
+        [rubro:rubro,tablaTrans:tablaTrans,tablaHer:tablaHer,tablaMano:tablaMano,tablaMat:tablaMat,tablaIndi:tablaIndi,totalRubro:totalRubro,totalIndi:totalIndi,obra: obra]
 
 
 

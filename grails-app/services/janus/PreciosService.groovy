@@ -217,7 +217,7 @@ class PreciosService {
 
     def rb_precios(parametros, condicion) {
         def cn = dbConnectionService.getConnection()
-        def sql = "select * from rb_precios_v2(" + parametros + ") " + condicion
+        def sql = "select * from rb_precios_of(" + parametros + ") " + condicion
         println "sql " + sql
         def result = []
         cn.eachRow(sql) { r ->
@@ -269,9 +269,9 @@ class PreciosService {
         return result
     }
 
-    def ac_rbroV2(rubro, fecha, lugar) {
+    def ac_rbroV2(rubro, oferente) {
         def cn = dbConnectionService.getConnection()
-        def sql = "select * from ac_rbro_hr1_v2(" + rubro + ",'" + fecha + "',${lugar}) "
+        def sql = "select * from ac_rbro_hr1_of(" + rubro + ",'" + oferente + "') "
 //        println "sql ac rubro "+sql
         def result = []
         cn.eachRow(sql.toString()) { r ->

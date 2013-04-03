@@ -462,7 +462,7 @@ class ReportesController {
 
         preciosService.ac_rbroObra(obra.id)
         VolumenesObra.findAllByObra(obra, [sort: "orden"]).item.eachWithIndex { rubro, i ->
-            def res = preciosService.presioUnitarioVolumenObra("* ", obra.id, rubro.id)
+            def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id,params.oferente)
             WritableSheet sheet = workbook.createSheet(rubro.codigo, i)
             rubroAExcel(sheet, res, rubro, fecha, indi)
         }
@@ -755,7 +755,7 @@ class ReportesController {
 //            preciosService.ac_rbro(id, lugar.id, fecha)
 //            def res = preciosService.rb_precios(parametros, "")
 
-            def res = preciosService.presioUnitarioVolumenObra("* ", obra.id, id)
+            def res = preciosService.presioUnitarioVolumenObra("* ", id,params.oferente)
 
             PdfPTable headerRubroTabla = new PdfPTable(4); // 4 columns.
             headerRubroTabla.setWidthPercentage(100);
@@ -3153,24 +3153,8 @@ class ReportesController {
         def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
 
         def precios = [:]
-        def fecha = obra.fechaPreciosRubros
-        def dsps = obra.distanciaPeso
-        def dsvl = obra.distanciaVolumen
-        def lugar = obra.lugar
-        def prch = 0
-        def prvl = 0
-        if (obra.chofer) {
-            prch = preciosService.getPrecioItems(fecha, lugar, [obra.chofer])
-            prch = prch["${obra.chofer.id}"]
-            prvl = preciosService.getPrecioItems(fecha, lugar, [obra.volquete])
-            prvl = prvl["${obra.volquete.id}"]
-        }
-        def rendimientos = preciosService.rendimientoTranposrte(dsps, dsvl, prch, prvl)
 
-        if (rendimientos["rdps"].toString() == "NaN")
-            rendimientos["rdps"] = 0
-        if (rendimientos["rdvl"].toString() == "NaN")
-            rendimientos["rdvl"] = 0
+
 
         def indirecto = obra.totales / 100
 
@@ -3246,7 +3230,7 @@ class ReportesController {
 
         detalle.each {
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
             precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
 
             def precioUnitario = precios[it.id.toString()]
@@ -3258,8 +3242,8 @@ class ReportesController {
             label = new Label(2, fila, it?.item?.nombre.toString()); sheet.addCell(label);
             label = new Label(3, fila, it?.item?.unidad?.codigo.toString()); sheet.addCell(label);
             number = new Number(4, fila, it?.cantidad); sheet.addCell(number);
-            number = new Number(5, fila, precioUnitario); sheet.addCell(number);
-            number = new Number(6, fila, subtotal); sheet.addCell(number);
+            number = new Number(5, fila, precioUnitario.round(2)); sheet.addCell(number);
+            number = new Number(6, fila, subtotal.round(2)); sheet.addCell(number);
 
             fila++
 
@@ -3272,7 +3256,7 @@ class ReportesController {
         }
 
         label = new Label(5, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
-        number = new Number(6, ultimaFila, totalPresupuesto); sheet.addCell(number);
+        number = new Number(6, ultimaFila, totalPresupuesto.round(2)); sheet.addCell(number);
 
 
 

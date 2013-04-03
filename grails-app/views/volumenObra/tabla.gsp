@@ -89,7 +89,7 @@
                 var chofer=${precioChof}
                 %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
                 %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-                var datos = "?fecha=${obra.fechaPreciosRubros.format('dd-MM-yyyy')}Wid="+$(this).attr("item")+"Wobra=${obra.id}"
+                var datos = "?oferente=${session.usuario.id}Wid="+$(this).attr("item")+"Wobra=${obra.id}"
                 var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroVolObra')}"+datos
                 location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
             }
@@ -123,7 +123,7 @@
         var chofer=${precioChof}
         %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
         %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-        var datos = "?obra=${obra.id}Wsub="+$("#subPres_desc").val()
+        var datos = "?obra=${obra.id}Wsub="+$("#subPres_desc").val()+"Woferente=${session.usuario.id}"
         var url = "${g.createLink(controller: 'reportes3',action: 'imprimirTablaSub')}"+datos
         location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
     });
@@ -139,26 +139,28 @@
 
         $("#dlgLoad").dialog("open");
 
-        $.ajax( {
+        location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',params:[id: obra?.id,oferente:session.usuario.id])}";
+        $("#dlgLoad").dialog("close");
+%{--$.ajax( {--}%
 
-            type: 'POST',
-            url: "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra')}",
-            data:{
+            %{--type: 'POST',--}%
+            %{--url: "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra')}",--}%
+            %{--data:{--}%
 
-                id:'${obra?.id}'
+                %{--id:'${obra?.id}'--}%
 
-            },
-            success: function (msg) {
-               location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',id: obra?.id)}";
-                $("#dlgLoad").dialog("close");
-
-
-
-            }
+            %{--},--}%
+            %{--success: function (msg) {--}%
+               %{--location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',id: obra?.id)}";--}%
+                %{--$("#dlgLoad").dialog("close");--}%
 
 
 
-        });
+            %{--}--}%
+
+
+
+        %{--});--}%
 
 
 

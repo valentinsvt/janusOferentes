@@ -108,11 +108,11 @@
             </div>
             <div class="span1" style="margin-left: 15px;padding-top:30px">
                 <input type="hidden" value="" id="vol_id">
-                <g:if test="${obra?.estado!='R'}">
+                %{--<g:if test="${obra?.estado!='R'}">--}%
                     <a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">
                         <i class="icon-plus"></i>
                     </a>
-                </g:if>
+                %{--</g:if>--}%
             </div>
         </div>
     </div>

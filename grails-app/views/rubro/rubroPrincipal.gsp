@@ -108,49 +108,49 @@
                 <g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}"/>
             </div>
 
-%{--
-            <div class="span2" style="visibility:hidden" >
-                Fecha Creación
-                <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fecha}" disabled="true" id="fechaCreacion"/>
-            </div>
+            %{--
+                        <div class="span2" style="visibility:hidden" >
+                            Fecha Creación
+                            <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fecha}" disabled="true" id="fechaCreacion"/>
+                        </div>
 
-            <div class="span2" style="visibility: hidden">
-                Fecha Modificación
-                <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fechaModificacion}"  format="dd-MM-yyyy hh:mm " disabled="true" id="fchaMod"/>
-            </div>
---}%
+                        <div class="span2" style="visibility: hidden">
+                            Fecha Modificación
+                            <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fechaModificacion}"  format="dd-MM-yyyy hh:mm " disabled="true" id="fchaMod"/>
+                        </div>
+            --}%
 
         </div>
         <div class="row-fluid">
-%{--
-            <div class="span2"  >
-                Solicitante
-                <g:select name="rubro.grupo.id" id="selClase" from="${grupos}" class="span12" optionKey="id" optionValue="descripcion"
-                          value="${rubro?.departamento?.subgrupo?.grupo?.id}" noSelection="['': '--Seleccione--']"/>
-            </div>
-            <div class="span2">
-            Grupo
-            <g:if test="${rubro?.departamento?.subgrupo?.id}">
-            <g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"
-            class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>
-            </g:if>
-            <g:else>
-            <select id="selGrupo" class="span12"></select>
-            </g:else>
-            </div>
+            %{--
+                        <div class="span2"  >
+                            Solicitante
+                            <g:select name="rubro.grupo.id" id="selClase" from="${grupos}" class="span12" optionKey="id" optionValue="descripcion"
+                                      value="${rubro?.departamento?.subgrupo?.grupo?.id}" noSelection="['': '--Seleccione--']"/>
+                        </div>
+                        <div class="span2">
+                        Grupo
+                        <g:if test="${rubro?.departamento?.subgrupo?.id}">
+                        <g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"
+                        class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>
+                        </g:if>
+                        <g:else>
+                        <select id="selGrupo" class="span12"></select>
+                        </g:else>
+                        </div>
 
-            <div class="span3">
-            Sub grupo
-            <g:if test="${rubro?.departamento?.id}">
-            <g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"
-            class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>
-            </g:if>
-            <g:else>
-            <select id="selSubgrupo" class="span12"></select>
-            </g:else>
-            </div>
+                        <div class="span3">
+                        Sub grupo
+                        <g:if test="${rubro?.departamento?.id}">
+                        <g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"
+                        class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>
+                        </g:if>
+                        <g:else>
+                        <select id="selSubgrupo" class="span12"></select>
+                        </g:else>
+                        </div>
 
---}%
+            --}%
 
 
             %{--<div class="span2"  >--}%
@@ -588,7 +588,7 @@
         $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecioOferente')}",
             data     : "id="+$("#item_id").val(),
             success  : function (msg) {
-                  $("#item_precio").val(number_format(msg, 2, ".", ""))
+                $("#item_precio").val(number_format(msg, 2, ".", ""))
             }
         });
     }
@@ -990,51 +990,34 @@
             var volqueta=$("#costo_volqueta").val()
             var chofer=$("#costo_chofer").val()
 
-            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()
+            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()+"&oferente=${session.usuario.id}"
 
 
-            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}"+datos
+            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}?"+datos
             location.href=url
 
 
         });
 
         $("#imprimir").click(function(){
-//            var dsps=$("#dist_peso").val()
-//            var dsvs=$("#dist_vol").val()
-//            var volqueta=$("#costo_volqueta").val()
-//            var chofer=$("#costo_chofer").val()
 
+            var dsp0=$("#dist_p1").val()
+            var dsp1=$("#dist_p2").val()
+            var dsv0=$("#dist_v1").val()
+            var dsv1=$("#dist_v2").val()
+            var dsv2=$("#dist_v3").val()
+            var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
+            var volqueta=$("#costo_volqueta").val()
+            var chofer=$("#costo_chofer").val()
 
-            $("#imprimirTransporteDialog").dialog("open");
-
-//            var dsp0=$("#dist_p1").val()
-//            var dsp1=$("#dist_p2").val()
-//            var dsv0=$("#dist_v1").val()
-//            var dsv1=$("#dist_v2").val()
-//            var dsv2=$("#dist_v3").val()
-//            var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
-//            var volqueta=$("#costo_volqueta").val()
-//            var chofer=$("#costo_chofer").val()
-
-            %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'transporte')}",--}%
-            %{--data     : "dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val(),--}%
-            %{--success  : function (msg) {--}%
-            %{--$("#tabla_transporte").html(msg)--}%
-            %{--tablaIndirectos();--}%
-            %{--}--}%
-            %{--});--}%
-
-            %{--"dsp0="+dsp0+"&dsp1="+dsp1+"&dsv0="+dsv0+"&dsv1="+dsv1+"&dsv2="+dsv2+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&listas="+listas+"&chof="+$("#cmb_chof").val()+"&volq="+$("#cmb_vol").val()--}%
-            %{--var datos = "?dsps="+dsps+"Wdsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
-            %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-            %{--var datos = "?dsps="+dsps+"Wdsvs="+dsvs+"Wprvl="+volqueta+"Wprch="+chofer+"Wfecha="+$("#fecha_precios").val()+"Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Windi="+$("#costo_indi").val()--}%
+            datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Woferente=${session.usuario.id}Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()
+            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos
+            location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
 
 
 
-            %{--datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Wfecha="+$("#fecha_precios").val()+"Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()--}%
-            %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos--}%
-            %{--location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url--}%
+//            $("#imprimirTransporteDialog").dialog("open");
+
         });
 
         $("#transporte").click(function(){
@@ -1441,14 +1424,14 @@
                     msg+="<br>La propiedad descripción debe tener entre 1 y 160 caracteres."
             }
 
-/*
-            if(isNaN(subGr) || subGr*1<1){
-                if(msg=="")
-                    msg="<br>Error: Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
-                else
-                    msg+="<br>Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
-            }
-*/
+            /*
+             if(isNaN(subGr) || subGr*1<1){
+             if(msg=="")
+             msg="<br>Error: Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
+             else
+             msg+="<br>Seleccione un subgrupo usando las listas de Clase, Grupo y Subgrupo"
+             }
+             */
             if(msg==""){
                 $(".frmRubro").submit()
             }else{
@@ -1775,7 +1758,7 @@
                     var volqueta=$("#costo_volqueta").val()
                     var chofer=$("#costo_chofer").val()
 
-                    datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Wfecha="+$("#fecha_precios").val()+"Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()
+                    datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Woferente=${session.usuario.id}Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()
                     var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos
                     location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
                     $("#imprimirTransporteDialog").dialog("close");

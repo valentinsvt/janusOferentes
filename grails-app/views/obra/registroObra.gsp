@@ -867,31 +867,27 @@
         });
 
         $("#btnRubros").click(function () {
-            var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?obra=${obra?.id}&transporte=";
+            var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
             $.box({
                 imageClass: "box_info",
-                text: "Desea imprimir con desglose de transporte?",
-                title: "Confirme",
+                text: "Como desea imprimir los rubros de la obra?",
+                title: "Impresión",
                 iconClose: false,
                 dialog: {
                     resizable: false,
                     draggable: false,
                     buttons: {
-                        "Cancelar": function () {
 
-                        },
-                        "Sí": function () {
-                            url += "1";
-                            location.href = url;
-                        },
-                        "No": function () {
+                        "Pdf": function () {
                             url += "0";
                             location.href = url;
                         },
-                        "Exportar a Excel": function () {
-                            var url = "${createLink(controller:'reportes', action:'imprimirRubrosExcel')}?obra=${obra?.id}&transporte=";
+                        "Excel": function () {
+                            var url = "${createLink(controller:'reportes', action:'imprimirRubrosExcel')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
                             url += "1";
                             location.href = url;
+                        }, "Cancelar": function () {
+
                         }
                     }
                 }
