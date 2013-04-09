@@ -219,6 +219,8 @@ class ObraController extends janus.seguridad.Shield {
         if (extraCom.size() > 1)
             extras += " and comunidad in (${extraCom})"
 
+        extras += " and oferente=${session.usuario.id}"
+
         def parr = { p ->
             return p.parroquia?.nombre
         }
