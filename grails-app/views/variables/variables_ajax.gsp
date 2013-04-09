@@ -1,6 +1,6 @@
 <style type="text/css">
 .tab {
-    height: 400px !important;
+    height: 300px !important;
     overflow-x: hidden !important;
     overflow-y: hidden !important;
 }
@@ -19,7 +19,7 @@
 </style>
 
 <g:form controller="variables" action="saveVar_ajax" name="frmSave-var">
-<div id="tabs" style="height: 430px">
+<div id="tabs" style="height: 360px">
 <ul>
     %{--<li><a href="#tab-transporte">Variables de Transporte</a></li>--}%
     %{--<li><a href="#tab-factores">Factores</a></li>--}%
@@ -293,6 +293,7 @@
 
     <g:hiddenField name="idObra" value="${obra?.id}"/>
 
+%{--
     <div class="row-fluid">
         <div class="span10">
             Control y Administración (Fiscalización) - no se usa en obras nuevas
@@ -303,6 +304,7 @@
                          value="${g.formatNumber(number: obra?.contrato, maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"/>
         </div>
     </div>
+--}%
 
     <div class="row-fluid">
         <div class="span4">
@@ -316,7 +318,7 @@
         </div>
 
         <div class="span4">
-            Promoción
+            &nbsp;Promoción
         </div>
 
         <div class="span2">
@@ -338,7 +340,7 @@
         </div>
 
         <div class="span4 bold">
-            Gastos Generales (subtotal)
+            &nbsp;Gastos Generales (subtotal)
         </div>
 
         <div class="span2">
@@ -360,7 +362,7 @@
         </div>
 
         <div class="span4 bold">
-            Imprevistos
+            &nbsp;Imprevistos
         </div>
 
         <div class="span2">
@@ -382,7 +384,7 @@
         </div>
 
         <div class="span4 bold">
-            Utilidad
+            &nbsp;Utilidad
         </div>
 
         <div class="span2">
@@ -404,13 +406,13 @@
         </div>
 
         <div class="span4 bold">
-            Timbres provinciales
+            &nbsp;Timbres provinciales
         </div>
 
         <div class="span2">
             <g:textField type="text" name="indiceCostosIndirectosTimbresProvinciales" class="inputVar sum2 num"
-                         value="${g.formatNumber(number: (obra?.indiceCostosIndirectosTimbresProvinciales), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"
-                         tabindex="10"/>
+                         value="${g.formatNumber(number: (obra?.indiceCostosIndirectosTimbresProvinciales?:2.5), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"
+                         tabindex="10" readonly=""/>
         </div>
     </div>
 
@@ -426,7 +428,7 @@
         </div>
 
         <div class="span4 bold" style="border-top: solid 1px #D3D3D3;">
-            Total Costos Indirectos
+            &nbsp;Total Costos Indirectos
         </div>
 
         <div class="span2">
