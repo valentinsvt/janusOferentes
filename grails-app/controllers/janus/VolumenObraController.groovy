@@ -82,9 +82,14 @@ class VolumenObraController extends janus.seguridad.Shield{
         detalle.each{
 
             def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,session.usuario.id)
-//            println "res "+res+" "+it.item.id+"  "+obra.id
+
 //            println "r->" + (res["precio"][0]+res["precio"][0]*indirecto)+"   <<<>>> "+res
-            precios.put(it.id.toString(),(res["precio"][0]+res["precio"][0]*indirecto).toDouble().round(2))
+
+            def precio = 0
+            if(res["precio"][0]!=null && res["precio"][0]!="null" )
+                precio = res["precio"][0]
+//            println "res "+res+" "+it.item.id+"  "+obra.id
+            precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
         }
 //
 //        println "precios "+precios

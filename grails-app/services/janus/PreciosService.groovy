@@ -272,7 +272,7 @@ class PreciosService {
     def ac_rbroV2(rubro, oferente) {
         def cn = dbConnectionService.getConnection()
         def sql = "select * from ac_rbro_hr1_of(" + rubro + ",'" + oferente + "') "
-//        println "sql ac rubro "+sql
+        println "sql ac rubro "+sql
         def result = []
         cn.eachRow(sql.toString()) { r ->
             result.add(r.toRowResult())

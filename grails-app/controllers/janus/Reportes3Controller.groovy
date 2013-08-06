@@ -429,7 +429,7 @@ class Reportes3Controller {
         }
 
         def parametros = ""+rubro.id+","+params.oferente
-        preciosService.ac_rbroV2(params.id,params.oferente)
+        preciosService.ac_rbroObra(params.id)
         def res = preciosService.rb_precios(parametros,"")
         def tablaHer='<table class=""> '
         def tablaMano='<table class=""> '
