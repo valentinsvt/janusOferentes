@@ -12,18 +12,18 @@
     </div>
 
 
-    <div class="span4">
-        <a href="#" class="btn  " id="imprimir_sub">
-            <i class="icon-file"></i>
-            Imprimir Subpresupuesto
-        </a>
+    %{--<div class="span4">--}%
+        %{--<a href="#" class="btn  " id="imprimir_sub">--}%
+            %{--<i class="icon-file"></i>--}%
+            %{--Imprimir Subpresupuesto--}%
+        %{--</a>--}%
 
-        <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px">
-            <i class="icon-table"></i>
-            Excel
-        </a>
+        %{--<a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >--}%
+            %{--<i class="icon-table"></i>--}%
+            %{--Excel--}%
+        %{--</a>--}%
 
-    </div>
+    %{--</div>--}%
 
 
 

@@ -258,6 +258,22 @@ class PreciosService {
         return result
     }
 
+    def precioUnitarioVolumenObraAsc(select, obra, item) {
+        def cn = dbConnectionService.getConnection()
+        def sql = "select ${select} from vlob_pcun_v2(${obra},${item}) order by itemcdgo asc "
+//        println "sql pcvl "+sql
+        def result = []
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+        return result
+    }
+
+
+
+
+
     def ac_rbro(rubro, lugar, fecha) {
         def cn = dbConnectionService.getConnection()
         def sql = "select * from ac_rbro_hr1(" + rubro + "," + lugar + ",'" + fecha + "') "
