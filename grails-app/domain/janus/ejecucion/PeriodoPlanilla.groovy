@@ -8,18 +8,17 @@ class PeriodoPlanilla {
     PeriodosInec periodo
     PeriodosInec periodoLiquidacion
     String titulo
-    double total  =0 /*Mabno de obra (b0 por periodo)*/
-    double totalLiq=0
-    double p0=0
-    double p0Liq=0
-    double fr=0
-    double frLiq=0
-    double parcialCronograma=0
-    double parcialCronogramaLiq=0
-    double parcialPlanilla=0
-    double parcialPlanillaLiq=0
+    double total = 0 /*Mabno de obra (b0 por periodo)*/
+    double totalLiq = 0
+    double p0 = 0
+    double p0Liq = 0
+    double fr = 0
+    double frLiq = 0
+    double parcialCronograma = 0
+    double parcialCronogramaLiq = 0
+    double parcialPlanilla = 0
+    double parcialPlanillaLiq = 0
     int dias
-
 
 
     static mapping = {
@@ -52,7 +51,7 @@ class PeriodoPlanilla {
 
     }
     static constraints = {
-        periodoLiquidacion(blank:true,nullable: true)
+        periodoLiquidacion(blank: true, nullable: true)
     }
 
 }
