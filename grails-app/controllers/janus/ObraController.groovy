@@ -213,7 +213,7 @@ class ObraController extends janus.seguridad.Shield {
         }
 
 
-        def extras = " and ofrt__id=${session.usuario.id} "
+        def extras = " "
         if (extraParr.size() > 1)
             extras += " and parroquia in (${extraParr})"
         if (extraCom.size() > 1)
