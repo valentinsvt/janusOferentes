@@ -1,6 +1,9 @@
 package janus
 
 class Item implements Serializable {
+
+    Persona responsable
+
     Unidad unidad
     TipoItem tipoItem
     DepartamentoItem departamento
@@ -59,12 +62,13 @@ class Item implements Serializable {
             foto column: 'itemfoto'
             tipoLista column: 'tpls__id'
             especificaciones column: 'itemespc'
-            persona column: 'prsn__id'
+            responsable column: 'prsn__id'
+            persona column: 'ofrt__id'
         }
     }
     static constraints = {
         nombre(size: 1..160, blank: false, attributes: [title: 'nombre'])
-        codigo(size: 1..20, blank: false, unique: true, attributes: [title: 'numero'])
+        codigo(size: 1..20, blank: false, attributes: [title: 'numero'])
         unidad(blank: true, nullable: true, attributes: [title: 'unidad'])
         tipoItem(blank: true, nullable: true, attributes: [title: 'tipoItem'])
         peso(blank: true, nullable: true, attributes: [title: 'peso'])
@@ -87,6 +91,7 @@ class Item implements Serializable {
         foto(size: 1..100, blank: true, nullable: true)
         tipoLista(blank: true, nullable: true)
         especificaciones(blank: true, nullable: true, size: 1..1024)
+        responsable(nullable:true,blank:true)
         persona(nullable: true,blank:true)
     }
 

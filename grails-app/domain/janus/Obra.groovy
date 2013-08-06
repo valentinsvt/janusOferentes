@@ -12,6 +12,7 @@ class Obra implements Serializable {
     EstadoObra estadoObra
     ClaseObra claseObra
     Departamento departamento
+    Departamento departamentoDestino
     Lugar lugar
     String barrio
     String codigo
@@ -82,8 +83,24 @@ class Obra implements Serializable {
     Lugar listaManoObra
     Persona oferente
 
-    int plazoPersonas = 1
-    int plazoMaquinas = 8
+    int plazoPersonas = 8
+    int plazoMaquinas = 1
+
+    double desgloseEquipo = 0.52
+    double desgloseRepuestos = 0.26
+    double desgloseCombustible = 0.08
+    double desgloseMecanico = 0.11
+    double desgloseSaldo = 0.03
+
+    String desgloseTransporte
+
+    String coordenadas //coordenadas en sistema WGS84: -0.21,-78.5199 => S 0 12.5999999 W 78 31.194
+
+    int liquidacion  = 0
+
+
+    double transporteCamioneta =0
+    double transporteAcemila =0
 
 
     static mapping = {
@@ -105,6 +122,7 @@ class Obra implements Serializable {
             estadoObra column: 'edob__id'
             claseObra column: 'csob__id'
             departamento column: 'dpto__id'
+            departamentoDestino column: 'dptodstn'
             lugar column: 'lgar__id'
             codigo column: 'obracdgo'
             nombre column: 'obranmbr'
@@ -179,6 +197,19 @@ class Obra implements Serializable {
 
             plazoPersonas column: 'obraplpr'
             plazoMaquinas column: 'obraplmq'
+
+            desgloseEquipo column: 'obradseq'
+            desgloseRepuestos column: 'obradsrp'
+            desgloseCombustible column: 'obradscb'
+            desgloseMecanico column: 'obradsmc'
+            desgloseSaldo column: 'obradssl'
+            desgloseTransporte column: 'obratrnp'
+
+            coordenadas column: 'obracrdn'
+            liquidacion column: 'obralqdc'
+
+            transporteCamioneta column: 'obratrcm'
+            transporteAcemila column: 'obratrac'
         }
     }
     static constraints = {
@@ -201,6 +232,7 @@ class Obra implements Serializable {
         estadoObra(blank: true, nullable: true, attributes: [title: 'estadoObra'])
         programacion(blank: true, nullable: true, attributes: [title: 'programacion'])
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])
+        departamentoDestino(blank: true, nullable: true, attributes: [title: 'departamento destino de la documentación'])
         descripcion(size: 1..511, blank: true, nullable: true, attributes: [title: 'descripcion'])
         fechaInicio(blank: true, nullable: true, attributes: [title: 'fechaInicio'])
         fechaFin(blank: true, nullable: true, attributes: [title: 'fechaFin'])
@@ -267,5 +299,22 @@ class Obra implements Serializable {
 
         plazoPersonas(attributes: [title: 'Número de integrantes de cuadrillas'])
         plazoPersonas(attributes: [title: 'Número de equipos completos de maquinaria'])
+
+        desgloseEquipo(attributes: [title: 'Desglose del transporte y equipos en Equipos'])
+        desgloseRepuestos(attributes: [title: 'Desglose del transporte y equipos en Repuestos'])
+        desgloseCombustible(attributes: [title: 'Desglose del transporte y equipos en Combustible'])
+        desgloseMecanico(attributes: [title: 'Desglose del transporte y equipos en Mecánico'])
+        desgloseSaldo(attributes: [title: 'Desglose del transporte y equipos en Saldo'])
+        desgloseTransporte(size: 1..1, blank: true, nullable: true, attributes: [title: 'Desglose de transporte'])
+
+        coordenadas(size: 0..254, blank: true, nullable: true, attributes: [title: 'Coordenadas en formato WGS84'])
+
+
+        transporteCamioneta(blank: false, nullable: false, attibutes: [title: 'Transporte en Camioneta'])
+        transporteAcemila(blank: false, nullable: false, attributes: [title: 'Transporte en Acemila'])
+    }
+
+    String toString() {
+        return this.nombre
     }
 }

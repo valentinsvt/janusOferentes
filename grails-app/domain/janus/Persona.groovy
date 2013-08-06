@@ -27,7 +27,7 @@ class Persona implements Serializable {
     //static hasMany = [sesiones: Sesn, accesos: Accs, alertas: janus.alertas.Alerta]
     static hasMany = [sesiones: Sesn, accesos: Accs]
     static auditable = [ignore: ['password']]
-
+    int janusId
 
     static mapping = {
         table 'prsn'
@@ -56,12 +56,15 @@ class Persona implements Serializable {
 
             activo column: 'prsnactv'
             fechaActualizacionPass column: 'prsnfcps'
+
+            janusId column: 'prsnjnid'
         }
     }
     static constraints = {
         cedula(size: 1..10, attributes: [title: 'cedula'])
         nombre(size: 1..30, attributes: [title: 'nombre'])
         apellido(size: 1..30, attributes: [title: 'apellido'])
+        janusId(nullable:true,black:true)
         codigo(blank: false, attributes: [title: 'numero'])
         fechaNacimiento(blank: true, nullable: true, attributes: [title: 'fechaNacimiento'])
         departamento(blank: true, nullable: true, attributes: [title: 'departamento'])

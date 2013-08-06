@@ -52,11 +52,13 @@ class LoginController {
     }
 
     def validar() {
+//        println "validad "+params
         def user = Persona.withCriteria {
             eq("login", params.login)
             eq("password", params.pass.encodeAsMD5())
             eq("activo", 1)
         }
+//        println "user "+user
 
         if (user.size() == 0) {
             flash.message = "No se ha encontrado el usuario"
@@ -73,7 +75,7 @@ class LoginController {
 
     def perfiles() {
         def usuarioLog = session.usuario
-        def perfilesUsr = Sesn.findAllByUsuario(usuarioLog, [sort: 'perfil'])
+        def perfilesUsr = Prfl.findAllByDescripcion("Oferente")
 
         return [perfilesUsr: perfilesUsr]
     }
@@ -82,8 +84,8 @@ class LoginController {
     def savePer() {
 //        println params
 
-        def sesn = Sesn.get(params.perfiles)
-        def perf = sesn.perfil
+//        def sesn = Sesn.get(params.perfiles)
+        def perf = Prfl.get(params.perfil)
 //        println perf
 
         if (perf) {

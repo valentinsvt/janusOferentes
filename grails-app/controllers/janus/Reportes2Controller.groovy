@@ -1,8 +1,8 @@
 package janus
 
-import janus.ejecucion.*
-import janus.pac.CronogramaEjecucion
-import janus.pac.PeriodoEjecucion
+//import janus.ejecucion.*
+//import janus.pac.CronogramaEjecucion
+//import janus.pac.PeriodoEjecucion
 import jxl.Workbook
 import jxl.WorkbookSettings
 import jxl.write.*
