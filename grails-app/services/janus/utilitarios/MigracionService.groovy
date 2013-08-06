@@ -91,6 +91,7 @@ class MigracionService {
         return sec
     }
 
+/*
     def insertRandomIndices(){
         def perdiodos = janus.ejecucion.PeriodosInec.list()
         def indices = janus.Indice.list()
@@ -114,6 +115,7 @@ class MigracionService {
         }
         return html
     }
+*/
 
 
 

@@ -456,7 +456,7 @@
 </g:if>
 
 
-<div class="modal hide fade mediumModal" id="modal-var" style=";overflow: hidden;">
+<div class="modal hide fade" id="modal-var" style=";overflow: hidden;">
     <div class="modal-header btn-primary">
         <button type="button" class="close" data-dismiss="modal">×</button>
 

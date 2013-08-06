@@ -1,7 +1,5 @@
 package janus
 
-import janus.ejecucion.PeriodosInec
-import janus.ejecucion.Planilla
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.springframework.beans.SimpleTypeConverter
 import org.springframework.context.MessageSourceResolvable
@@ -59,6 +57,7 @@ class ElementosTagLib {
     }
 
 
+/*
     Closure headerPlanilla = { attrs ->
         def str = ""
         Planilla planilla = attrs.planilla
@@ -109,6 +108,9 @@ class ElementosTagLib {
 
         out << str
     }
+*/
+
+/*
     Closure headerPlanillaReporte = { attrs ->
         def str = ""
         Planilla planilla = attrs.planilla
@@ -151,6 +153,7 @@ class ElementosTagLib {
 
         out << str
     }
+*/
 
     /**
      * Creates next/previous links to support pagination for the current controller.<br/>
