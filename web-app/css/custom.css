@@ -1,3 +1,6 @@
+body {
+    background-color : #D7D7D7;
+}
 .btn-group {
     display        : inline-block;
     font-size      : 0;
@@ -28,14 +31,13 @@
 }
 
 .titulo, .tituloTree {
-    font-size   : 22px !important;
-    font-family : 'Tulpen One', cursive;
+    font-size   : 14px !important;
     font-weight : bold !important;
-    text-shadow : -2px 2px 1px rgba(148, 148, 148, 0.5);
+
 }
 
 .tituloTree {
-    font-family    : 'Open Sans Condensed', cursive;
+    /*font-family    : 'Open Sans Condensed', cursive;*/
     margin-bottom  : 10px;
     font-size      : 25px;
     padding-bottom : 8px;;
@@ -210,7 +212,7 @@ fieldset.borde legend {
     font-family       : 'Tulpen One', cursive;
     font-weight       : bold;
     font-size         : 35px;
-    text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);
+    /*text-shadow       : -2px 2px 1px rgba(0, 0, 0, 0.25);*/
 
     /*text-shadow: 0px 0px 1px #333;*/
 }
@@ -234,7 +236,7 @@ fieldset.borde legend {
 }
 
 .tituloGrande {
-    text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.5);
+    /*text-shadow : -2px 2px 1px rgba(0, 0, 0, 0.5);*/
 
 }
 

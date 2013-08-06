@@ -16,59 +16,59 @@
     <link href='${resource(dir: "font/tulpen", file: "stylesheet.css")}' rel='stylesheet' type='text/css'>
     <style type="text/css">
     @page {
-        size: 8.5in 11in;  /* width height */
-        margin: 0.25in;
+        size   : 8.5in 11in;  /* width height */
+        margin : 0.25in;
     }
 
     .item {
-        width: 260px;
-        height: 220px;
-        float: left;
-        margin: 4px;
-        font-family: 'open sans condensed';
-        border: none;
+        width       : 260px;
+        height      : 220px;
+        float       : left;
+        margin      : 4px;
+        font-family : 'open sans condensed';
+        border      : none;
 
     }
 
     .imagen {
-        width: 167px;
-        height: 100px;
-        margin: auto;
-        margin-top: 10px;
+        width      : 167px;
+        height     : 100px;
+        margin     : auto;
+        margin-top : 10px;
     }
 
     .texto {
-        width: 90%;
-        height: 50px;
-        padding-top: 0px;
+        width       : 90%;
+        height      : 50px;
+        padding-top : 0px;
         /*border: solid 1px black;*/
-        margin: auto;
-        margin: 8px;
+        margin      : auto;
+        margin      : 8px;
         /*font-family: fantasy; */
-        font-size: 16px;
+        font-size   : 16px;
 
         /*
                 font-weight: bolder;
         */
-        font-style: oblique;
+        font-style  : oblique;
         /*text-align: justify;*/
     }
 
     .fuera {
-        margin-left: 15px;
-        margin-top: 10px;
+        margin-left      : 15px;
+        margin-top       : 10px;
         /*background-color: #317fbf; */
-        background-color: rgba(200, 200, 200, 0.9);
-        border: none;
+        background-color : rgba(200, 200, 200, 0.9);
+        border           : none;
 
     }
 
     .desactivado {
-        color: #bbc;
+        color : #bbc;
     }
 
     h1 {
-        font-size: 24px;
+        font-size : 24px;
     }
     </style>
 </head>
@@ -87,31 +87,24 @@
 </div>
 
 
-<div class="dialog ui-corner-all"
-     style="height: 455px;background: #0C5994;;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
-    <div style="text-align: center;">
-        <h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#fff;">
-            Control de Proyectos, Contratación, Ejecución y Seguimiento de Obras del GADPP    <br>
-            Módulo de oferentes
-        </h1>
-    </div>
-
-    <div class="body" style="width: 850px;position: relative;margin: auto;margin-top: 0px;height: 300px">
+    <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size:
+    25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 60px;">
+        CONTROL DE PROYECTOS<br>CONTRATACION, EJECUCIÓN, SEGUIMIENTO DE OBRAS Y CONSULTORÍAS<br>G.A.D. PROVINCIA DE PICHINCHA</h1></div>
 
         %{--<g:link  controller="proyecto" action="list" title="Gestión de proyectos">--}%
-        <div class="ui-corner-all  item fuera">
-            <div class="ui-corner-all ui-widget-content item">
-                <div class="imagen">
-                    <img src="${resource(dir: 'images', file: 'apu1.png')}" width="100%" height="100%"/>
-                </div>
+        %{--<div class="ui-corner-all  item fuera">
+           <div class="ui-corner-all ui-widget-content item">
+               <div class="imagen">
+                   <img src="${resource(dir: 'images', file: 'apu1.png')}" width="100%" height="100%"/>
+               </div>
 
-                <div class="texto"><b>Precios unitarios y análisis de precios</b>: registro y mantenimiento de
-                ítems y rubros. Análisis de precios, rendimientos y listas de precios...</div>
-            </div>
-        </div>
-        %{--</g:link>--}%
+               <div class="texto"><b>Precios unitarios y análisis de precios</b>: registro y mantenimiento de
+               ítems y rubros. Análisis de precios, rendimientos y listas de precios...</div>
+           </div>
+       </div>--}%
+       %{--</g:link>--}%
         %{--<g:link  controller="asignacion" action="asignacionesCorrientesv2"  id="${session.unidad.id}" title="Programación del gasto corriente">--}%
-        <div class="ui-corner-all item fuera">
+        %{--<div class="ui-corner-all item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
                     <img src="${resource(dir: 'images', file: 'obra100.png')}" width="100%" height="100%"/>
@@ -120,7 +113,7 @@
                 <div class="texto"><b>Obras</b>: registro de Obras, georeferen-ciación, los volúmenes de obra,
                 variables de transporte y costos indirectos ...</div>
             </div>
-        </div>
+        </div>  --}%
         %{--</g:link>--}%
 
         %{--<g:link  controller="entidad" action="arbol_asg"  id="${session.unidad.id}" title="Plan Anual de Compras - gasto corriente ">--}%
@@ -158,7 +151,7 @@
         %{--</div>--}%
         %{--</g:link>--}%
         %{--<g:link  controller="documento" action="list" title="Documentos de los Proyectos">--}%
-        <div class="ui-corner-all  item fuera">
+        %{--<div class="ui-corner-all  item fuera">
             <div class="ui-corner-all ui-widget-content item">
                 <div class="imagen">
                     <img src="${resource(dir: 'images', file: 'oferta.png')}" width="100%" height="100%"/>
@@ -167,7 +160,7 @@
                 <div class="texto"><b>Documentos de la Oferta</b>: generación de los documentos para respaldo de la oferta
                 a entregar: rubros, volúmenes de obra y cronograma</div>
             </div>
-        </div>
+        </div> --}%
         %{--</g:link>--}%
         %{--<div  class="ui-corner-all  item fuera" style="width: 543px">--}%
         %{--<div  class="ui-corner-all ui-widget-content item" style="width: 543px">--}%
@@ -175,30 +168,37 @@
         %{--</div>--}%
         %{--</div>--}%
 
+<div class="dialog ui-corner-all" style="height: 595px;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
+    <div style="text-align: center; margin-top: 50px; color: #810;">
+        <img src="${resource(dir: 'images', file: 'logo_gpp3.png')}"/>
     </div>
 
-    <div style="width: 100%;height: 30px;float: left;margin-top: 0px;text-align: center">
+    <div style="width: 100%;height: 30px;float: left;margin-top: 30px;text-align: center">
         <a href="#" id="ingresar" class="btn btn-inverse">
-            <i class="icon-off icon-white"></i>
+            <i class="icon-off"></i>
             Ingresar
         </a>
     </div>
 
-    <div style="text-align:right; color:#d95">&copy; TEDEIN S.A. Versión ${message(code: 'version', default: '1.1.0x')}</div>
+    <div style="text-align: center ; color:#004060; margin-top:90px; ">Desarrollado por: TEDEIN S.A. Versión ${message(code: 'version', default: '1.1.0x')}</div>
+
 </div>
+
+
+
+
+
 
 <div class="modal login hide fade " id="modal-ingreso" style=";overflow: hidden;">
     <div class="modal-body" id="modalBody" style="padding: 0px">
 
-        <g:form class="well form-horizontal span " action="validar" name="frmLogin"
-                style="border: 5px solid #525E67;background: #202328;color: #939Aa2;width: 300px;position: relative;padding-left: 60px;margin: 0px">
-            <p class="css-vertical-text tituloGrande"
-               style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px">Sistema Janus</p>
+        <g:form class="well form-horizontal span " action="validar" name="frmLogin" style="border: 5px solid #2080B0;background:#C7C7C5 /*#a7a7a5*/;color: #939Aa2;width: 300px;position: relative;padding-left: 60px;margin: 0px">
+            <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color: #334">Sistema Janus</p>
 
-            <div class="linea" style="height: 95%;left: 45px"></div>
+            <div class="linea" style="height: 95%;left: 45px; border-left-color: #334"></div>
             <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 1;">×</button>
             <fieldset style="">
-                <legend style="color: white;border:none;font-family: 'Open Sans Condensed', serif;font-weight: bolder;font-size: 25px">Ingreso</legend>
+                <legend style="color: #334;border:none;font-family: 'Open Sans Condensed', serif;font-weight: bolder;font-size: 25px">Ingreso</legend>
 
                 <g:if test="${flash.message}">
                     <div class="alert alert-info" role="status">
@@ -208,21 +208,21 @@
                 </g:if>
 
                 <div class="control-group" style="margin-top: 0">
-                    <label class="control-label" for="login"
-                           style="width: 100%;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder">Usuario:</label>
+
+                    <label class="control-label" for="login" style="width: 100%;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder; color: #334">Usuario:</label>
 
                     <div class="controls" style="width: 100%;margin-left: 5px">
-                        <g:textField name="login" class="span2" style="width: 90%"/>
+                        <g:textField name="login" class="span2" style="width: 90%; border: 1px solid #000000" />
                         <p class="help-block ui-helper-hidden"></p>
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label" for="login"
-                           style="width: 100%;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder">Password:</label>
+
+                    <label class="control-label" for="login" style="width: 100%;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder; color:#334">Password:</label>
 
                     <div class="controls" style="width: 100%;margin-left: 5px">
-                        <g:passwordField name="pass" class="span2" style="width: 90%"/>
+                        <g:passwordField name="pass" class="span2" style="width: 90%;border: 1px solid #000000"/>
                         <p class="help-block ui-helper-hidden"></p>
                     </div>
                 </div>
@@ -230,8 +230,7 @@
                 <div class="control-group">
 
                     <a href="#" class="btn btn-primary" id="btnLogin">Continuar</a>
-                    <a href="#" id="btnOlvidoPass"
-                       style="color: #ffffff;margin-left: 70px;text-decoration: none;font-family: 'Open Sans Condensed', serif;font-weight: bold">
+                    <a href="#" id="btnOlvidoPass" style="color: #223;margin-left: 70px;text-decoration: none;font-family: 'Open Sans Condensed', serif;font-weight: bold">
                         Olvidó su contraseña?
                     </a>
                 </div>
@@ -249,8 +248,7 @@
 </div>
 
 
-<div id="recuperarPass-dialog" class="dialog ui-corner-all"
-     style="height: 595px;background: #0C5994;;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
+<div id="recuperarPass-dialog" class="dialog ui-corner-all" style="height: 595px;background: #d0d0d0;;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
 
     %{--<fieldset>--}%
 
@@ -268,7 +266,7 @@
 
     <div class="span3" style="margin-top: 20px">
 
-        <g:textField name="mailPass" type="text" id="email" class="span2" placeholder="Email" style="width: 300px"/>
+        <g:textField name="mailPass" type="text" id="email" class="span2" placeholder="Email" style="width: 300px; border: 1px solid #000000"/>
 
     </div>
     %{--</fieldset>--}%

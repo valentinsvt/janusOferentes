@@ -21,37 +21,47 @@
         <link href='${resource(dir: "css", file: "custom.css")}' rel='stylesheet' type='text/css'>
     </head>
 
-    <body>
+<body>
 
-        <g:form class="well form-horizontal span" action="savePer" name="frmLogin" style="border: 5px solid #525E67;background: #202328;color: #939Aa2;width: 300px;position: relative;padding-left: 70px">
-            <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px">Sistema Janus</p>
+    <div class="dialog ui-corner-all" style="height: 595px;background: #d9d9d9;;padding: 10px;width: 910px; margin: auto;">
+        <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size:
+        25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 20px;">
+            CONTROL DE PROYECTOS<br>CONTRATACION, EJECUCIÓN, SEGUIMIENTO DE OBRAS Y CONSULTORÍAS<br>G.A.D. PROVINCIA DE PICHINCHA</h1></div>
 
-            <div class="linea" style="height: 95%;left: 45px"></div>
+
+        <g:form class="well form-horizontal span" action="savePer" name="frmLogin" style="border: 5px solid #2080B0; background:#c7c7c5;color: #939Aa2; width: 300px; margin-left: 240px; margin-top: 80px; position: relative; padding-left: 100px">
+        <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color:#334;">Sistema Janus</p>
+
+        <div class="linea" style="height: 95%;left: 45px; border-left-color: #334"></div>
             <fieldset>
-                <legend style="color: white;border:none;font-family: 'Open Sans Condensed', serif;font-weight: bolder;font-size: 25px">Ingreso</legend>
+                <legend style="color: white;border:none;font-family: 'Open Sans Condensed', serif;font-weight: bolder;font-size: 25px; color:#334;">Ingreso</legend>
 
-                <g:if test="${flash.message}">
-                    <div class="alert alert-info" role="status">
-                        <a class="close" data-dismiss="alert" href="#">×</a>
-                        ${flash.message}
-                    </div>
-                </g:if>
+        <g:if test="${flash.message}">
+            <div class="alert alert-info" role="status">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                ${flash.message}
+            </div>
+        </g:if>
 
-                <div class="control-group">
-                    <label class="control-label" style="width: 50px;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder;float: left;">Perfil:</label>
+        <div class="control-group">
+            <label class="control-label" style="width: 50px;text-align: left;font-size: 25px;font-family: 'Tulpen One',cursive;font-weight: bolder;float: left; color:#334">Perfil:</label>
 
-                    <div class="controls" style="width: 150px;margin-left: 5px;float: right;margin-right: 60px">
-                        <g:select name="perfil" from="${perfilesUsr}" class="span2" required="" optionKey="id" style="width: 180px;"/>
-                        <p class="help-block ui-helper-hidden"></p>
-                    </div>
-                </div>
+            <div class="controls" style="width: 150px;margin-left: 5px;float: right;margin-right: 60px">
+                <g:select name="perfil" from="${perfilesUsr}" class="span2" required="" optionKey="id" style="width: 180px; border: 1px solid #000000"/>
+                <p class="help-block ui-helper-hidden"></p>
+            </div>
+        </div>
 
-                <div class="control-group">
+        <div class="control-group">
 
-                    <a href="#" class="btn btn-primary" id="btnLogin">Entrar</a>
-                </div>
-            </fieldset>
-        </g:form>
+            <a href="#" class="btn btn-primary" id="btnLogin">Entrar</a>
+        </div>
+    </fieldset>
+</g:form>
+        </div>
+
+
+
 
         <script type="text/javascript">
             $(function () {
