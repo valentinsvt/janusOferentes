@@ -1,43 +1,57 @@
 <div class="row-fluid" style="margin-left: 0px">
     <div class="span5">
         <b>Subpresupuesto:</b>
-        <g:select name="subpresupuesto" from="${subPres}" optionKey="id" optionValue="descripcion" style="width: 300px;font-size: 10px" id="subPres_desc" value="${subPre}"></g:select>
-    </div>
-    <div class="span1">
-        <div class="btn-group" data-toggle="buttons-checkbox">
-            <button type="button" id="ver_todos" class="btn btn-info ${(!subPre)?'active':''} " style="font-size: 10px">Ver todos</button>
-
-        </div>
+        %{--<g:select name="subpresupuesto" from="${subPres}" optionKey="id" optionValue="descripcion" style="width: 300px;font-size: 10px" id="subPres_desc" value="${subPre}"></g:select>--}%
+        <g:select name="subpresupuesto" from="${subPres}" optionKey="id" optionValue="descripcion"
+                  style="width: 300px;font-size: 10px" id="subPres_desc" value="${subPre}"
+                  noSelection="['-1': 'TODOS']"></g:select>
 
     </div>
+    %{--<div class="span1">--}%
+        %{--<div class="btn-group" data-toggle="buttons-checkbox">--}%
+            %{--<button type="button" id="ver_todos" class="btn btn-info ${(!subPre)?'active':''} " style="font-size: 10px">Ver todos</button>--}%
 
-
-    %{--<div class="span4">--}%
-        %{--<a href="#" class="btn  " id="imprimir_sub">--}%
-            %{--<i class="icon-file"></i>--}%
-            %{--Imprimir Subpresupuesto--}%
-        %{--</a>--}%
-
-        %{--<a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >--}%
-            %{--<i class="icon-table"></i>--}%
-            %{--Excel--}%
-        %{--</a>--}%
+        %{--</div>--}%
 
     %{--</div>--}%
+
+    %{--<a href="#" class="btn btn-ajax btn-new" id="ordenarAsc" title="Ordenar Ascendentemente">--}%
+        %{--<i class="icon-arrow-up"></i>--}%
+    %{--</a>--}%
+    %{--<a href="#" class="btn btn-ajax btn-new" id="ordenarDesc" title="Ordenar Descendentemente">--}%
+        %{--<i class="icon-arrow-down"></i>--}%
+    %{--</a>--}%
+
+
+    <div class="span4">
+        <a href="#" class="btn  " id="imprimir_sub">
+            <i class="icon-file"></i>
+            Imprimir Subpresupuesto
+        </a>
+
+        <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >
+            <i class="icon-table"></i>
+            Excel
+        </a>
+
+    </div>
 
 
 
 </div>
 <table class="table table-bordered table-striped table-condensed table-hover">
     <thead>
-    <tr>
+      <tr>
         <th style="width: 20px;">
             #
+        </th>
+        <th style="width: 200px;">
+            Subpresupuesto
         </th>
         <th style="width: 80px;">
             Código
         </th>
-        <th style="width: 600px;">
+        <th style="width: 400px;">
             Rubro
         </th>
         <th style="width: 60px" class="col_unidad">
@@ -57,6 +71,7 @@
 
         <tr class="item_row" id="${vol.id}" item="${vol.item.id}" sub="${vol.subPresupuesto.id}">
             <td style="width: 20px" class="orden">${vol.orden}</td>
+            <td style="width: 100px" class="sub">${vol.subPresupuesto?.descripcion}</td>
             <td class="cdgo">${vol.item.codigo}</td>
             <td class="nombre">${vol.item.nombre}</td>
             <td style="width: 60px !important;text-align: center" class="col_unidad">${vol.item.unidad.codigo}</td>
@@ -72,6 +87,8 @@
         </tr>
 
     </g:each>
+
+
     </tbody>
 </table>
 <script type="text/javascript">
@@ -117,15 +134,39 @@
     });
 
     $("#imprimir_sub").click(function(){
-        var dsps=${obra.distanciaPeso}
-        var dsvs=${obra.distanciaVolumen}
-        var volqueta=${precioVol}
-        var chofer=${precioChof}
+        %{--var dsps=${obra.distanciaPeso}--}%
+        %{--var dsvs=${obra.distanciaVolumen}--}%
+        %{--var volqueta=${precioVol}--}%
+        %{--var chofer=${precioChof}--}%
         %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
         %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-        var datos = "?obra=${obra.id}Wsub="+$("#subPres_desc").val()+"Woferente=${session.usuario.id}"
-        var url = "${g.createLink(controller: 'reportes3',action: 'imprimirTablaSub')}"+datos
-        location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
+        %{--var datos = "?obra=${obra.id}Wsub="+$("#subPres_desc").val()+"Woferente=${session.usuario.id}"--}%
+        %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirTablaSub')}"+datos--}%
+        %{--location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url--}%
+
+
+        if ($("#subPres_desc").val() != '') {
+
+            var dsps =
+            ${obra.distanciaPeso}
+            var dsvs =
+            ${obra.distanciaVolumen}
+            var volqueta =
+            ${precioVol}
+            var chofer =
+            ${precioChof}
+            %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
+            %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
+            var datos = "?obra=${obra.id}Wsub=" + $("#subPres_desc").val()
+            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirTablaSub')}" + datos
+            location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url
+        } else {
+
+            alert("Escoja un subpresupuesto")
+        }
+
+
+
     });
 
     $("#imprimir_excel").click(function () {
@@ -166,40 +207,34 @@
 
     });
 
-    $("#subPres_desc").change(function(){
+    %{--$("#subPres_desc").change(function(){--}%
+        %{--$("#ver_todos").removeClass("active")--}%
+        %{--$("#divTotal").html("")--}%
+        %{--$("#calcular").removeClass("active")--}%
+
+        %{--var datos = "obra=${obra.id}&sub="+$("#subPres_desc").val()--}%
+        %{--var interval = loading("detalle")--}%
+        %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",--}%
+            %{--data     : datos,--}%
+            %{--success  : function (msg) {--}%
+                %{--clearInterval(interval)--}%
+                %{--$("#detalle").html(msg)--}%
+            %{--}--}%
+        %{--});--}%
+    %{--});--}%
+
+
+    $("#subPres_desc").change(function () {
+
+//        console.log($("#subPres_desc").val())
         $("#ver_todos").removeClass("active")
         $("#divTotal").html("")
         $("#calcular").removeClass("active")
 
-        var datos = "obra=${obra.id}&sub="+$("#subPres_desc").val()
-        var interval = loading("detalle")
-        $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",
-            data     : datos,
-            success  : function (msg) {
-                clearInterval(interval)
-                $("#detalle").html(msg)
-            }
-        });
-    });
+        if($("#subPres_desc").val() == '-1'){
 
-    $("#ver_todos").click(function(){
-        $("#calcular").removeClass("active")
-        $("#divTotal").html("")
-        if ($(this).hasClass("active")) {
-            $(this).removeClass("active")
 
-            var datos = "obra=${obra.id}&sub="+$("#subPres_desc").val()
-            var interval = loading("detalle")
-            $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",
-                data     : datos,
-                success  : function (msg) {
-                    clearInterval(interval)
-                    $("#detalle").html(msg)
-                }
-            });
-
-        }else{
-            $(this).addClass("active")
+            %{--var datos = "obra=${obra.id}&sub="+$("#subPres_desc").val()--}%
             var datos = "obra=${obra.id}"
             var interval = loading("detalle")
             $.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",
@@ -209,10 +244,65 @@
                     $("#detalle").html(msg)
                 }
             });
-        }
-        return false
 
-    }) ;
+
+        } else {
+
+
+
+            var datos = "obra=${obra.id}&sub=" + $("#subPres_desc").val() + "&ord=" + 1
+
+
+            var interval = loading("detalle")
+            $.ajax({type: "POST", url: "${g.createLink(controller: 'volumenObra',action:'tabla')}",
+                data: datos,
+                success: function (msg) {
+                    clearInterval(interval)
+                    $("#detalle").html(msg)
+                }
+            });
+
+
+        }
+
+
+    });
+
+
+    %{--var datos = "?fecha=${obra.fechaPreciosRubros?.format('dd-MM-yyyy')}Wid=" + $(".item_row").attr("id") + "Wobra=${obra.id}"--}%
+
+
+    %{--$("#ver_todos").click(function(){--}%
+        %{--$("#calcular").removeClass("active")--}%
+        %{--$("#divTotal").html("")--}%
+        %{--if ($(this).hasClass("active")) {--}%
+            %{--$(this).removeClass("active")--}%
+
+            %{--var datos = "obra=${obra.id}&sub="+$("#subPres_desc").val()--}%
+            %{--var interval = loading("detalle")--}%
+            %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",--}%
+                %{--data     : datos,--}%
+                %{--success  : function (msg) {--}%
+                    %{--clearInterval(interval)--}%
+                    %{--$("#detalle").html(msg)--}%
+                %{--}--}%
+            %{--});--}%
+
+        %{--}else{--}%
+            %{--$(this).addClass("active")--}%
+            %{--var datos = "obra=${obra.id}"--}%
+            %{--var interval = loading("detalle")--}%
+            %{--$.ajax({type : "POST", url : "${g.createLink(controller: 'volumenObra',action:'tabla')}",--}%
+                %{--data     : datos,--}%
+                %{--success  : function (msg) {--}%
+                    %{--clearInterval(interval)--}%
+                    %{--$("#detalle").html(msg)--}%
+                %{--}--}%
+            %{--});--}%
+        %{--}--}%
+        %{--return false--}%
+
+    %{--}) ;--}%
 
 
     $(".item_row").dblclick(function(){
@@ -241,4 +331,6 @@
             });
         }
     });
+
+
 </script>

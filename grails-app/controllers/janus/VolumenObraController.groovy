@@ -64,6 +64,9 @@ class VolumenObraController extends janus.seguridad.Shield{
             detalle= VolumenesObra.findAllByObraAndSubPresupuesto(obra,SubPresupuesto.get(params.sub),[sort:"orden"])
         else
             detalle= VolumenesObra.findAllByObra(obra,[sort:"orden"])
+
+
+
         def subPres = VolumenesObra.findAllByObra(obra,[sort:"orden"]).subPresupuesto.unique()
 
         def precios = [:]
@@ -73,12 +76,20 @@ class VolumenObraController extends janus.seguridad.Shield{
         def lugar = obra.lugar
         def prch = 0
         def prvl = 0
+        def orden
+
+        if (params.ord == '1'){
+            orden = 'asc'
+        } else {
+            orden = 'desc'
+        }
+
 
 //        /*Todo ver como mismo es esta suma*/
         def indirecto = obra.totales/100
 //        println "indirecto "+indirecto
         preciosService.ac_rbroObra(obra.id)
-        println "paso!!! ac_rbroObra"
+//        println "paso!!! ac_rbroObra"
         detalle.each{
 
             def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,session.usuario.id)

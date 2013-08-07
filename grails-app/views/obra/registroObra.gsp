@@ -87,7 +87,7 @@
         </div>
     </div>
 
-    <div class="span5">
+    <div class="span6">
         <div class="control-group">
             <div>
                 <span class="control-label label label-inverse">
@@ -304,29 +304,43 @@
         <div class="control-group">
             <div>
                 <span class="control-label label label-inverse">
-                    Latitud
+                    Coordenadas
                 </span>
             </div>
 
             <div class="controls">
-                <g:formatNumber number="${obra?.latitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>
+                ${obra?.coordenadas}
             </div>
         </div>
     </div>
 
-    <div class="span5">
-        <div class="control-group">
-            <div>
-                <span class="control-label label label-inverse">
-                    Longitud
-                </span>
-            </div>
+    %{--<div class="span5">--}%
+        %{--<div class="control-group">--}%
+            %{--<div>--}%
+                %{--<span class="control-label label label-inverse">--}%
+                    %{--Latitud--}%
+                %{--</span>--}%
+            %{--</div>--}%
 
-            <div class="controls">
-                <g:formatNumber number="${obra?.longitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>
-            </div>
-        </div>
-    </div>
+            %{--<div class="controls">--}%
+                %{--<g:formatNumber number="${obra?.latitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>--}%
+            %{--</div>--}%
+        %{--</div>--}%
+    %{--</div>--}%
+
+    %{--<div class="span5">--}%
+        %{--<div class="control-group">--}%
+            %{--<div>--}%
+                %{--<span class="control-label label label-inverse">--}%
+                    %{--Longitud--}%
+                %{--</span>--}%
+            %{--</div>--}%
+
+            %{--<div class="controls">--}%
+                %{--<g:formatNumber number="${obra?.longitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>--}%
+            %{--</div>--}%
+        %{--</div>--}%
+    %{--</div>--}%
 </div>
 
 <div class="row">
