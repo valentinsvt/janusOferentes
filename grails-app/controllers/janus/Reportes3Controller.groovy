@@ -35,38 +35,68 @@ class Reportes3Controller {
     }
 
     def imprimirTablaSub(){
-////        println "imprimir tabla sub "+params
-//        def obra = Obra.get(params.obra)
-//        def detalle
-//        if (params.sub)
-//            detalle= VolumenesObra.findAllByObraAndSubPresupuesto(obra,SubPresupuesto.get(params.sub),[sort:"orden"])
-//        else
-//            detalle= VolumenesObra.findAllByObra(obra,[sort:"orden"])
-//        def subPres = VolumenesObra.findAllByObra(obra,[sort:"orden"]).subPresupuesto.unique()
-//
-//        def precios = [:]
-//
-//
-//
-//
-//        def indirecto = obra.totales/100
-//        preciosService.ac_rbroObra(obra.id)
-////        println "indirecto "+indirecto
-//
-//        detalle.each{
-////            def parametros = ""+it.item.id+","+lugar.id+",'"+fecha.format("yyyy-MM-dd")+"',"+dsps.toDouble()+","+dsvl.toDouble()+","+rendimientos["rdps"]+","+rendimientos["rdvl"]
-//
-//            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
-////            def res = preciosService.rb_precios("sum(parcial)+sum(parcial_t) precio ",parametros,"")
-//            precios.put(it.id.toString(),(res["precio"][0]+res["precio"][0]*indirecto).toDouble().round(2))
-//        }
-////
-////        println "precios "+precios
-//
-//
-//        [detalle:detalle,precios:precios,subPres:subPres,subPre:SubPresupuesto.get(params.sub).descripcion,obra: obra,indirectos:indirecto*100]
+//        println "imprimir tabla sub "+params
+        def obra = Obra.get(params.obra)
+        def detalle
+        def subPre
 
+        def fechaHoy = printFecha(new Date())
+
+        def oferente = Persona.get(params.oferente)
+
+        if (params.sub && params.sub != "-1"){
+
+            detalle= VolumenesObra.findAllByObraAndSubPresupuesto(obra,SubPresupuesto.get(params.sub),[sort:"orden"])
+        }
+
+        else {
+
+
+            detalle= VolumenesObra.findAllByObra(obra,[sort:"orden"])
+
+
+        }
+        def subPres = VolumenesObra.findAllByObra(obra,[sort:"orden"]).subPresupuesto.unique()
+
+        def precios = [:]
+
+        if (params.sub != '-1'){
+
+            subPre= SubPresupuesto.get(params.sub).descripcion
+
+        }else {
+
+            subPre= -1
+
+        }
+
+        def indirecto = obra.totales/100
+        preciosService.ac_rbroObra(obra.id)
+
+        detalle.each{
+
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
+
+            def precio = 0
+            if(res["precio"][0]!=null && res["precio"][0]!="null" )
+                precio = res["precio"][0]
+            precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
+        }
+
+//
+//        println "precios "+precios
+
+
+//        [detalle:detalle,precios:precios,subPres:subPres,subPre:SubPresupuesto.get(params.sub).descripcion,obra: obra,indirectos:indirecto*100]
+        [detalle:detalle,precios:precios,subPres:subPres,subPre:subPre,obra: obra,indirectos:indirecto*100, oferente: oferente, fechaHoy: fechaHoy]
+
+
+        //2
+
+//
+//                println "imprimir tabla sub "+params
 //        def obra = Obra.get(params.obra)
+//
 //        def detalle
 //        def valores
 //        def subPre
@@ -85,17 +115,13 @@ class Reportes3Controller {
 //
 //
 //        if (params.sub)
-//
 //            if (params.sub == '-1'){
 //                valores = preciosService.rbro_pcun_v2(obra.id)
-//
 //            }else {
 //
 //                valores = preciosService.rbro_pcun_v3(obra.id, params.sub)
-//
 //            }
 //        else
-//
 //            valores = preciosService.rbro_pcun_v2(obra.id)
 //
 //        def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
@@ -105,9 +131,8 @@ class Reportes3Controller {
 //        def indirecto = obra.totales / 100
 //        preciosService.ac_rbroObra(obra.id)
 //
+//
 //        [detalle: detalle, precios: precios, subPres: subPres, subPre: subPre, obra: obra, indirectos: indirecto * 100, valores: valores, fechaNueva: fechaNueva, fechaPU: fechaPU]
-
-
 
     }
     def imprimirRubroVolObra(){

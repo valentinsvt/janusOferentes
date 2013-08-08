@@ -57,7 +57,7 @@ class VolumenObraController extends janus.seguridad.Shield{
     }
 
     def tabla(){
-//        println "paramms "+params
+        println "paramms "+params
         def obra = Obra.get(params.obra)
         def detalle
         if (params.sub && params.sub !="null")
