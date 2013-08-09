@@ -261,7 +261,9 @@
                 </p>
 
                 <p style="font-size: 14px; text-align: left">
-                    PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${totalPresupuesto+(totalPresupuesto*0.12)}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b>
+                    <g:set var="valor" value="${((totalPresupuesto+(totalPresupuesto*0.12))).toDouble().round(2)}"/>
+                    PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${valor}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b> ( <elm:numberToLetter numero="${valor}" dolares="true"/>)
+
                 </p>
 
 
@@ -348,8 +350,10 @@
             </p>
 
             <p style="font-size: 14px; text-align: left">
-                PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${total+(total*0.12)}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b>
+                <g:set var="valor" value="${(total+(total*0.12)).toDouble().round(2)}" />
+                PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${valor}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b> (<elm:numberToLetter numero="${valor}" dolares="true"/>)
             </p>
+
 
 
             <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">

@@ -83,7 +83,7 @@ class Reportes3Controller {
             precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
         }
 
-//
+
 //        println "precios "+precios
 
 

@@ -5,9 +5,22 @@ import org.springframework.beans.SimpleTypeConverter
 import org.springframework.context.MessageSourceResolvable
 import org.springframework.web.servlet.support.RequestContextUtils
 
+
 class ElementosTagLib {
 
     static namespace = "elm"
+
+    Closure numberToLetter = {attrs ->
+        println attrs
+        def number = attrs.numero?: 0
+        def dolares = attrs.dolares?: false
+
+        if(dolares){
+            out <<   NumberToLetterConverter.convertNumberToLetter(number)
+        }  else {
+            out <<   NumberToLetterConverter.numberToLetter(number)
+        }
+    }
 
     Closure numero = { attrs ->
         if (!attrs.decimales) {
