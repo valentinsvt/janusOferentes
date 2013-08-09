@@ -638,11 +638,6 @@ class Reportes3Controller {
     def imprimirRubro() {
         println "imprimir rubro "+params
         def rubro = Item.get(params.id)
-//        def fecha = new Date().parse("dd-MM-yyyy", params.fecha)
-//        def fecha1 = new Date().parse("dd-MM-yyyy", params.fechaSalida)
-//
-//        def fechaPala = printFecha(fecha1);
-//        def fecha2 = printFecha(fecha)
 
         def oferente = Persona.get(params.oferente)
 
@@ -665,9 +660,6 @@ class Reportes3Controller {
             obra = Obra.get(params.obra)
         }
 
-//        def parametros = "" + rubro.id + ",'" + fecha.format("yyyy-MM-dd") + "'," + listas + "," + params.dsp0 + "," + params.dsp1 + "," + params.dsv0 + "," + params.dsv1 + "," + params.dsv2 + "," + params.chof + "," + params.volq
-//        preciosService.ac_rbroV2(params.id, fecha.format("yyyy-MM-dd"), params.lugar)
-//        def res = preciosService.rb_preciosAsc(parametros, "")
 
         def parametros = ""+rubro.id+","+params.oferente
         preciosService.ac_rbroObra(params.id)

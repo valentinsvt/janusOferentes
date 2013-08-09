@@ -164,7 +164,7 @@
         </p>
 
 
-        <p style="font-size: 14px; text-align: left; margin-bottom: 50px">
+        <p style="font-size: 14px; text-align: left; margin-bottom: 80px">
             <b>NOMBRE DEL PROYECTO:</b> ${obra?.nombre.toUpperCase()}
         </p>
 
@@ -221,12 +221,20 @@
                         <td class="col_total total" style=";text-align: right"><g:formatNumber number="${precios[vol.id.toString()]*vol.cantidad}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></td>
 
                         <g:set var="total" value="${total.toDouble()+(precios[vol.id.toString()]*vol.cantidad)}"></g:set>
-                        <g:hiddenField name="totales" value="${totales = total.toDouble()+(precios[vol.id.toString()]*vol.cantidad) }"/>
+
+                        <g:hiddenField name="totales" value="${totales = precios[vol.id.toString()]*vol.cantidad}"/>
                         <g:hiddenField name="totalPrueba" value="${totalPrueba = total2+=totales}"/>
                         <g:hiddenField name="totalPresupuesto" value="${totalPresupuesto = total1 += totales}"/>
+
+
+
+
                     </tr>
                 </g:if>
                 </g:each>
+
+
+
                 <tr>
                     <td colspan="5"></td>
                     <td><b>Total:</b></td>
@@ -246,7 +254,6 @@
 
     <td style="text-align: right"><b style="font-size: 10px">Total Presupuesto:</b></td>
     <td style="text-align: right; font-size: 12px"><b><g:formatNumber number="${totalPresupuesto}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b></td>
-
     </tr>
 
 
@@ -261,14 +268,14 @@
                 </p>
 
                 <p style="font-size: 14px; text-align: left">
-                    <g:set var="valor" value="${((totalPresupuesto+(totalPresupuesto*0.12))).toDouble().round(2)}"/>
-                    PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${valor}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b> ( <elm:numberToLetter numero="${valor}" dolares="true"/>)
+                    <g:set var="valor" value="${totalPresupuesto.toDouble().round(2)}"/>
+                    PRECIO TOTAL DE LA OFERTA USD <b><elm:numberToLetter numero="${valor}" dolares="true"/></b>, MÁS IVA.
 
                 </p>
 
 
                 <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">
-                    QUITO, ${fechaHoy}
+                    QUITO,
                 </p>
 
                 <p style="text-align: left">
@@ -277,7 +284,7 @@
 
 
                 <p style="font-size: 14px; text-align: left; margin-bottom: 50px">
-                    FIRMA DEL OFERENTE, SU REPRESENTANTE LEGAL O PROCURADOR COMÚN.
+                    FIRMA DEL RESPONSABLE.
                 </p>
 
             </div>
@@ -341,7 +348,6 @@
         </table>
 
 
-
         <div class="tituloPdf">
 
 
@@ -350,14 +356,14 @@
             </p>
 
             <p style="font-size: 14px; text-align: left">
-                <g:set var="valor" value="${(total+(total*0.12)).toDouble().round(2)}" />
-                PRECIO TOTAL DE LA OFERTA, MÁS IVA: USD <b><g:formatNumber number="${valor}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b> (<elm:numberToLetter numero="${valor}" dolares="true"/>)
+                <g:set var="valor" value="${total.toDouble().round(2)}"/>
+                PRECIO TOTAL DE LA OFERTA USD <b><elm:numberToLetter numero="${valor}" dolares="true"/></b>, MÁS IVA.
+
             </p>
 
 
-
             <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">
-                QUITO, ${fechaHoy}
+                QUITO,
             </p>
 
             <p style="text-align: left">
@@ -366,11 +372,10 @@
 
 
             <p style="font-size: 14px; text-align: left; margin-bottom: 50px">
-                FIRMA DEL OFERENTE, SU REPRESENTANTE LEGAL O PROCURADOR COMÚN.
+                FIRMA DEL RESPONSABLE.
             </p>
 
         </div>
-
     </g:else>
 </div>
 

@@ -176,8 +176,8 @@
 
     <div style="margin-top: 20px">
         <div class="row-fluid">
-            <div class="span6" style="margin-right: 195px !important;">
-            <b class="span3">Nombre del Proyecto:</b>${obra?.nombre.toUpperCase()}
+            <div class="span12" style="margin-right: 195px !important;">
+            <b class="span3">Proyecto:</b>${obra?.nombre.toUpperCase()}
             </div>
 
         </div>
@@ -221,10 +221,6 @@
             ${tablaMat2}
         </g:if>
         ${tablaTrans}
-        %{--<g:if test="${band == 0 && bandTrans != 'no'}">--}%
-
-            %{--${tablaTrans2}--}%
-        %{--</g:if>--}%
         ${tablaIndi}
         <table class="table table-bordered table-striped table-condensed table-hover" style="margin-top: 40px;width: 50%;float: right; border-top: 1px solid #000000;  border-bottom: 1px solid #000000">
             <tbody>
