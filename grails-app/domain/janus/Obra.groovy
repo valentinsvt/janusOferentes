@@ -104,6 +104,11 @@ class Obra implements Serializable {
     double distanciaCamioneta=0
     double distanciaAcemila=0
 
+
+
+    String codigoConcurso
+    Date fechaOferta
+
     static mapping = {
         table 'obra'
         cache usage: 'read-write', include: 'non-lazy'
@@ -214,6 +219,9 @@ class Obra implements Serializable {
 
             distanciaCamioneta column: 'obratrcm'
             distanciaAcemila column: 'obratrac'
+
+            codigoConcurso column: 'obracdcn'
+            fechaOferta    column: 'obrafcof'
         }
     }
     static constraints = {
@@ -320,6 +328,8 @@ class Obra implements Serializable {
 
         distanciaCamioneta(blank: false, nullable: false)
         distanciaAcemila(blank: false, nullable: false)
+        codigoConcurso    (blank: true, nullable: true)
+        fechaOferta    (blank: true, nullable: true)
     }
 
     String toString() {
