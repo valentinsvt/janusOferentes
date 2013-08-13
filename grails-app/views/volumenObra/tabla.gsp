@@ -29,10 +29,10 @@
             Imprimir Subpresupuesto
         </a>
 
-        %{--<a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >--}%
-            %{--<i class="icon-table"></i>--}%
-            %{--Excel--}%
-        %{--</a>--}%
+        <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >
+            <i class="icon-table"></i>
+            Excel
+        </a>
 
     </div>
 
@@ -157,43 +157,21 @@
 
     });
 
-    %{--$("#imprimir_excel").click(function () {--}%
+    $("#imprimir_excel").click(function () {
 
-        %{--var dsps=${obra.distanciaPeso}--}%
-        %{--var dsvs=${obra.distanciaVolumen}--}%
-        %{--var volqueta=${precioVol}--}%
-        %{--var chofer=${precioChof}--}%
+        var dsps=${obra.distanciaPeso}
+        var dsvs=${obra.distanciaVolumen}
+        var volqueta=${precioVol}
+        var chofer=${precioChof}
 
         %{--var url = "${g.createLink(controller: 'reportes', action: 'reporteExcelVolObra')}"--}%
 
-        %{--$("#dlgLoad").dialog("open");--}%
+        $("#dlgLoad").dialog("open");
 
-        %{--location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',params:[id: obra?.id,oferente:session.usuario.id])}";--}%
-        %{--$("#dlgLoad").dialog("close");--}%
-%{--$.ajax( {--}%
+        location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',params:[id: obra?.id,oferente:session.usuario.id])}";
+        $("#dlgLoad").dialog("close");
 
-            %{--type: 'POST',--}%
-            %{--url: "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra')}",--}%
-            %{--data:{--}%
-
-                %{--id:'${obra?.id}'--}%
-
-            %{--},--}%
-            %{--success: function (msg) {--}%
-               %{--location.href = "${g.createLink(controller: 'reportes',action: 'reporteExcelVolObra',id: obra?.id)}";--}%
-                %{--$("#dlgLoad").dialog("close");--}%
-
-
-
-            %{--}--}%
-
-
-
-        %{--});--}%
-
-
-
-    %{--});--}%
+    });
 
     %{--$("#subPres_desc").change(function(){--}%
         %{--$("#ver_todos").removeClass("active")--}%

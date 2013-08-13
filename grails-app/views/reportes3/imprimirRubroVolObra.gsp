@@ -222,14 +222,14 @@
         <div class="row-fluid">
             <div class="span12">
 
-                <b># Concurso:</b>
+                <b>Concurso:</b> ${obra?.codigoConcurso}
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span12">
 
-                <b>Fecha presentación de la oferta:</b>
+                <b>Fecha presentación de la oferta:</b> ${fechaOferta}
             </div>
         </div>
 

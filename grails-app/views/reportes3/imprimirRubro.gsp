@@ -175,33 +175,33 @@
     </div>
 
     <div style="margin-top: 20px">
+
         <div class="row-fluid">
             <div class="span12" style="margin-right: 195px !important;">
-            <b class="span3">Proyecto:</b>${obra?.nombre.toUpperCase()}
+            <b>Proyecto:</b>${obra?.nombre.toUpperCase()}
             </div>
 
         </div>
-
-        <div class="row-fluid">
-        <div class="span6" style="margin-right: 195px !important;">
-        <b class="span6">Fecha presentación de la oferta:</b>
-        </div>
-
-        </div>
-
-        <div class="row-fluid">
-            <div class="span6" style="margin-right: 195px !important;">
-                <b class="span3">N° Concurso:</b>
-            </div>
-
-        </div>
-
         <div class="row-fluid">
             <div>
                 <b>Código:</b> ${rubro.codigo}
                 <b style="margin-left: 300px">Unidad:</b> ${rubro.unidad.codigo}
             </div>
         </div>
+
+        <div class="row-fluid">
+            <div class="span6" style="margin-right: 195px !important;">
+                <b>Concurso:</b>  ${obraOferente?.codigoConcurso}
+            </div>
+
+        </div>
+        <div class="row-fluid">
+            <div class="span6" style="margin-right: 195px !important;">
+                <b class="span6">Fecha presentación de la oferta:</b> ${fechaOferta}
+            </div>
+
+        </div>
+
 
         <div class="row-fluid">
             <div class="span12">

@@ -795,12 +795,11 @@ class ReportesController {
             addCellTabla(headerRubroTabla, new Paragraph("Unidad:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.unidad.codigo, times8normal), prmsHeaderHoja2)
 
-            addCellTabla(headerRubroTabla, new Paragraph("Fecha presentación de la oferta:", times8bold), prmsHeaderHoja3)
-            addCellTabla(headerRubroTabla, new Paragraph("", times8normal), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(" ", times8normal), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph("Fecha presentación de la oferta:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph(printFecha(obra?.fechaOferta), times8normal), prmsHeaderHoja2)
 
-            addCellTabla(headerRubroTabla, new Paragraph("N° Concurso:", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph("", times8normal), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph("Concurso:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigoConcurso, times8normal), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(" ", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(" ", times8normal), prmsHeaderHoja)
 
@@ -3675,10 +3674,12 @@ class ReportesController {
 
         def obra = Obra.get(params.id)
 
+        def oferente = Persona.get(params.oferente)
 
         def detalle
 
         detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
+
         def subPres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
 
         def precios = [:]
@@ -3734,45 +3735,48 @@ class ReportesController {
         def nmro
         def numero = 1;
 
-        def fila = 9;
+        def fila = 11;
 
         def ultimaFila
 
 
-        label = new Label(2, 2, "GOBIERNO AUTÓNOMO DESCENTRALIZADO DE LA PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
-
-
-        label = new Label(2, 4, "DEPARTAMENTO DE COSTOS", times16format); sheet.addCell(label);
-
-
-        label = new Label(2, 6, "ANÁLISIS DE PRECIOS UNITARIOS DEL SUBPRESUPUESTO: " + subPres?.descripcion.toString(), times16format); sheet.addCell(label);
 
 
 
-        label = new Label(0, 8, "#", times16format); sheet.addCell(label);
-        label = new Label(1, 8, "CÓDIGO", times16format); sheet.addCell(label);
-        label = new Label(2, 8, "RUBRO", times16format); sheet.addCell(label);
-        label = new Label(3, 8, "UNIDAD", times16format); sheet.addCell(label);
-        label = new Label(4, 8, "CANTIDAD", times16format); sheet.addCell(label);
-        label = new Label(5, 8, "UNITARIO", times16format); sheet.addCell(label);
-        label = new Label(6, 8, "C.TOTAL", times16format); sheet.addCell(label);
+        label = new Label(2, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(2, 4, "ANÁLISIS DE PRECIOS UNITARIOS DEL SUBPRESUPUESTO: " + subPres?.descripcion.toString(), times16format); sheet.addCell(label);
+        label = new Label(2, 6, "G.A.D. PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
+        label = new Label(2, 8, "NOMBRE DEL PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
+
+        label = new Label(0, 10, "#", times16format); sheet.addCell(label);
+        label = new Label(1, 10, "CÓDIGO", times16format); sheet.addCell(label);
+        label = new Label(2, 10, "SUBPRESUPUESTO", times16format); sheet.addCell(label);
+        label = new Label(3, 10, "RUBRO", times16format); sheet.addCell(label);
+        label = new Label(4, 10, "UNIDAD", times16format); sheet.addCell(label);
+        label = new Label(5, 10, "CANTIDAD", times16format); sheet.addCell(label);
+        label = new Label(6, 10, "UNITARIO", times16format); sheet.addCell(label);
+        label = new Label(7, 10, "C.TOTAL", times16format); sheet.addCell(label);
 
         detalle.each {
 
             def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
-            precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
 
-            def precioUnitario = precios[it.id.toString()]
+            def precio = 0
+            if(res["precio"][0]!=null && res["precio"][0]!="null" )
+                precio = res["precio"][0]
+            precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
 
-            def subtotal = (precios[it.id.toString()] * it.cantidad)
+            def precioUnitario = precios[it.id.toString()];
+            def subtotal = precios[it.id.toString()]*it.cantidad;
 
             number = new Number(0, fila, numero++); sheet.addCell(number);
             label = new Label(1, fila, it?.item?.codigo.toString()); sheet.addCell(label);
-            label = new Label(2, fila, it?.item?.nombre.toString()); sheet.addCell(label);
-            label = new Label(3, fila, it?.item?.unidad?.codigo.toString()); sheet.addCell(label);
-            number = new Number(4, fila, it?.cantidad); sheet.addCell(number);
-            number = new Number(5, fila, precioUnitario.round(2)); sheet.addCell(number);
-            number = new Number(6, fila, subtotal.round(2)); sheet.addCell(number);
+            label = new Label(2, fila, it?.subPresupuesto?.descripcion.toString()); sheet.addCell(label);
+            label = new Label(3, fila, it?.item?.nombre.toString()); sheet.addCell(label);
+            label = new Label(4, fila, it?.item?.unidad?.codigo.toString()); sheet.addCell(label);
+            number = new Number(5, fila, it?.cantidad); sheet.addCell(number);
+            number = new Number(6, fila, precioUnitario.round(2)); sheet.addCell(number);
+            number = new Number(7, fila, subtotal.round(2)); sheet.addCell(number);
 
             fila++
 
@@ -3784,8 +3788,8 @@ class ReportesController {
 
         }
 
-        label = new Label(5, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
-        number = new Number(6, ultimaFila, totalPresupuesto.round(2)); sheet.addCell(number);
+        label = new Label(6, ultimaFila, "TOTAL ", times16format); sheet.addCell(label);
+        number = new Number(7, ultimaFila, totalPresupuesto.round(2)); sheet.addCell(number);
 
 
 
