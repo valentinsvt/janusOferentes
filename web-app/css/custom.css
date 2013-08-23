@@ -290,7 +290,8 @@ th.desc a {
 }
 
 .table th {
-    background  : #49AFCD;
+    /*background  : #49AFCD;*/
+    background  : #498FCD;
     font-family : "Open Sans Condensed";
     font-size   : 15px;
     font-weight : bolder;
