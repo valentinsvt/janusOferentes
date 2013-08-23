@@ -105,6 +105,8 @@ class Obra implements Serializable {
     double distanciaAcemila=0
 
 
+    String memoInicioObra
+    String anexos
 
     String codigoConcurso
     Date fechaOferta
@@ -222,6 +224,8 @@ class Obra implements Serializable {
 
             codigoConcurso column: 'obracdcn'
             fechaOferta    column: 'obrafcof'
+            memoInicioObra column: 'obrammio'
+            anexos column: 'obraanxo'
         }
     }
     static constraints = {
@@ -330,6 +334,8 @@ class Obra implements Serializable {
         distanciaAcemila(blank: false, nullable: false)
         codigoConcurso    (blank: true, nullable: true)
         fechaOferta    (blank: true, nullable: true)
+        memoInicioObra(blank: true, nullable: true, maxSize: 20, attributes: [title: 'Memo de inicio de obra'])
+        anexos(blank: true, nullable: true, maxSize: 255, attributes: [title: 'Anexos y planos ingresados a la biblioteca'])
     }
 
     String toString() {
