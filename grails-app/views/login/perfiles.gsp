@@ -21,7 +21,7 @@
         <link href='${resource(dir: "css", file: "custom.css")}' rel='stylesheet' type='text/css'>
     </head>
 
-<body>
+<body style="background-color: #d9d9d9">
 
     <div class="dialog ui-corner-all" style="height: 595px;background: #d9d9d9;;padding: 10px;width: 910px; margin: auto;">
         <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size:

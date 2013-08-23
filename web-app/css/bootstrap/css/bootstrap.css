@@ -806,7 +806,8 @@ a.badge:hover {
 }
 .label-inverse,
 .badge-inverse {
-  background-color: #333333;
+  /*background-color: #333333;*/
+    background-color: #145588;     /* gdo */
 }
 .label-inverse[href],
 .badge-inverse[href] {
@@ -3185,7 +3186,8 @@ navbar-inner {
 .navbar-inverse .nav > li > a:focus,
 .navbar-inverse .nav > li > a:hover {
   background-color: transparent;
-  color: #ffffff;
+  /*color: #ffffff;*/
+  color: #fc7;
 }
 .navbar-inverse .nav .active > a,
 .navbar-inverse .nav .active > a:hover,
@@ -3206,8 +3208,8 @@ navbar-inner {
 .navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
 .navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
 .navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
-  background-color: #111111;
-  color: #ffffff;
+  background-color: #2067a7;  /*gdo*/
+  color: #ff981f; /*gdo*/
 }
 .navbar-inverse .nav li.dropdown > .dropdown-toggle .caret {
   border-top-color: #999999;
@@ -3949,7 +3951,7 @@ a.thumbnail:hover {
 }
 .modal-backdrop,
 .modal-backdrop.fade.in {
-  opacity: 0.8;
+  opacity: 0.5;
   filter: alpha(opacity=80);
 }
 .modal {
@@ -4071,7 +4073,8 @@ a.thumbnail:hover {
   padding: 5px 0;
   margin: 2px 0 0;
   list-style: none;
-  background-color: #ffffff;
+  /*background-color: #ffffff;*/
+  background-color: #f4fafc;  /*gdo*/
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   *border-right-width: 2px;
@@ -4114,7 +4117,8 @@ a.thumbnail:hover {
   text-decoration: none;
   color: #ffffff;
   background-color: #0088cc;
-  background-color: #0081c2;
+  /*background-color: #0081c2;*/
+  background-color: #3ca2ff;  /*gdo*/
   background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
   background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
@@ -4129,7 +4133,8 @@ a.thumbnail:hover {
   text-decoration: none;
   outline: 0;
   background-color: #0088cc;
-  background-color: #0081c2;
+  /*background-color: #0081c2;*/
+  background-color: #3ca2ff;  /*gdo*/
   background-image: -moz-linear-gradient(top, #0088cc, #0077b3);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0077b3));
   background-image: -webkit-linear-gradient(top, #0088cc, #0077b3);
