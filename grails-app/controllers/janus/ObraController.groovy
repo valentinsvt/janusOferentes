@@ -254,7 +254,14 @@ class ObraController extends janus.seguridad.Shield {
 
     def mapaObra() {
         def obra = Obra.get(params.id)
-        return [obra: obra]
+
+        def coordsParts = obra.coordenadas.split(" ")
+        def lat, lng
+
+        lat = (coordsParts[0] == 'N' ? 1 : -1) * (coordsParts[1].toInteger() + (coordsParts[2].toDouble() / 60))
+        lng = (coordsParts[3] == 'N' ? 1 : -1) * (coordsParts[4].toInteger() + (coordsParts[5].toDouble() / 60))
+
+        return [obra: obra, lat: lat, lng: lng]
     }
 
 
