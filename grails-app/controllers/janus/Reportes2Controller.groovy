@@ -1,8 +1,19 @@
 package janus
 
+import com.lowagie.text.Document
+import com.lowagie.text.Element
+import com.lowagie.text.PageSize
+import com.lowagie.text.Paragraph
+import com.lowagie.text.pdf.PdfContentByte
+import com.lowagie.text.pdf.PdfPCell
+import com.lowagie.text.pdf.PdfPTable
+import com.lowagie.text.pdf.PdfWriter
+import janus.pac.CronogramaContrato
 import jxl.Workbook
 import jxl.WorkbookSettings
 import jxl.write.*
+
+import java.awt.Color
 
 class Reportes2Controller {
 
@@ -10,6 +21,120 @@ class Reportes2Controller {
     def dbConnectionService
 
     def index() {}
+
+
+
+    def meses = ['', "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+    private String printFecha(Date fecha) {
+        if (fecha) {
+            return (fecha.format("dd")+' de '+ meses[fecha.format("MM").toInteger()]+' de '+fecha.format("yyyy")).toUpperCase()
+        } else {
+            return "Error: no hay fecha que mostrar"
+        }
+    }
+
+    private static int[] arregloEnteros(array) {
+        int[] ia = new int[array.size()]
+        array.eachWithIndex { it, i ->
+            ia[i] = it.toInteger()
+        }
+
+        return ia
+    }
+
+    private static void addCellTabla(PdfPTable table, paragraph, params) {
+        PdfPCell cell = new PdfPCell(paragraph);
+        if (params.height) {
+            cell.setFixedHeight(params.height.toFloat());
+        }
+        if (params.border) {
+            cell.setBorderColor(params.border);
+        }
+        if (params.bg) {
+            cell.setBackgroundColor(params.bg);
+        }
+        if (params.colspan) {
+            cell.setColspan(params.colspan);
+        }
+        if (params.align) {
+            cell.setHorizontalAlignment(params.align);
+        }
+        if (params.valign) {
+            cell.setVerticalAlignment(params.valign);
+        }
+        if (params.w) {
+            cell.setBorderWidth(params.w);
+            cell.setUseBorderPadding(true);
+        }
+        if (params.bwl) {
+            cell.setBorderWidthLeft(params.bwl.toFloat());
+            cell.setUseBorderPadding(true);
+        }
+        if (params.bwb) {
+            cell.setBorderWidthBottom(params.bwb.toFloat());
+            cell.setUseBorderPadding(true);
+        }
+        if (params.bwr) {
+            cell.setBorderWidthRight(params.bwr.toFloat());
+            cell.setUseBorderPadding(true);
+        }
+        if (params.bwt) {
+            cell.setBorderWidthTop(params.bwt.toFloat());
+            cell.setUseBorderPadding(true);
+        }
+        if (params.bcl) {
+            cell.setBorderColorLeft(params.bcl);
+        }
+        if (params.bcb) {
+            cell.setBorderColorBottom(params.bcb);
+        }
+        if (params.bcr) {
+            cell.setBorderColorRight(params.bcr);
+        }
+        if (params.bct) {
+            cell.setBorderColorTop(params.bct);
+        }
+        if (params.pl) {
+            cell.setPaddingLeft(params.pl.toFloat());
+        }
+        if (params.pr) {
+            cell.setPaddingRight(params.pr.toFloat());
+        }
+        if (params.pt) {
+            cell.setPaddingTop(params.pt.toFloat());
+        }
+        if (params.pb) {
+            cell.setPaddingBottom(params.pb.toFloat());
+        }
+
+        table.addCell(cell);
+    }
+
+    private String numero(num, decimales, cero) {
+        if (num == 0 && cero.toString().toLowerCase() == "hide") {
+            return " ";
+        }
+        if (decimales == 0) {
+            return formatNumber(number: num, minFractionDigits: decimales, maxFractionDigits: decimales, locale: "ec")
+        } else {
+            def format
+            if (decimales == 2) {
+                format = "##,##0"
+            } else if (decimales == 3) {
+                format = "##,###0"
+            }
+            return formatNumber(number: num, minFractionDigits: decimales, maxFractionDigits: decimales, locale: "ec", format: format)
+        }
+    }
+
+    private String numero(num, decimales) {
+        return numero(num, decimales, "show")
+    }
+
+    private String numero(num) {
+        return numero(num, 3)
+    }
 
     def test() {
         return [params: params]
@@ -350,6 +475,261 @@ class Reportes2Controller {
 
         return [lugar: lugar, cols: params.col, precios: res]
     }
+
+    private static void addEmptyLine(Paragraph paragraph, int number) {
+        for (int i = 0; i < number; i++) {
+            paragraph.add(new Paragraph(" "));
+        }
+    }
+
+
+    def reporteCronogramaPdf() {
+
+        println("--Z" + params)
+
+        def tipo = "obra"
+//        def obra = null, contrato = null, lbl = ""
+//        switch (tipo) {
+//            case "obra":
+//                obra = Obra.get(params.id.toLong())
+//                lbl = " la obra"
+//                break;
+//            case "contrato":
+//                contrato = Contrato.get(params.id)
+//                obra = contrato.obra
+//                lbl = "l contrato de la obra"
+//                break;
+//        }
+
+        def contrato = null, lbl =""
+
+        def obra = Obra.get(params.id)
+
+
+        def meses = obra.plazoEjecucionMeses + (obra.plazoEjecucionDias > 0 ? 1 : 0)
+
+        def detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
+
+        def precios = [:]
+        def indirecto = obra.totales / 100
+
+        preciosService.ac_rbroObra(obra.id)
+
+        detalle.each {
+            it.refresh()
+            def res = preciosService.precioUnitarioVolumenObraSinOrderBy("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+            precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
+        }
+
+        def baos = new ByteArrayOutputStream()
+
+        def name = "cronograma${tipo.capitalize()}_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+
+        com.lowagie.text.Font catFont = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font catFont2 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 14, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font catFont3 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 16, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font info = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL)
+        com.lowagie.text.Font fontTitle = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 9, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontTh = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontTd = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL);
+
+        Document document
+        document = new Document(PageSize.A4.rotate());
+        def pdfw = PdfWriter.getInstance(document, baos);
+        document.open();
+        PdfContentByte cb = pdfw.getDirectContent();
+        document.addTitle("Cronograma de${lbl} " + obra.nombre + " " + new Date().format("dd_MM_yyyy"));
+        document.addSubject("Generado por el sistema Janus");
+        document.addKeywords("reporte, janus, planillas");
+        document.addAuthor("Janus");
+        document.addCreator("Tedein SA");
+
+        /* ***************************************************** Titulo del reporte *******************************************************/
+        Paragraph preface = new Paragraph();
+        addEmptyLine(preface, 1);
+        preface.setAlignment(Element.ALIGN_CENTER);
+
+        preface.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", catFont3));
+
+        preface.add(new Paragraph("CRONOGRAMA DE ${lbl.toUpperCase()} " + obra.nombre, catFont2));
+        addEmptyLine(preface, 1);
+        Paragraph preface2 = new Paragraph();
+        preface2.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el: " + new Date().format("dd/MM/yyyy hh:mm"), info))
+        document.add(preface);
+        document.add(preface2);
+        Paragraph pMeses = new Paragraph();
+        pMeses.add(new Paragraph("Obra: ${obra.descripcion} (${meses} mes${meses == 1 ? '' : 'es'})", info))
+        addEmptyLine(pMeses, 1);
+        document.add(pMeses);
+
+        Paragraph codigoObra = new Paragraph();
+        codigoObra.add(new Paragraph("Código de la Obra: ${obra?.codigo}", info))
+        document.add(codigoObra);
+
+        Paragraph docReferencia = new Paragraph();
+        docReferencia.add(new Paragraph("Doc. Referencia: ${obra?.oficioIngreso}", info))
+        document.add(docReferencia);
+
+        Paragraph fecha = new Paragraph();
+        fecha.add(new Paragraph("Fecha: ${printFecha(obra?.fechaCreacionObra)}", info))
+//        addEmptyLine(fecha, 1);
+        document.add(fecha);
+        Paragraph fechaP = new Paragraph();
+        fechaP.add(new Paragraph("Fecha Act. Precios: ${printFecha(obra?.fechaPreciosRubros)}", info))
+        addEmptyLine(fechaP, 1);
+        document.add(fechaP);
+
+        /* ***************************************************** Fin Titulo del reporte ***************************************************/
+        /* ***************************************************** Tabla cronograma *********************************************************/
+        def tams = [10, 40, 5, 6, 6, 6, 2]
+        meses.times {
+            tams.add(7)
+        }
+        tams.add(10)
+
+        PdfPTable tabla = new PdfPTable(8 + meses);
+        tabla.setWidthPercentage(100);
+        tabla.setWidths(arregloEnteros(tams))
+        tabla.setWidthPercentage(100);
+
+        addCellTabla(tabla, new Paragraph("Código", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("Rubro", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("Unidad", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("Cantidad", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("P. Unitario", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("C. Total", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("T.", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        meses.times { i ->
+            addCellTabla(tabla, new Paragraph("Mes " + (i + 1), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        }
+        addCellTabla(tabla, new Paragraph("Total Rubro", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+//        addCellTabla(tabla, new Paragraph("Código", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("Rubro", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("Unidad", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("Cantidad", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("P. Unitario", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("C. Total", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        addCellTabla(tabla, new Paragraph("T.", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        meses.times { i ->
+//            addCellTabla(tabla, new Paragraph("Mes " + (i + 1), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+//        }
+//        addCellTabla(tabla, new Paragraph("Total Rubro", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+        tabla.setHeaderRows(1)
+//        tabla.setHeaderRows(2)
+//        tabla.setFooterRows(1)
+
+        def totalMes = []
+        def sum = 0
+        def borderWidth = 2
+
+        detalle.eachWithIndex { vol, s ->
+            def cronos
+            switch (tipo) {
+                case "obra":
+                    cronos = Cronograma.findAllByVolumenObra(vol)
+                    break;
+                case "contrato":
+                    cronos = CronogramaContrato.findAllByVolumenObra(vol)
+                    break;
+            }
+            def totalDolRow = 0, totalPrcRow = 0, totalCanRow = 0
+            def parcial = precios[vol.id.toString()] * vol.cantidad
+            sum += parcial
+
+            addCellTabla(tabla, new Paragraph(vol.item.codigo, fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph(vol.item.nombre, fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph(vol.item.unidad.codigo, fontTd), [border: Color.BLACK, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph(numero(vol.cantidad, 2), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph(numero(precios[vol.id.toString()], 2), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph(numero(parcial, 2), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            addCellTabla(tabla, new Paragraph('$', fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
+            meses.times { i ->
+                def prec = cronos.find { it.periodo == i + 1 }
+                totalDolRow += (prec ? prec.precio : 0)
+                if (!totalMes[i]) {
+                    totalMes[i] = 0
+                }
+                totalMes[i] += (prec ? prec.precio : 0)
+                addCellTabla(tabla, new Paragraph(numero(prec?.precio, 2), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            }
+            addCellTabla(tabla, new Paragraph(numero(totalDolRow, 2) + ' $', fontTh), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+
+            addCellTabla(tabla, new Paragraph(' ', fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 6])
+            addCellTabla(tabla, new Paragraph('%', fontTd), [border: Color.BLACK, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
+            meses.times { i ->
+                def porc = cronos.find { it.periodo == i + 1 }
+                totalPrcRow += (porc ? porc.porcentaje : 0)
+                addCellTabla(tabla, new Paragraph(numero(porc?.porcentaje, 2), fontTd), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            }
+            addCellTabla(tabla, new Paragraph(numero(totalPrcRow, 2) + ' %', fontTh), [border: Color.BLACK, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+
+            addCellTabla(tabla, new Paragraph(' ', fontTd), [border: Color.BLACK, bwb: borderWidth, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 6])
+            addCellTabla(tabla, new Paragraph('F', fontTd), [border: Color.BLACK, bwb: borderWidth, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE])
+            meses.times { i ->
+                def cant = cronos.find { it.periodo == i + 1 }
+                totalCanRow += (cant ? cant.cantidad : 0)
+                addCellTabla(tabla, new Paragraph(numero(cant?.cantidad, 2), fontTd), [border: Color.BLACK, bwb: borderWidth, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+            }
+            addCellTabla(tabla, new Paragraph(numero(totalCanRow, 2) + ' F', fontTh), [border: Color.BLACK, bwb: borderWidth, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        }
+
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("TOTAL PARCIAL", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 4])
+        addCellTabla(tabla, new Paragraph(numero(sum, 2), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("T", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        meses.times { i ->
+            addCellTabla(tabla, new Paragraph(numero(totalMes[i], 2), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        }
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("TOTAL ACUMULADO", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 4])
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("T", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        def acu = 0
+        meses.times { i ->
+            acu += totalMes[i]
+            addCellTabla(tabla, new Paragraph(numero(acu, 2), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        }
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("% PARCIAL", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 4])
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("T", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        meses.times { i ->
+            def prc = 100 * totalMes[i] / sum
+            addCellTabla(tabla, new Paragraph(numero(prc, 2), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        }
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("% ACUMULADO", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE, colspan: 4])
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        addCellTabla(tabla, new Paragraph("T", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+        acu = 0
+        meses.times { i ->
+            def prc = 100 * totalMes[i] / sum
+            acu += prc
+            addCellTabla(tabla, new Paragraph(numero(acu, 2), fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE])
+        }
+        addCellTabla(tabla, new Paragraph(" ", fontTh), [border: Color.BLACK, bg: Color.LIGHT_GRAY, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE])
+
+        document.add(tabla)
+        /* ***************************************************** Fin Tabla cronograma *****************************************************/
+        document.close();
+
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+    }
+
 
 
     def reporteExcelComposicion() {

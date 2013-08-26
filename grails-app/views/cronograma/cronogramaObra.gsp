@@ -131,9 +131,9 @@
                 %{--<i class="icon-bar-chart"></i>--}%
                 %{--Gráfico de avance físico--}%
                 %{--</a>--}%
-                    <g:link action="excel" class="btn" id="${obra.id}">
-                        <i class="icon-table"></i>
-                        Exportar a Excel
+                    <g:link controller="reportes2" action="reporteCronogramaPdf" class="btn" id="${obra.id}">
+                        <i class="icon-print"></i>
+                        Imprimir pdf
                     </g:link>
                 </div>
             </g:if>

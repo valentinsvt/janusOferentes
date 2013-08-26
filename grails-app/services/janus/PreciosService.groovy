@@ -113,6 +113,20 @@ class PreciosService {
     }
 
 
+
+    def precioUnitarioVolumenObraSinOrderBy(select, obra, item) {
+        def cn = dbConnectionService.getConnection()
+        def sql = "select ${select} from vlob_pcun_of(${obra},${item}) "
+//        println "sql pcvl "+sql
+        def result = []
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+        return result
+    }
+
+
     def getPrecioRubroItemOperador(fecha, lugar, items, operador) {
 //        println "******************************************"
 //        println fecha
