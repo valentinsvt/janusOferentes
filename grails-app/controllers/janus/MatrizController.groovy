@@ -22,10 +22,30 @@ class MatrizController extends janus.seguridad.Shield {
 //        println "sql desc "+sql
         def columnas = []
         def filas = []
+
         cn.eachRow(sql.toString()){r->
-            columnas.add([r[0],r[1],r[2]])
+            def col = ""
+            if (r[2] != "R") {
+                def parts = r[1].split("_")
+                //println "parts "+parts
+                //def num
+                try{
+                    //col = parts[0].toLong()
+                    col = Item.get(parts[0].toLong()).nombre
+
+                }catch (e){
+                    println "matriz controller l 37: "+"error: " + e
+                    col = parts[0]
+                }
+
+                col += " " + parts[1]?.replaceAll("T","<br/>Total")?.replaceAll("U","<br/>Unitario")
+            }
+
+            //println col
+            columnas.add([r[0], col, r[2]])
         }
-        [obra:obra,cols:columnas]
+        def titulo = Obra.get(obra).desgloseTransporte == "S" ? 'Matriz con desglose de Transporte' : 'Matriz sin desglose de Transporte'
+        [obra: obra, cols: columnas, titulo: titulo]
     }
 
     def matrizPolinomica(){
