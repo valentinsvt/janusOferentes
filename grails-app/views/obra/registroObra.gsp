@@ -550,18 +550,32 @@
 
         <div class="modal-body" id="modal_body_matriz">
             <div id="msg_matriz">
-                <p>Desea volver a generar la matriz? Esta acción podria tomar varios minutos</p>
+                <g:if test="${obra.desgloseTransporte == 'S'}">
+                    <p style="font-size: 14px; text-align: center;">Ya existe una matriz generada
+                    </p>
+                </g:if>
+                <g:else>
+                    <g:if test="${obra.desgloseTransporte == 'N'}">
+                        <p style="font-size: 14px; text-align: center;">Ya existe una matriz generada
+                        </p>
+                    </g:if>
+                </g:else>
+                <p>Desea generar la matriz? Esta acción podria tomar varios minutos</p>
                 <a href="#" class="btn btn-info" id="no">No</a>
                 <a href="#" class="btn btn-danger" id="si">Si</a>
+                <a href="#" class="btn btn-info" id="cancela" style="margin-left: 400px;">Cancelar</a>
 
             </div>
 
-            <div id="datos_matriz">
-                <p>Si no escoge un subpresupuesto se generará con todos</p>
-                <g:select name="mtariz_sub" from="${subs}" noSelection="['0': 'Seleccione...']" optionKey="id"
-                          optionValue="descripcion" style="margin-right: 20px"></g:select>
-                Generar con transporte <input type="checkbox" id="si_trans" style="margin-top: -3px" checked="true">
-                <a href="#" class="btn btn-success" id="ok_matiz" style="margin-left: 10px">Generar</a>
+            <div id="datos_matriz" style="text-align: center">
+%{--
+                <span>Seleccione el subpresupuesto:</span>
+                <g:select name="mtariz_sub" from="${subs}" noSelection="['0': 'Todos los subpresupuestos']" optionKey="id" optionValue="descripcion" style="margin-right: 20px"></g:select>
+                <p>Generar con desglose de Transporte <input type="checkbox" id="si_trans" style="margin-top: -3px" checked="true">
+                </p>
+--}%
+                <p>Haga clic en el botón Generar para iniciar el proceso</p>
+                <a href="#" class="btn btn-success" id="ok_matiz">Generar</a>
             </div>
         </div>
 
@@ -959,9 +973,12 @@
                     $("#modal_title_var").html("Variables");
                     $("#modal_body_var").html(msg);
                     $("#modal_footer_var").html("").append(btnCancel);
+/*
                     <g:if test="${obra?.estado!='R'}">
                     $("#modal_footer_var").html("").append(btnSave);
                     </g:if>
+*/
+                    $("#modal_footer_var").html("").append(btnSave);
                     $("#modal-var").modal("show");
                 }
             });

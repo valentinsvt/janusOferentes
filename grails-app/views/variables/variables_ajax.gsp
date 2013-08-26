@@ -245,6 +245,7 @@
         update.val(number_format(sum1, 2, ".", ""));
     }
 
+/*
     function costoItem($campo, $update) {
         var id = $campo.val();
         var fecha = $("#fechaPreciosRubros").val();
@@ -275,6 +276,7 @@
             $update.val("0.00");
         }
     }
+*/
 
     $(function () {
         $(".sum1").keyup(function (ev) {
