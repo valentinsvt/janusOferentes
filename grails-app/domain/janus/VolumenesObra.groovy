@@ -6,6 +6,9 @@ class VolumenesObra implements Serializable {
     Obra obra
     double cantidad
     int orden = 1
+
+    double dias
+
     static auditable = [ignore: ["orden"]]
     static mapping = {
         table 'vlob'
@@ -20,6 +23,8 @@ class VolumenesObra implements Serializable {
             obra column: 'obra__id'
             cantidad column: 'vlobcntd'
             orden column: 'vlobordn'
+
+            dias column: 'vlobdias'
         }
     }
     static constraints = {

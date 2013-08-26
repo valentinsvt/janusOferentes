@@ -1,7 +1,6 @@
 package janus
 
 import groovy.json.JsonBuilder
-import org.springframework.dao.DataIntegrityViolationException
 
 class FormulaPolinomicaController extends janus.seguridad.Shield {
 
@@ -145,22 +144,22 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
             redirect(controller: "obra", action: "registroObra", params: ["obra": params.id])
             return
         } else {
-            println "VERIFICA"
+//            println "VERIFICA"
             def sqlValidacion = "select count(*) cuantos from vlobitem where obra__id = ${params.id} and voitcoef is not null"
-            println sqlValidacion
+//            println sqlValidacion
             def validacion = cn.rows(sqlValidacion.toString())[0].cuantos
-            println "validacion: " + validacion
+//            println "validacion: " + validacion
             if (validacion == 0) {
                 def sqlSubPresupuestos = "select distinct(sbpr__id) id from vlob where obra__id = ${params.id}"
-                println sqlSubPresupuestos
+//                println sqlSubPresupuestos
                 cn.eachRow(sqlSubPresupuestos.toString()) { row ->
-                    println ">>" + row
+//                    println ">>" + row
                     def cn2 = dbConnectionService.getConnection()
                     def idSp = row.id
                     def sqlLlenaDatos = "select * from sp_fpoli(${params.id}, ${idSp})"
                     println sqlLlenaDatos
                     cn2.eachRow(sqlLlenaDatos.toString()) { row2 ->
-                        println "++" + row2
+//                        println "++" + row2
                     }
                 }
             }
@@ -169,20 +168,24 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
 
             def obra = Obra.get(params.id)
             def fp = FormulaPolinomica.findAllByObra(obra, [sort: "numero"])
+            def total = 0
 
             fp.each { f ->
                 if (f.numero =~ params.tipo) {
+                    def children = ItemsFormulaPolinomica.findAllByFormulaPolinomica(f)
                     def mapFormula = [
                             data: f.numero,
                             attr: [
                                     id: "fp_" + f.id,
                                     numero: f.numero,
-                                    nombre: f.indice?.descripcion,
-                                    valor: f.valor,
+//                                    nombre: f.indice?.descripcion,
+//                                    valor: f.valor,
+                                    nombre: (f.valor > 0 || children.size() > 0) ? f.indice?.descripcion : "",
+                                    valor: g.formatNumber(number: f.valor, maxFractionDigits: 3, minFractionDigits: 3),
                                     rel: "fp"
                             ]
                     ]
-                    def children = ItemsFormulaPolinomica.findAllByFormulaPolinomica(f)
+                    total += f.valor
                     if (children.size() > 0) {
                         mapFormula.children = []
                         children.each { ch ->
@@ -193,7 +196,8 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
                                             numero: ch.item.codigo,
                                             nombre: ch.item.nombre,
                                             item: ch.itemId,
-                                            valor: ch.valor,
+//                                            valor: ch.valor,
+                                            valor: g.formatNumber(number: ch.valor, maxFractionDigits: 5, minFractionDigits: 5),
                                             rel: "it"
                                     ]
                             ]
@@ -207,30 +211,43 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
 //            println data
             def json = new JsonBuilder(data)
 //            println json.toPrettyString()
-            def sql = "SELECT\n" +
-                    "  v.voit__id                            id,\n" +
+//            def sql = "SELECT\n" +
+//                    "  v.voit__id                            id,\n" +
+//                    "  i.item__id                            iid,\n" +
+//                    "  i.itemcdgo                            codigo,\n" +
+//                    "  i.itemnmbr                            item,\n" +
+//                    "  v.voitcoef                            aporte,\n" +
+//                    "  d.dprtdscr                            departamento,\n" +
+//                    "  s.sbgrdscr                            subgrupo,\n" +
+//                    "  g.grpodscr                            grupo,\n" +
+//                    "  g.grpo__id                            grid  \n" +
+//                    "FROM vlobitem v\n" +
+//                    "  INNER JOIN item i ON v.item__id = i.item__id\n" +
+//                    "  INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
+//                    "  INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
+//                    "  INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.filtro})\n" +
+//                    "WHERE v.obra__id = ${obra.id}\n" +
+//                    "  AND v.item__id NOT IN (SELECT\n" +
+//                    "                           t.item__id\n" +
+//                    "                         FROM itfp t\n" +
+//                    "                           INNER JOIN fpob f ON t.fpob__id = f.fpob__id AND f.obra__id = ${obra.id});"
+
+            def sql = "SELECT distinct\n" +
+//                    "  v.voit__id                            id,\n" +
                     "  i.item__id                            iid,\n" +
                     "  i.itemcdgo                            codigo,\n" +
                     "  i.itemnmbr                            item,\n" +
-                    "  v.voitcoef                            aporte,\n" +
-                    "  d.dprtdscr                            departamento,\n" +
-                    "  s.sbgrdscr                            subgrupo,\n" +
-                    "  g.grpodscr                            grupo,\n" +
-                    "  g.grpo__id                            grid  \n" +
+                    "  v.voitcoef                            aporte\n" +
                     "FROM vlobitem v\n" +
                     "  INNER JOIN item i ON v.item__id = i.item__id\n" +
-                    "  INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
-                    "  INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
-                    "  INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.filtro})\n" +
-                    "WHERE v.obra__id = ${obra.id}\n" +
-                    "  AND v.item__id NOT IN (SELECT\n" +
-                    "                           t.item__id\n" +
-                    "                         FROM itfp t\n" +
-                    "                           INNER JOIN fpob f ON t.fpob__id = f.fpob__id AND f.obra__id = ${obra.id});"
+                    "WHERE v.obra__id = ${obra.id} AND voitgrpo IN (${params.filtro})\n and v.item__id NOT IN (SELECT\n" +
+                    "      t.item__id FROM itfp t\n" +
+                    "      INNER JOIN fpob f ON t.fpob__id = f.fpob__id AND f.obra__id = ${obra.id});"
 
             def rows = cn.rows(sql.toString())
 
-            [obra: obra, json: json, tipo: params.tipo, rows: rows]
+//            [obra: obra, json: json, tipo: params.tipo, rows: rows]
+            [obra: obra, json: json, tipo: params.tipo, rows: rows, total: total]
         }
     }
 
@@ -413,7 +430,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
             flash.message = "Se ha eliminado correctamente FormulaPolinomica " + formulaPolinomicaInstance.id
             redirect(action: "list")
         }
-        catch (DataIntegrityViolationException e) {
+        catch (e) {
             flash.clase = "alert-error"
             flash.message = "No se pudo eliminar FormulaPolinomica " + (formulaPolinomicaInstance.id ? formulaPolinomicaInstance.id : "")
             redirect(action: "list")
