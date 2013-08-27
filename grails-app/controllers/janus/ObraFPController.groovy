@@ -114,6 +114,7 @@ class ObraFPController {
     }
 
     def matrizFP() {
+        def res = ""
         println "matriz fp "+params
         /* --------------------- parámetros que se requieren para correr el proceso  --------------------- */
         def obra__id = params.obra.toInteger()         // obra de pruebas dos rubros: 550, varios 921. Pruebas 886
@@ -246,7 +247,11 @@ class ObraFPController {
 
         tarifaHoraria(obra__id)
         println "completa tarifaHoraria"
-        cuadrillaTipo(obra__id)            /* cambio obra__id */
+        res = cuadrillaTipo(obra__id)            /* cambio obra__id */
+        if (!res){
+            println "res"
+        }
+
         println "completa cuadrillaTipo"
 
         formulaPolinomica(obra__id)                 /* cambio obra__id */
@@ -951,8 +956,8 @@ class ObraFPController {
         def tx = ""
         tx_sql =  "select clmndscr from mfcl where obra__id = ${id} and clmntipo = 'O'"
         cn.eachRow(tx_sql.toString()) {row ->
-            tx_cr = "select item__id, itemcdgo, itemnmbr from item where itemcmpo = '${row.clmndscr[0..-3]}'"
-            //println "tx_cr..... campo:" + tx_cr
+            tx_cr = "select item__id, itemcdgo, itemnmbr from item where item__id = '${row.clmndscr[0..-3]}'"
+            println "tx_cr..... campo:" + tx_cr
             cn1.eachRow(tx_cr.toString()) {d ->
                 item__id = d.item__id
                 item     = d.itemcdgo
@@ -968,10 +973,14 @@ class ObraFPController {
                 tx_cr = "select itempcun pcun from obit where item__id = ${item__id}"
             }
 
-            //println "...... segunda: " + tx_cr
+            println "...... segunda: " + tx_cr
 
             cn1.eachRow(tx_cr.toString()) {d ->
-                if (d.pcun == 0) errr = "No existe precio para el item ${item}: ${tx}"
+                if (!d.pcun) {
+                    println "No existe precio para el item ${item}: ${tx}"
+                    pcun = 0
+                }
+//                if (d.pcun == 0) errr = "No existe precio para el item ${item}: ${tx}"
                 pcun = d.pcun
             }
 
@@ -1005,23 +1014,24 @@ class ObraFPController {
 
         tx_sql =  "select sum(valor) suma from mfcl c, mfvl v "
         tx_sql += "where c.clmncdgo = v.clmncdgo and c.obra__id = v.obra__id and c.obra__id = ${id} and codigo = 'sS2' and clmntipo = 'O'"
-//        println "total: " + tx_sql
+        println "total: " + tx_sql
         cn.eachRow(tx_sql.toString()) {row ->
             total = row.suma
         }
         clmn = columnaCdgo(id, 'TOTAL_T')
         tx_sql =  "select valor from mfvl where obra__id = ${id} and clmncdgo = ${clmn} and codigo = 'sS2'"
-//        println "granTotal" + tx_sql
+        println "granTotal" + tx_sql
         cn.eachRow(tx_sql.toString()) {row ->
             granTotal = row.valor
         }
         tx_sql =  "select sum(valor) suma from mfcl c, mfvl v "
         tx_sql += "where c.clmncdgo = v.clmncdgo and c.obra__id = v.obra__id and c.obra__id = ${id} and codigo = 'sS6' and clmntipo = 'O'"
+        println "suma totalS6: $tx_sql"
         cn.eachRow(tx_sql.toString()) {row ->
             totalS6 = row.suma
         }
-//        println  "total" + total + ", granTotal" + granTotal
-        if (totalS6 == 0) errr = "Error: La suma de componentes de Mano de Obra da CERO," +
+        println  "total" + total + ", granTotal" + granTotal
+        if (totalS6.toBigInteger() == 0) errr = "Error: La suma de componentes de Mano de Obra da CERO," +
                 "revise los parámetros de Precios"
         else {
             clmn = columnaCdgo(id, "${id_manoDeObra}_T")

@@ -257,8 +257,15 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
         def cn = dbConnectionService.getConnection()
         def cn2 = dbConnectionService.getConnection()
         def updates = dbConnectionService.getConnection()
-        def sql = "SELECT v.voit__id,v.obra__id,v.item__id,v.voitpcun,v.voitcntd,v.voitcoef,v.voitordn,v.voittrnp,v.voitrndm,i.itemnmbr,i.dprt__id,d.sbgr__id,s.grpo__id,o.clmndscr,o.clmncdgo from vlobitem v,dprt d,sbgr s,item i,mfcl o where v.item__id=i.item__id and i.dprt__id=d.dprt__id and d.sbgr__id=s.sbgr__id  and o.clmndscr = i.itemcmpo || '_T'  and  v.obra__id = ${params.obra} and o.obra__id=${params.obra} order by s.grpo__id"
-//        println "sql "+sql
+        def sql = "SELECT v.voit__id,v.obra__id,v.item__id,v.voitpcun,v.voitcntd,v.voitcoef," +
+                "v.voitordn, v.voittrnp, v.voitrndm, i.itemnmbr, i.dprt__id, d.sbgr__id, " +
+                "s.grpo__id, o.clmndscr, o.clmncdgo " +
+                "from vlobitem v, dprt d, sbgr s, item i, mfcl o " +
+                "where v.item__id = i.item__id and i.dprt__id = d.dprt__id and " +
+                "d.sbgr__id = s.sbgr__id  and o.clmndscr = i.itemcmpo || '_T'  and " +
+                "v.obra__id = ${params.obra} and o.obra__id=${params.obra} " +
+                "order by s.grpo__id"
+        println "sql "+sql
         cn.eachRow(sql.toString()) { r ->
 //            println "r-> "+r
             def codigo = ""
@@ -280,7 +287,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
 
         def fp = FormulaPolinomica.findAllByObra(obra)
         if (fp.size() == 0) {
-            def indice21 = Indice.findByCodigo("Cem")
+            def indice21 = Indice.findByCodigo("Cem-Po")
             def indiSldo = Indice.findByCodigo("SLDO")
             def indiMano = Indice.findByCodigo("MO")
             def indiPeon = Indice.findByCodigo("C.1")
@@ -291,7 +298,8 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
                     fpx.numero = "p0" + (it + 1)
                     if (it == 0) {
                         fpx.indice = indiMano
-                        def select = "select clmncdgo from mfcl where clmndscr = 'MANO_OBRA_T' and obra__id = ${params.obra} "
+//                        def select = "select clmncdgo from mfcl where clmndscr = 'MANO_OBRA_T' and obra__id = ${params.obra} "
+                        def select = "select clmncdgo from mfcl where clmndscr = (select item__id||'_T' from item where itemcdgo = 'MO') and obra__id = ${params.obra} "
                         def columna
                         def valor = 0
                         println "sql it 0 mfcl " + select

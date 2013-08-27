@@ -14,6 +14,7 @@ class VariablesController {
 
         def volquetes = []
         def choferes = []
+/*
         def grupoTransporte = DepartamentoItem.findAllByTransporteIsNotNull()
         grupoTransporte.each {
             if (it.transporte.codigo == "H")
@@ -21,6 +22,7 @@ class VariablesController {
             if (it.transporte.codigo == "T")
                 volquetes = Item.findAllByDepartamento(it)
         }
+*/
 
         [choferes: choferes, volquetes: volquetes, obra: obra, par: par]
     }
