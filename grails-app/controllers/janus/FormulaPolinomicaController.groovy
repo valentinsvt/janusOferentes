@@ -180,7 +180,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
                                     numero: f.numero,
 //                                    nombre: f.indice?.descripcion,
 //                                    valor: f.valor,
-                                    nombre: (f.valor > 0 || children.size() > 0) ? f.indice?.descripcion : "",
+                                    nombre: (f.valor > 0 || children.size() > 0 || f.numero == "p01") ? f.indice?.descripcion : "",
                                     valor: g.formatNumber(number: f.valor, maxFractionDigits: 3, minFractionDigits: 3),
                                     rel: "fp"
                             ]
@@ -324,9 +324,11 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
                     fpx.indice = indiSldo
                     fpx.valor = 0
                 }
-                if (!fpx.save(flush: true))
+                if (!fpx.save(flush: true)) {
                     println "erroe save fpx " + fpx.errors
-
+                } else {
+                    println "Grabado fpx (fpob) " + fpx.id
+                }
                 if (it < 10) {
                     def cuadrilla = new FormulaPolinomica()
                     cuadrilla.obra = obra
