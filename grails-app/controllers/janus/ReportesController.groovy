@@ -9,7 +9,7 @@ import jxl.Workbook
 import jxl.WorkbookSettings
 import jxl.write.*
 
-import java.awt.*
+import java.awt.Color
 
 //import java.awt.Label
 
