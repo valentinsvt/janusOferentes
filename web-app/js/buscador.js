@@ -3,7 +3,9 @@
 $("#buscar").click(function() {
     var w = screen.width
     var l = w/2-(460)
+
     $(".buscador").dialog('open')
+    $("#criterio").focus()
     $(".buscador").dialog({
         position:[l,30]
     })
@@ -40,6 +42,24 @@ $("#btn_reporte").button().click(function(){
         var div = $("#tablaBuscador").parent()
         //console.log(headers)
         location.href =div.attr("url")+"?"+data+"&reporte=1"
+    }
+
+});
+$("#btn_excel").button().click(function(){
+    if($("#tablaBuscador").html()){
+        var data = "";
+        $(".crit").each(function(){
+            data+="&campos="+$(this).attr("campo");
+            data+="&operadores="+$(this).attr("operador");
+            data+="&criterios="+$(this).attr("criterio");
+        });
+        if(data.length<2){
+            data="tc="+$("#tipoCampo").val()+"&campos="+$("#campo :selected").val()+"&operadores="+$("#operador :selected").val()+"&criterios="+$("#criterio").val()
+        }
+        data+="&ordenado="+$("#campoOrdn :selected").val()+"&orden="+$("#orden :selected").val();
+
+        var div = $("#tablaBuscador").parent()
+        location.href =div.attr("url")+"?"+data+"&excel=1"
     }
 
 });
@@ -114,6 +134,6 @@ function cambiaOperador() {
 
 $("#criterio").keypress(function(event){
     if(parseInt(event.keyCode) == 13){
-        enviar();
+       $("#buscarDialog").click()
     }
 });

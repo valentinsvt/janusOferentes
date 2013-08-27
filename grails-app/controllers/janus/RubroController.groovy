@@ -67,6 +67,8 @@ class RubroController extends janus.seguridad.Shield {
         def choferes = []
         def aux = Parametros.get(1)
         def grupoTransporte = DepartamentoItem.findAllByTransporteIsNotNull()
+        def obra = Obra.findByOferente(session.usuario)
+//        println "obra "+obra.totales
         grupoTransporte.each {
             if (it.transporte.codigo == "H")
                 choferes = Item.findAllByDepartamento(it)
@@ -80,9 +82,9 @@ class RubroController extends janus.seguridad.Shield {
             rubro = Item.get(params.idRubro)
             def items = Rubro.findAllByRubro(rubro)
             items.sort { it.item.codigo }
-            [campos: campos, rubro: rubro, grupos: grupos, items: items, choferes: choferes, volquetes: volquetes, aux: aux]
+            [campos: campos, rubro: rubro, grupos: grupos, items: items, choferes: choferes, volquetes: volquetes, aux: aux,obra:obra]
         } else {
-            [campos: campos, grupos: grupos, choferes: choferes, volquetes: volquetes, aux: aux]
+            [campos: campos, grupos: grupos, choferes: choferes, volquetes: volquetes, aux: aux,obra:obra]
         }
     }
 
@@ -90,7 +92,7 @@ class RubroController extends janus.seguridad.Shield {
 //        println "get datos items "+params
         def item = Item.get(params.id)
 //        println "render "+  item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad.codigo + "&" + item.rendimiento+"&"+((item.tipoLista)?item.tipoLista?.id:"0")
-        render "" + item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad?.codigo?.trim() + "&" + item.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")
+        render "" + item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad?.codigo?.trim() + "&" + item.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")+"&"+item.departamento.subgrupo.grupo.id
     }
 
     def addItem() {
@@ -148,7 +150,7 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def buscaItem() {
-//        println "busca item "+params
+        println "busca item "+params
         def listaTitulos = ["Código", "Descripción"]
         def listaCampos = ["codigo", "nombre"]
         def funciones = [null, null]
@@ -160,23 +162,27 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += ' success: function(msg){'
         funcionJs += 'var parts = msg.split("&");'
         funcionJs += ' $("#item_id").val(parts[0]);'
+        funcionJs += ' $("#item_id").attr("tipo",parts[6]);'
         funcionJs += '$("#cdgo_buscar").val(parts[1]);'
         funcionJs += '$("#item_desc").val(parts[2]);'
         funcionJs += '$("#item_unidad").val(parts[3]);'
         funcionJs += '$("#item_tipoLista").val(parts[5]);'
         funcionJs += '$("#modal-rubro").modal("hide");'
-        funcionJs += 'getPrecio();'
         funcionJs += '}'
         funcionJs += '});'
         funcionJs += '}'
         def numRegistros = 20
-        def extras = " and tipoItem = 1"
+
+        def tipo=params.tipo
+        def extras = " and tipoItem = 1 "
+//        println "extras "+extras
+
         if (!params.reporte) {
             def lista = buscadorService.buscar(Item, "Item", "excluyente", params, true, extras) /* Dominio, nombre del dominio , excluyente o incluyente ,params tal cual llegan de la interfaz del buscador, ignore case */
             lista.pop()
             render(view: '../tablaBuscador', model: [listaTitulos: listaTitulos, listaCampos: listaCampos, lista: lista, funciones: funciones, url: url, controller: "llamada", numRegistros: numRegistros, funcionJs: funcionJs])
         } else {
-            println "entro reporte"
+//            println "entro reporte"
             /*De esto solo cambiar el dominio, el parametro tabla, el paramtero titulo y el tamaño de las columnas (anchos)*/
             session.dominio = Item
             session.funciones = funciones
@@ -184,7 +190,6 @@ class RubroController extends janus.seguridad.Shield {
             redirect(controller: "reportes", action: "reporteBuscador", params: [listaCampos: listaCampos, listaTitulos: listaTitulos, tabla: "Item", orden: params.orden, ordenado: params.ordenado, criterios: params.criterios, operadores: params.operadores, campos: params.campos, titulo: "Rubros", anchos: anchos, extras: extras, landscape: true])
         }
     }
-
     def buscaRubro() {
 
         def listaTitulos = ["Código", "Descripción", "Unidad"]

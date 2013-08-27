@@ -196,7 +196,7 @@
         </g:if>
         <div class="span3">
             % costos indirectos
-            <input type="text" style="width: 30px;" id="costo_indi" value="21">
+            <input type="text" style="width: 30px;" id="costo_indi" value="${(obra)?obra.totales:'21'}">
         </div>
 
     </div>
@@ -581,7 +581,282 @@
 
 </div>
 <script type="text/javascript">
+    function agregar(id,tipo){
+        var tipoItem=$("#item_id").attr("tipo")
+        var cant = $("#item_cantidad").val()
+        if (cant == "")
+            cant = 0
+        if (isNaN(cant))
+            cant = 0
+        if(tipoItem*1>1){
+            if(cant>0){
+                var c = Math.ceil(cant)
+//                console.log(c)
+                if(c>cant){
+                    cant=0
+                }
+            }
+        }
+        var rend = $("#item_rendimiento").val()
+        if (isNaN(rend))
+            rend = 1
+        var precio = $("#item_precio").val()
+        if (isNaN(precio))
+            precio = 0
 
+        if ($("#item_id").val() * 1 > 0) {
+            if (cant > 0 && precio>0) {
+                var data = "rubro=${rubro.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
+                $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'addItem')}",
+                    data     : data,
+                    success  : function (msg) {
+                        if(tipo=="H"){
+                            window.location.href="${g.createLink(action: 'rubroPrincipal')}?idRubro="+id
+                        }
+                        var tr = $("<tr class='item_row'>")
+                        var td = $("<td>")
+                        var band = true
+                        var parts = msg.split(";")
+                        tr.attr("id", parts[1])
+                        tr.attr("tipoLista", parts[5])
+                        var a
+                        td.addClass("cdgo")
+                        td.html($("#cdgo_buscar").val())
+                        tr.append(td)
+                        td = $("<td>")
+                        td.html($("#item_desc").val())
+                        tr.append(td)
+
+                        if (parts[0] == "1") {
+                            $("#tabla_material").children().find(".cdgo").each(function () {
+//                                    ////console.log($(this))
+                                if ($(this).html() == $("#cdgo_buscar").val()) {
+                                    var tdCant = $(this).parent().find(".cant")
+                                    var tdRend = $(this).parent().find(".rend")
+                                    tdCant.html(number_format(parts[3], 5, ".", ""))
+                                    tdRend.html(number_format(parts[4], 5, ".", ""))
+                                    tdRend.attr("valor", parts[4]);
+                                    band = false
+                                }
+                            });
+                            if (band) {
+                                td = $("<td style='text-align: center' class='col_unidad'>")
+                                td.html($("#item_unidad").val())
+                                tr.append(td)
+                                td = $("<td style='text-align: right' class='cant'>")
+                                td.html(number_format($("#item_cantidad").val(), 5, ".", ""))
+                                tr.append(td)
+                                td = $('<td class="col_precioUnit" style="display: none;text-align: right"></td>');
+                                td.attr("id", "i_" + parts[2])
+                                tr.append(td)
+                                td = $('<td class="col_vacio" style="width: 40px;display: none"></td>');
+                                tr.append(td)
+                                td = $('<td class="col_vacio" style="width: 40px;display: none"></td>');
+                                tr.append(td)
+                                td = $('<td class="col_total" style="display: none;text-align: right"></td>');
+                                tr.append(td)
+                                td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
+                                a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
+                                td.append(a)
+                                tr.append(td)
+                                $("#tabla_material").append(tr)
+                            }
+
+                        } else {
+                            if (parts[0] == "2") {
+
+                                $("#tabla_mano").children().find(".cdgo").each(function () {
+//                                        ////console.log("mano de obra ",parts)
+                                    if ($(this).html() == $("#cdgo_buscar").val()) {
+                                        var tdCant = $(this).parent().find(".cant")
+                                        var tdRend = $(this).parent().find(".rend")
+                                        tdCant.html(number_format(parts[3], 5, ".", ""))
+                                        tdRend.html(number_format(parts[4], 5, ".", ""))
+                                        tdRend.attr("valor", parts[4]);
+                                        band = false
+                                    }
+                                });
+                                if (band) {
+                                    td = $("<td style='text-align: right' class='cant'>")
+                                    td.html(number_format(parts[3], 5, ".", ""))
+                                    tr.append(td)
+                                    td = $('<td class="col_jornal" style="display: none;text-align: right"></td>');
+                                    td.attr("id", "i_" + parts[2])
+                                    tr.append(td)
+                                    td = $('<td class="col_hora" style="display: none;text-align: right"></td>');
+                                    tr.append(td)
+                                    td = $("<td style='text-align: right' class='col_rend rend'>")
+                                    td.attr("valor", parts[4]);
+                                    td.html(number_format(parts[4], 5, ".", ""))
+                                    tr.append(td)
+                                    td = $('<td class="col_total" style="display: none;text-align: right"></td>');
+                                    tr.append(td)
+                                    td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
+                                    a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
+                                    td.append(a)
+                                    tr.append(td)
+                                    $("#tabla_mano").append(tr)
+                                }
+
+                            } else {
+                                $("#tabla_equipo").children().find(".cdgo").each(function () {
+                                    if ($(this).html() == $("#cdgo_buscar").val()) {
+
+                                        var tdCant = $(this).parent().find(".cant")
+                                        var tdRend = $(this).parent().find(".rend")
+                                        tdCant.html(number_format(parts[3], 5, ".", ""))
+                                        tdRend.html(number_format(parts[4], 5, ".", ""))
+                                        tdRend.attr("valor", parts[4]);
+                                        band = false
+                                    }
+                                });
+
+                                if (band) {
+                                    td = $("<td style='text-align: right' class='cant'>")
+                                    td.html(number_format(parts[3], 5, ".", ""))
+                                    tr.append(td)
+                                    td = $('<td class="col_tarifa" style="display: none;text-align: right"></td>');
+                                    td.attr("id", "i_" + parts[2])
+                                    tr.append(td)
+                                    td = $('<td class="col_hora" style="display: none;text-align: right"></td>');
+                                    tr.append(td)
+                                    td = $("<td style='text-align: right' class='col_rend rend'>");
+                                    td.attr("valor", parts[4]);
+                                    td.html(number_format(parts[4], 5, ".", ""))
+                                    tr.append(td)
+                                    td = $('<td class="col_total" style="display: none;text-align: right"></td>');
+                                    tr.append(td)
+                                    td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
+                                    a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
+                                    td.append(a)
+                                    tr.append(td)
+                                    $("#tabla_equipo").append(tr)
+                                }
+                            }
+                        }
+
+                        tr.bind("dblclick", function () {
+                            var row = $(this)
+                            var hijos = row.children()
+                            var desc = $(hijos[1]).html()
+                            var cant
+                            var codigo = $(hijos[0]).html()
+                            var unidad
+                            var rendimiento
+                            var item
+                            var tipo = row.attr("tipo")
+                            for (i = 2; i < hijos.length; i++) {
+
+                                if ($(hijos[i]).hasClass("cant"))
+                                    cant = $(hijos[i]).html()
+                                if ($(hijos[i]).hasClass("col_unidad"))
+                                    unidad = $(hijos[i]).html()
+                                if ($(hijos[i]).hasClass("col_rend"))
+                                    rendimiento = $(hijos[i]).attr("valor")
+                                if ($(hijos[i]).hasClass("col_tarifa"))
+                                    item = $(hijos[i]).attr("id")
+                                if ($(hijos[i]).hasClass("col_precioUnit"))
+                                    item = $(hijos[i]).attr("id")
+                                if ($(hijos[i]).hasClass("col_jornal"))
+                                    item = $(hijos[i]).attr("id")
+
+                            }
+                            item = item.replace("i_", "")
+                            $("#item_cantidad").val(cant.toString().trim())
+                            if (rendimiento)
+                                $("#item_rendimiento").val(rendimiento.toString().trim())
+                            $("#item_id").val(item)
+                            $("#item_id").attr("tipo",tipo)
+                            $("#cdgo_buscar").val(codigo)
+                            $("#item_desc").val(desc)
+                            $("#item_unidad").val(unidad)
+
+
+
+                        })
+
+                        if (a) {
+                            a.bind("click", function () {
+                                var tr = $(this).parent().parent()
+                                if (confirm("Esta seguro de eliminar este registro? Esta acción es irreversible")) {
+                                    $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'eliminarRubroDetalle')}",
+                                        data     : "id=" + $(this).attr("iden"),
+                                        success  : function (msg) {
+                                            if (msg == "Registro eliminado") {
+                                                tr.remove()
+                                            }
+
+                                            $.box({
+                                                imageClass : "box_info",
+                                                text       : msg,
+                                                title      : "Alerta",
+                                                iconClose  : false,
+                                                dialog     : {
+                                                    resizable : false,
+                                                    draggable : false,
+                                                    buttons   : {
+                                                        "Aceptar" : function () {
+                                                        }
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    });
+                                }
+
+                            });
+                        }
+
+                        $("#item_desc").val("")
+                        $("#item_id").val("")
+                        $("#item_cantidad").val("1")
+                        $("#cdgo_buscar").val("")
+                        $("#item_unidad").val("")
+                        $("#item_rendimiento").val("1")
+                        $("#item_precio").val("1")
+
+                        $("#cdgo_buscar").focus()
+//                            $("#item_rendimiento").val("1")
+                    }
+                });
+            } else {
+                var msg = "La cantidad debe ser un número positivo."
+                if(tipoItem*1>1){
+                    msg="Para mano de obra y equipos, la cantidad debe ser un número entero positivo."
+                }
+                $.box({
+                    imageClass : "box_info",
+                    text       : msg,
+                    title      : "Alerta",
+                    iconClose  : false,
+                    dialog     : {
+                        resizable : false,
+                        draggable : false,
+                        buttons   : {
+                            "Aceptar" : function () {
+                            }
+                        }
+                    }
+                });
+            }
+        } else {
+            $.box({
+                imageClass : "box_info",
+                text       : "Seleccione un item",
+                title      : "Alerta",
+                iconClose  : false,
+                dialog     : {
+                    resizable : false,
+                    draggable : false,
+                    buttons   : {
+                        "Aceptar" : function () {
+                        }
+                    }
+                }
+            });
+        }
+    }
     function getPrecio(){
 //      console.log("getPrecio")
 
@@ -1341,6 +1616,7 @@
             $("#modal-rubro").modal("show");
             $("#buscarDialog").unbind("click")
             $("#buscarDialog").bind("click", enviarItem)
+            setTimeout( function() { $( '#criterio' ).focus() }, 500 );
         });
         $("#cdgo_buscar").blur(function(){
 //            console.log($("#item_id").val()=="")
@@ -1389,6 +1665,7 @@
             $("#modal-rubro").modal("show");
             $("#buscarDialog").unbind("click")
             $("#buscarDialog").bind("click", enviar)
+            setTimeout( function() { $( '#criterio' ).focus() }, 500 );
 
         }); //click btn new
         $("#rubro_registro").click(function () {
@@ -1472,248 +1749,9 @@
                 });
                 return false
             }
-            var cant = $("#item_cantidad").val()
-            if (cant == "")
-                cant = 0
-            if (isNaN(cant))
-                cant = 0
-            var rend = $("#item_rendimiento").val()
-            var precio = $("#item_precio").val()
-            if (isNaN(precio))
-                precio = 0
-            if (isNaN(rend))
-                rend = 1
-            if ($("#item_id").val() * 1 > 0) {
-                if (cant > 0 && precio>0) {
-                    var data = "rubro=${rubro.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
-                    $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'addItem')}",
-                        data     : data,
-                        success  : function (msg) {
-                            var tr = $("<tr class='item_row'>")
-                            var td = $("<td>")
-                            var band = true
-                            var parts = msg.split(";")
-                            tr.attr("id", parts[1])
-                            tr.attr("tipoLista",parts[5])
-                            var a
-                            td.addClass("cdgo")
-                            td.html($("#cdgo_buscar").val())
-                            tr.append(td)
-                            td = $("<td>")
-                            td.html($("#item_desc").val())
-                            tr.append(td)
 
-                            if (parts[0] == "1") {
-                                $("#tabla_material").children().find(".cdgo").each(function () {
-//                                    console.log($(this))
-                                    if ($(this).html() == $("#cdgo_buscar").val()) {
-                                        var tdCant = $(this).parent().find(".cant")
-                                        var tdRend = $(this).parent().find(".rend")
-                                        tdCant.html(number_format(parts[3], 5, ".", ""))
-                                        tdRend.html(number_format(parts[4], 5, ".", ""))
-                                        band = false
-                                    }
-                                });
-                                if (band) {
-                                    td = $("<td style='text-align: center' class='col_unidad'>")
-                                    td.html($("#item_unidad").val())
-                                    tr.append(td)
-                                    td = $("<td style='text-align: right' class='cant'>")
-                                    td.html(number_format($("#item_cantidad").val(), 5, ".", ""))
-                                    tr.append(td)
-                                    td = $('<td class="col_precioUnit" style="display: none;text-align: right"></td>');
-                                    td.attr("id","i_"+parts[2])
-                                    tr.append(td)
-                                    td = $('<td class="col_vacio" style="width: 40px;display: none"></td>');
-                                    tr.append(td)
-                                    td = $('<td class="col_vacio" style="width: 40px;display: none"></td>');
-                                    tr.append(td)
-                                    td = $('<td class="col_total" style="display: none;text-align: right"></td>');
-                                    tr.append(td)
-                                    td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
-                                    a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
-                                    td.append(a)
-                                    tr.append(td)
-                                    $("#tabla_material").append(tr)
-                                }
+            agregar(${rubro?.id},"");
 
-                            } else {
-                                if (parts[0] == "2") {
-
-                                    $("#tabla_mano").children().find(".cdgo").each(function () {
-                                        if ($(this).html() == $("#cdgo_buscar").val()) {
-                                            var tdCant = $(this).parent().find(".cant")
-                                            var tdRend = $(this).parent().find(".rend")
-                                            tdCant.html(number_format(parts[3], 5, ".", ""))
-                                            tdRend.html(number_format(parts[4], 5, ".", ""))
-                                            band = false
-                                        }
-                                    });
-                                    if (band) {
-                                        td = $("<td style='text-align: right' class='cant'>")
-                                        td.html(number_format(parts[3], 5, ".", ""))
-                                        tr.append(td)
-                                        td = $('<td class="col_jornal" style="display: none;text-align: right"></td>');
-                                        td.attr("id","i_"+parts[2])
-                                        tr.append(td)
-                                        td = $('<td class="col_hora" style="display: none;text-align: right"></td>');
-                                        tr.append(td)
-                                        td = $("<td style='text-align: right' class='col_rend rend'>")
-                                        td.html(number_format(parts[4], 5, ".", ""))
-                                        tr.append(td)
-                                        td = $('<td class="col_total" style="display: none;text-align: right"></td>');
-                                        tr.append(td)
-                                        td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
-                                        a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
-                                        td.append(a)
-                                        tr.append(td)
-                                        $("#tabla_mano").append(tr)
-                                    }
-
-                                } else {
-                                    $("#tabla_equipo").children().find(".cdgo").each(function () {
-                                        if ($(this).html() == $("#cdgo_buscar").val()) {
-
-                                            var tdCant = $(this).parent().find(".cant")
-                                            var tdRend = $(this).parent().find(".rend")
-                                            tdCant.html(number_format(parts[3], 5, ".", ""))
-                                            tdRend.html(number_format(parts[4], 5, ".", ""))
-
-                                            band = false
-                                        }
-                                    });
-
-                                    if (band) {
-                                        td = $("<td style='text-align: right' class='cant'>")
-                                        td.html(number_format(parts[3], 5, ".", ""))
-                                        tr.append(td)
-                                        td = $('<td class="col_tarifa" style="display: none;text-align: right"></td>');
-                                        td.attr("id","i_"+parts[2])
-                                        tr.append(td)
-                                        td = $('<td class="col_hora" style="display: none;text-align: right"></td>');
-                                        tr.append(td)
-                                        td = $("<td style='text-align: right' class='col_rend rend'>")
-                                        td.html(number_format(parts[4], 5, ".", ""))
-                                        tr.append(td)
-                                        td = $('<td class="col_total" style="display: none;text-align: right"></td>');
-                                        tr.append(td)
-                                        td = $('<td  style="width: 40px;text-align: center" class="col_delete">')
-                                        a = $('<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="' + parts[1] + '"><i class="icon-trash"></i></a>')
-                                        td.append(a)
-                                        tr.append(td)
-                                        $("#tabla_equipo").append(tr)
-                                    }
-                                }
-                            }
-
-                            tr.bind("dblclick",function(){
-                                var hijos = $(this).children()
-                                var desc=$(hijos[1]).html()
-                                var cant
-                                var codigo=$(hijos[0]).html()
-                                var unidad
-                                var rendimiento
-                                var item
-                                for(i=2;i<hijos.length;i++){
-
-                                    if($(hijos[i]).hasClass("cant"))
-                                        cant=$(hijos[i]).html()
-                                    if($(hijos[i]).hasClass("col_unidad"))
-                                        unidad=$(hijos[i]).html()
-                                    if($(hijos[i]).hasClass("col_rend"))
-                                        rendimiento=$(hijos[i]).html()
-                                    if($(hijos[i]).hasClass("col_tarifa"))
-                                        item=$(hijos[i]).attr("id")
-                                    if($(hijos[i]).hasClass("col_precioUnit"))
-                                        item=$(hijos[i]).attr("id")
-                                    if($(hijos[i]).hasClass("col_jornal"))
-                                        item=$(hijos[i]).attr("id")
-
-                                }
-                                item=item.replace("i_","")
-                                $("#item_cantidad").val(cant.toString().trim())
-                                if(rendimiento)
-                                    $("#item_rendimiento").val(rendimiento.toString().trim())
-                                $("#item_id").val(item)
-                                $("#cdgo_buscar").val(codigo)
-                                $("#item_desc").val(desc)
-                                $("#item_unidad").val(unidad)
-                            })
-
-                            if (a) {
-                                a.bind("click", function () {
-                                    var tr = $(this).parent().parent()
-                                    if (confirm("Esta seguro de eliminar este registro? Esta acción es irreversible")) {
-                                        $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'eliminarRubroDetalle')}",
-                                            data     : "id=" + $(this).attr("iden"),
-                                            success  : function (msg) {
-                                                if (msg == "Registro eliminado") {
-                                                    tr.remove()
-                                                }
-
-                                                $.box({
-                                                    imageClass : "box_info",
-                                                    text       : msg,
-                                                    title      : "Alerta",
-                                                    iconClose  : false,
-                                                    dialog     : {
-                                                        resizable : false,
-                                                        draggable : false,
-                                                        buttons   : {
-                                                            "Aceptar" : function () {
-                                                            }
-                                                        }
-                                                    }
-                                                });
-
-                                            }
-                                        });
-                                    }
-
-                                });
-                            }
-
-                            $("#item_desc").val("")
-                            $("#item_id").val("")
-                            $("#item_cantidad").val("1")
-                            $("#cdgo_buscar").val("")
-                            $("#item_unidad").val("")
-                            $("#item_rendimiento").val("1")
-                            $("#item_precio").val("1")
-                        }
-                    });
-                } else {
-                    $.box({
-                        imageClass : "box_info",
-                        text       : "La cantidad y el precio deben ser un números positivos",
-                        title      : "Alerta",
-                        iconClose  : false,
-                        dialog     : {
-                            resizable : false,
-                            draggable : false,
-                            buttons   : {
-                                "Aceptar" : function () {
-                                }
-                            }
-                        }
-                    });
-                }
-            } else {
-                $.box({
-                    imageClass : "box_info",
-                    text       : "Seleccione un item",
-                    title      : "Alerta",
-                    iconClose  : false,
-                    dialog     : {
-                        resizable : false,
-                        draggable : false,
-                        buttons   : {
-                            "Aceptar" : function () {
-                            }
-                        }
-                    }
-                });
-            }
         });
         </g:if>
         <g:else>
