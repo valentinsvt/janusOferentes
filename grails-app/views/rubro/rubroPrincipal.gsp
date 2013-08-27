@@ -606,7 +606,7 @@
 
         if ($("#item_id").val() * 1 > 0) {
             if (cant > 0 && precio>0) {
-                var data = "rubro=${rubro.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
+                var data = "rubro=${rubro?.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
                 $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'addItem')}",
                     data     : data,
                     success  : function (msg) {
