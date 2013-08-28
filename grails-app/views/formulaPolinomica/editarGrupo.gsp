@@ -16,6 +16,7 @@
         <div class="span">
             Modificar valor &nbsp;&nbsp;&nbsp;
             <g:field type="number" name="valor" value="${formula.valor}" class="input-mini"/>
+            (suma <g:formatNumber number="${total}" format="##,##0.#####" locale="ec"/>)
         </div>
     </div>
 </div>

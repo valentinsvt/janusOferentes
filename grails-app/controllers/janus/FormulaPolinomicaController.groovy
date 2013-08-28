@@ -78,7 +78,9 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
 
     def editarGrupo() {
         def formula = FormulaPolinomica.get(params.id)
-        return [formula: formula]
+        def children = ItemsFormulaPolinomica.findAllByFormulaPolinomica(formula)
+        def total = children.sum { it.valor }
+        return [formula: formula, total: total]
     }
 
     def guardarGrupo() {
@@ -265,7 +267,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
                 "d.sbgr__id = s.sbgr__id  and o.clmndscr = i.itemcmpo || '_T'  and " +
                 "v.obra__id = ${params.obra} and o.obra__id=${params.obra} " +
                 "order by s.grpo__id"
-        println "sql "+sql
+        println "sql " + sql
         cn.eachRow(sql.toString()) { r ->
 //            println "r-> "+r
             def codigo = ""
