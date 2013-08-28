@@ -25,12 +25,12 @@
 
     <div class="dialog ui-corner-all" style="height: 595px;background: #d9d9d9;;padding: 10px;width: 910px; margin: auto;">
         <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size:
-        25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 20px;">
-            Registro de Ofertas en Línea<br><br>G.A.D PROVINCIA DE PICHINCHA</h1></div>
+        25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 20px;"> SEP - GADPP<br>
+            G.A.D PROVINCIA DE PICHINCHA<br><br>Registro de Ofertas en Línea</h1></div>
 
 
         <g:form class="well form-horizontal span" action="savePer" name="frmLogin" style="border: 5px solid #2080B0; background:#c7c7c5;color: #939Aa2; width: 300px; margin-left: 240px; margin-top: 80px; position: relative; padding-left: 100px">
-        <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color:#334;">Sistema de Oferentes</p>
+        <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color:#334;">Sistema SEP-Oferentes</p>
 
         <div class="linea" style="height: 95%;left: 45px; border-left-color: #334"></div>
             <fieldset>

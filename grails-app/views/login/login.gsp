@@ -88,8 +88,8 @@
 
 
     <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size:
-    25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 60px;">
-        Registro de Ofertas en Línea<br><br>G.A.D PROVINCIA DE PICHINCHA</h1></div>
+    25px;text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0088CC; margin-top: 60px;">SEP - GADPP<br>
+       G.A.D PROVINCIA DE PICHINCHA<br><br>Registro de Ofertas en Línea</h1></div>
 
         %{--<g:link  controller="proyecto" action="list" title="Gestión de proyectos">--}%
         %{--<div class="ui-corner-all  item fuera">
@@ -193,7 +193,7 @@
     <div class="modal-body" id="modalBody" style="padding: 0px">
 
         <g:form class="well form-horizontal span " action="validar" name="frmLogin" style="border: 5px solid #2080B0;background:#C7C7C5 /*#a7a7a5*/;color: #939Aa2;width: 300px;position: relative;padding-left: 60px;margin: 0px">
-            <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color: #334">Sistema de Ofenretes</p>
+            <p class="css-vertical-text tituloGrande" style="left: 12px;;font-family: 'Tulpen One',cursive;font-weight: bold;font-size: 35px; color: #334">Sistema SEP-Ofenretes</p>
 
             <div class="linea" style="height: 95%;left: 45px; border-left-color: #334"></div>
             <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 1;">×</button>

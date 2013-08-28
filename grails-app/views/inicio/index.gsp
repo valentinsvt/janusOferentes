@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>Sistema para Oferentes Ganadores</title>
+    <title>Sistema SEP-Oferentes</title>
     <meta name="layout" content="main"/>
     <style type="text/css">
     @page {
@@ -59,7 +59,8 @@
 <body>
 <div class="dialog">
     <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;
-    text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0068AC;">Registro de Ofertas en Línea<br>G.A.D PROVINCIA DE PICHINCHA</h1></div>
+    text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0068AC;">SEP - GADPP<br>
+        G.A.D PROVINCIA DE PICHINCHA<br><br>Registro de Ofertas en Línea</h1></div>
     <div class="body ui-corner-all" style="width: 599px;position: relative;margin: auto;margin-top: 0px;height: 400px;
     background: #2080b0;">
         <img src="${resource(dir: 'images', file: 'oferentes2.jpeg')}"/>

@@ -314,35 +314,24 @@
         </div>
     </div>
 
-    %{--<div class="span5">--}%
-        %{--<div class="control-group">--}%
-            %{--<div>--}%
-                %{--<span class="control-label label label-inverse">--}%
-                    %{--Latitud--}%
-                %{--</span>--}%
-            %{--</div>--}%
+    <div class="span5">
+        <div class="control-group">
+            <div>
+                <span class="control-label label label-inverse">
+                    Registrada:
+                </span>
+            </div>
 
-            %{--<div class="controls">--}%
-                %{--<g:formatNumber number="${obra?.latitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-    %{--</div>--}%
+            <div class="controls">
+                ${obra?.estado}
+            </div>
+        </div>
+    </div>
 
-    %{--<div class="span5">--}%
-        %{--<div class="control-group">--}%
-            %{--<div>--}%
-                %{--<span class="control-label label label-inverse">--}%
-                    %{--Longitud--}%
-                %{--</span>--}%
-            %{--</div>--}%
 
-            %{--<div class="controls">--}%
-                %{--<g:formatNumber number="${obra?.longitud}" minFractionDigits="5" maxFractionDigits="8" locale="ec"/>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-    %{--</div>--}%
 </div>
 
+%{--
 <div class="row">
     <div class="span5">
         <div class="control-group">
@@ -358,6 +347,8 @@
         </div>
     </div>
 </div>
+--}%
+
 
 <div class="row">
     <div class="span10">
@@ -973,11 +964,11 @@
                     $("#modal_title_var").html("Variables");
                     $("#modal_body_var").html(msg);
                     $("#modal_footer_var").html("").append(btnCancel);
-/*
-                    <g:if test="${obra?.estado!='R'}">
+
+                    <g:if test="${obra?.estado !='R'}">
                     $("#modal_footer_var").html("").append(btnSave);
                     </g:if>
-*/
+
                     $("#modal_footer_var").html("").append(btnSave);
                     $("#modal-var").modal("show");
                 }

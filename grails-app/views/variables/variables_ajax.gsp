@@ -297,15 +297,17 @@
             heightStyle: "fill"
         });
 
-        costoItem($("#cmb_vol"), $("#costo_volqueta"));
-        costoItem($("#cmb_chof"), $("#costo_chofer"));
+//        costoItem($("#cmb_vol"), $("#costo_volqueta"));
+//        costoItem($("#cmb_chof"), $("#costo_chofer"));
 
+/*
         $("#cmb_vol").change(function () {
             costoItem($(this), $("#costo_volqueta"));
         });
         $("#cmb_chof").change(function () {
             costoItem($(this), $("#costo_chofer"));
         });
+*/
     });
 
 </script>

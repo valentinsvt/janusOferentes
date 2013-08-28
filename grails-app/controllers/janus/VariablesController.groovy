@@ -5,7 +5,7 @@ class VariablesController {
     def dbConnectionService
 
     def variables_ajax() {
-//        println params
+        println params
 
         def obra = Obra.get(params.obra)
         def par = Parametros.list()
@@ -23,8 +23,7 @@ class VariablesController {
                 volquetes = Item.findAllByDepartamento(it)
         }
 */
-
-        [choferes: choferes, volquetes: volquetes, obra: obra, par: par]
+       [choferes: choferes, volquetes: volquetes, obra: obra, par: par]
     }
 
     def saveVar_ajax() {
