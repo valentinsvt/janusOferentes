@@ -1245,6 +1245,9 @@ class ReportesController {
 
         Document document
         document = new Document(PageSize.A4);
+        // margins: left, right, top, bottom
+        // 1 in = 72, 1cm=28.1, 3cm = 86.4
+        document.setMargins(45.2, 30, 56.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         document.addTitle("Rubros " + new Date().format("dd_MM_yyyy"));
@@ -1877,6 +1880,7 @@ class ReportesController {
 
         Document document
         document = new Document(PageSize.A4);
+        document.setMargins(56.2, 30, 56.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         document.addTitle("Registro " + new Date().format("dd_MM_yyyy"));

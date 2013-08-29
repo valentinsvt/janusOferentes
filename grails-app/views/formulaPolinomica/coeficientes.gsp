@@ -128,6 +128,11 @@
                 <i class="icon-trash"></i>
                 Borrar la Fórmula Polinomica
             </a>
+            <a href="${g.createLink(controller: 'reportes3', action: 'reporteFormula', params: [obra: obra?.id])}" class="btn "
+               style="margin-top: -10px;" id="btnFormula">
+                <i class="icon-print"></i>
+                Imprimir Fórmula
+            </a>
         </div>
 
         <div class="row">
