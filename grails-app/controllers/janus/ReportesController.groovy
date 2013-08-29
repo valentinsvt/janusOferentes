@@ -20,7 +20,6 @@ class ReportesController {
 
     def meses = ['', "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
-    def prueba = "luz"
 
     private String printFecha(Date fecha) {
         if (fecha) {
@@ -75,7 +74,25 @@ class ReportesController {
 
         def oferente = Persona.get(session.usuario.id)
 
-        def concurso = janus.pac.Concurso.findByObra(obra)
+
+        def sql1 = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn1 = dbConnectionService.getConnection()
+
+        def conc = cn1.rows(sql1.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
 //        println "imprime matriz"
         def cn = buscadorService.dbConnectionService.getConnection()
         def cn2 = buscadorService.dbConnectionService.getConnection()
@@ -171,7 +188,7 @@ class ReportesController {
         addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(obra?.nombre, times8normal), prmsHeaderHoja)
 
-        addCellTabla(tablaHeader, new Paragraph("# PROCESO", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph("PROCESO", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(concurso?.codigo, times8normal), prmsHeaderHoja)
 
@@ -1179,7 +1196,23 @@ class ReportesController {
 
         def oferente = Persona.get(params.oferente)
 
-        def concurso = janus.pac.Concurso.findByObra(obra)
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
 
         def firma = Persona.get(params.oferente).firma
 
@@ -1255,7 +1288,7 @@ class ReportesController {
             headers.setAlignment(Element.ALIGN_CENTER);
             headers.add(new Paragraph("FORMULARIO N: 4", times14bold));
             headers.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
-            headers.add(new Paragraph("# PROCESO: " + concurso?.codigo, times12bold));
+            headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
             headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times12bold));
 //            headers.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el " + new Date().format("dd/MM/yyyy hh:mm"), times8normal))
             addEmptyLine(headers, 1);
@@ -1283,7 +1316,7 @@ class ReportesController {
 //            addCellTabla(headerRubroTabla, new Paragraph("Código Obra:", times8bold), prmsHeaderHoja)
 //            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigo, times8normal), prmsHeaderHoja2)
 
-            addCellTabla(headerRubroTabla, new Paragraph("Descripción:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph("Rubro:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.nombre, times8normal), prmsHeaderHoja2)
 //
 //            addCellTabla(headerRubroTabla, new Paragraph("Concurso:", times8bold), prmsHeaderHoja)
@@ -1777,7 +1810,24 @@ class ReportesController {
 
         def obra = Obra.get(params.id)
 
-        def concurso = janus.pac.Concurso.findByObra(obra)
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
 
         def auxiliar = Auxiliar.get(1)
 
@@ -1840,12 +1890,11 @@ class ReportesController {
         Paragraph headers = new Paragraph();
         addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph(auxiliar.titulo, times14bold));
+        headers.add(new Paragraph("G.A.D. PROVINCIA PICHINCHA", times14bold));
         headers.add(new Paragraph(" ", times10bold));
+        headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
         headers.add(new Paragraph(" ", times10bold));
-        headers.add(new Paragraph(obra?.departamento?.descripcion, times10bold));
-        headers.add(new Paragraph(" ", times10bold));
-        headers.add(new Paragraph("DATOS DE LA OBRA ", times10bold));
+        headers.add(new Paragraph("DATOS DE LA OBRA ", times12bold));
         headers.add(new Paragraph(" ", times10bold));
         document.add(headers)
 
@@ -2017,10 +2066,6 @@ class ReportesController {
 //
         addCellTabla(tablaCoeficiente2, new Paragraph("Observaciones: ", times10bold), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente2, new Paragraph(obra?.observaciones, times10normal), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente2, new Paragraph(" ", times10normal), prmsHeaderHoja)
-
-        addCellTabla(tablaCoeficiente2, new Paragraph("# Proceso: ", times10bold), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente2, new Paragraph(concurso?.codigo, times10normal), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente2, new Paragraph(" ", times10normal), prmsHeaderHoja)
 
         document.add(tablaCoeficiente)

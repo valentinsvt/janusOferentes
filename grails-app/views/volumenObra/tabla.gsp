@@ -25,8 +25,8 @@
 
     <div class="span4">
         <a href="#" class="btn  " id="imprimir_sub">
-            <i class="icon-file"></i>
-            Imprimir Subpresupuesto
+            <i class="icon-print"></i>
+            Imprimir Presupuesto
         </a>
 
         <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >

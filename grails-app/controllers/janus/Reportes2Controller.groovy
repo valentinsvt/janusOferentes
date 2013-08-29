@@ -523,7 +523,23 @@ class Reportes2Controller {
 
         def obra = Obra.get(params.id)
 
-        def concurso = janus.pac.Concurso.findByObra(obra)
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
 
 
         def firma = Persona.get(session.usuario.id).firma
@@ -575,7 +591,7 @@ class Reportes2Controller {
 
         preface.add(new Paragraph("FORMULARIO N: 11", catFont3));
         preface.add(new Paragraph("NOMBRE DEL OFERENTE: " +  session.usuario, catFont3));
-        preface.add(new Paragraph("# PROCESO: " + concurso?.codigo, catFont3));
+        preface.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont3));
         preface.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", catFont3));
         preface.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont2));
         preface.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont2));

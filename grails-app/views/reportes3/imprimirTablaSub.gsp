@@ -143,7 +143,7 @@
 <body>
 <div class="hoja" style="margin-bottom: 40px">
 
-    <div class="tituloPdf">
+    <div class="tituloPdf" style="margin-bottom: 100px !important">
 
 
         <p style="font-size: 14px">
@@ -154,7 +154,7 @@
             <b> NOMBRE DEL OFERENTE: </b> ${oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase()}
         </p>
         <p style="font-size: 14px; text-align: left">
-            <b> # PROCESO: </b> ${concurso?.codigo}
+            <b>PROCESO: </b> ${concurso?.codigo}
         </p>
         <p style="font-size: 14px; text-align: left">
             <b> TABLA DE DESCRIPCIÓN DE RUBROS, UNIDADES, CANTIDADES Y PRECIOS </b>
@@ -167,6 +167,8 @@
         </p>
 
     </div>
+
+
 
     <g:set var="total1" value="${0}"></g:set>
     <g:set var="total2" value="${0}"></g:set>
