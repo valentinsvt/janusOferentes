@@ -5,11 +5,12 @@ import com.lowagie.text.*
 import com.lowagie.text.pdf.PdfPCell
 import com.lowagie.text.pdf.PdfPTable
 import com.lowagie.text.pdf.PdfWriter
+import janus.pac.Garantia
 import jxl.Workbook
 import jxl.WorkbookSettings
 import jxl.write.*
 
-import java.awt.*
+import java.awt.Color
 
 //import java.awt.Label
 
