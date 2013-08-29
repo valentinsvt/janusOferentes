@@ -269,7 +269,7 @@
         <tbody id="tabla_equipo">
         <g:each in="${items}" var="rub" status="i">
             <g:if test="${rub.item.departamento.subgrupo.grupo.id == 3}">
-                <tr class="item_row" id="${rub.id}">
+                <tr class="item_row" id="${rub.id}" tipo="${rub.item.departamento.subgrupo.grupo.id}">
                     <td class="cdgo">${rub.item.codigo}</td>
                     <td>${rub.item.nombre}</td>
                     <td style="text-align: right" class="cant">
@@ -314,7 +314,7 @@
         <tbody id="tabla_mano">
         <g:each in="${items}" var="rub" status="i">
             <g:if test="${rub.item.departamento.subgrupo.grupo.id == 2}">
-                <tr class="item_row" id="${rub.id}">
+                <tr class="item_row" id="${rub.id}" tipo="${rub.item.departamento.subgrupo.grupo.id}">
                     <td class="cdgo">${rub.item.codigo}</td>
                     <td>${rub.item.nombre}</td>
                     <td style="text-align: right" class="cant">
@@ -361,7 +361,7 @@
         <tbody id="tabla_material">
         <g:each in="${items}" var="rub" status="i">
             <g:if test="${rub.item.departamento.subgrupo.grupo.id == 1}">
-                <tr class="item_row" id="${rub.id}">
+                <tr class="item_row" id="${rub.id}" tipo="${rub.item.departamento.subgrupo.grupo.id}">
                     <td class="cdgo">${rub.item.codigo}</td>
                     <td>${rub.item.nombre}</td>
                     <td style="width: 60px !important;text-align: center" class="col_unidad">${rub.item.unidad.codigo}</td>
@@ -1397,6 +1397,7 @@
             if(rendimiento)
                 $("#item_rendimiento").val(rendimiento.toString().trim())
             $("#item_id").val(item)
+            $("#item_id").attr("tipo",$(this).attr("tipo"))
             $("#cdgo_buscar").val(codigo)
             $("#item_desc").val(desc)
             $("#item_unidad").val(unidad)

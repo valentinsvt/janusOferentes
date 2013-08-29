@@ -83,38 +83,38 @@
                 <b>Dist. volúmen:</b> ${obra?.distanciaVolumen}
             </div>
         </div>
-        <div class="row-fluid" style="margin-left: 0px">
-            <div class="span4">
-                <b>Subpresupuesto:</b>
-                <g:select name="subpresupuesto" from="${janus.SubPresupuesto.list([order:'descripcion'])}" optionKey="id" optionValue="descripcion" style="width: 335px;;font-size: 10px" id="subPres"></g:select>
-            </div>
-            <div class="span1" style="margin-left: 0px;">
-                <b>Código</b>
-                <input type="text" style="width: 60px;;font-size: 10px" id="item_codigo">
-                <input type="hidden" style="width: 60px" id="item_id">
-            </div>
-            <div class="span4" style="margin-left: 15px;">
-                <b>Rubro</b>
-                <input type="text" style="width: 330px;font-size: 10px" id="item_nombre" disabled="true" >
+        %{--<div class="row-fluid" style="margin-left: 0px">--}%
+            %{--<div class="span4">--}%
+                %{--<b>Subpresupuesto:</b>--}%
+                %{--<g:select name="subpresupuesto" from="${janus.SubPresupuesto.list([order:'descripcion'])}" optionKey="id" optionValue="descripcion" style="width: 335px;;font-size: 10px" id="subPres"></g:select>--}%
+            %{--</div>--}%
+            %{--<div class="span1" style="margin-left: 0px;">--}%
+                %{--<b>Código</b>--}%
+                %{--<input type="text" style="width: 60px;;font-size: 10px" id="item_codigo">--}%
+                %{--<input type="hidden" style="width: 60px" id="item_id">--}%
+            %{--</div>--}%
+            %{--<div class="span4" style="margin-left: 15px;">--}%
+                %{--<b>Rubro</b>--}%
+                %{--<input type="text" style="width: 330px;font-size: 10px" id="item_nombre" disabled="true" >--}%
 
-            </div>
-            <div class="span2" style="margin-left: 0px;">
-                <b>Cantidad</b>
-                <input type="text" style="width: 130px;text-align: right" id="item_cantidad" value="1">
-            </div>
-            <div class="span1" style="margin-left: 15px;">
-                <b>Orden</b>
-                <input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size()>0)?volumenes.size()+1:1}">
-            </div>
-            <div class="span1" style="margin-left: 15px;padding-top:30px">
-                <input type="hidden" value="" id="vol_id">
+            %{--</div>--}%
+            %{--<div class="span2" style="margin-left: 0px;">--}%
+                %{--<b>Cantidad</b>--}%
+                %{--<input type="text" style="width: 130px;text-align: right" id="item_cantidad" value="1">--}%
+            %{--</div>--}%
+            %{--<div class="span1" style="margin-left: 15px;">--}%
+                %{--<b>Orden</b>--}%
+                %{--<input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size()>0)?volumenes.size()+1:1}">--}%
+            %{--</div>--}%
+            %{--<div class="span1" style="margin-left: 15px;padding-top:30px">--}%
+                %{--<input type="hidden" value="" id="vol_id">--}%
                 %{--<g:if test="${obra?.estado!='R'}">--}%
-                    <a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">
-                        <i class="icon-plus"></i>
-                    </a>
+                    %{--<a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">--}%
+                        %{--<i class="icon-plus"></i>--}%
+                    %{--</a>--}%
                 %{--</g:if>--}%
-            </div>
-        </div>
+            %{--</div>--}%
+        %{--</div>--}%
     </div>
     <div class="borde_abajo" style="position: relative;float: left;width: 95%;padding-left: 45px">
         <p class="css-vertical-text">Composición</p>
