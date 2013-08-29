@@ -35,7 +35,7 @@ class Reportes3Controller {
     }
 
     def imprimirTablaSub(){
-//        println "imprimir tabla sub "+params
+        println "imprimir tabla sub "+params
         def obra = Obra.get(params.obra)
         def detalle
         def subPre
@@ -43,6 +43,13 @@ class Reportes3Controller {
         def fechaHoy = printFecha(new Date())
 
         def oferente = Persona.get(params.oferente)
+
+        def concurso = janus.pac.Concurso.findByObra(obra);
+
+
+        def fechaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas);
+
+        def firma = Persona.get(params.oferente).firma
 
         if (params.sub && params.sub != "-1"){
 
@@ -83,12 +90,7 @@ class Reportes3Controller {
             precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
         }
 
-
-//        println "precios "+precios
-
-
-//        [detalle:detalle,precios:precios,subPres:subPres,subPre:SubPresupuesto.get(params.sub).descripcion,obra: obra,indirectos:indirecto*100]
-        [detalle:detalle,precios:precios,subPres:subPres,subPre:subPre,obra: obra,indirectos:indirecto*100, oferente: oferente, fechaHoy: fechaHoy]
+        [detalle:detalle,precios:precios,subPres:subPres,subPre:subPre,obra: obra,indirectos:indirecto*100, oferente: oferente, fechaHoy: fechaHoy, concurso: concurso, fechaOferta: fechaOferta, firma: firma]
 
 
         //2

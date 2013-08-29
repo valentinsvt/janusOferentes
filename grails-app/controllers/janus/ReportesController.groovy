@@ -72,7 +72,10 @@ class ReportesController {
 
 
         def obra = Obra.get(params.id)
-//
+
+        def oferente = Persona.get(session.usuario.id)
+
+        def concurso = janus.pac.Concurso.findByObra(obra)
 //        println "imprime matriz"
         def cn = buscadorService.dbConnectionService.getConnection()
         def cn2 = buscadorService.dbConnectionService.getConnection()
@@ -150,7 +153,7 @@ class ReportesController {
         addEmptyLine(headersTitulo,1);
 //        headersTitulo.add(new Paragraph(obra?.departamento?.direccion?.nombre, titleFont));
 //        addEmptyLine(headersTitulo,1);
-        headersTitulo.add(new Paragraph("MATRIZ DE LA FORMULA POLINÓMICA ", titleFont));
+        headersTitulo.add(new Paragraph("MATRIZ DE LA FORMULA POLINÓMICA - " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), titleFont));
         addEmptyLine(headersTitulo,1);
 
         document.add(headersTitulo)
@@ -164,29 +167,18 @@ class ReportesController {
         addCellTabla(tablaHeader, new Paragraph(" ", times8bold), prmsHeaderHoja)
 
 
-        addCellTabla(tablaHeader, new Paragraph("OBRA", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph("PROYECTO", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(obra?.nombre, times8normal), prmsHeaderHoja)
 
-        addCellTabla(tablaHeader, new Paragraph("CÓDIGO", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph("# PROCESO", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(obra?.codigo, times8normal), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph(concurso?.codigo, times8normal), prmsHeaderHoja)
 
-        addCellTabla(tablaHeader, new Paragraph("MEMO CANT. OBRA", times8bold), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph("FECHA PRESENTACIÓN", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(obra?.memoCantidadObra, times8normal), prmsHeaderHoja)
+        addCellTabla(tablaHeader, new Paragraph(printFecha(concurso?.fechaLimiteEntregaOfertas).toUpperCase(), times8normal), prmsHeaderHoja)
 
-        addCellTabla(tablaHeader, new Paragraph("DOC. REFERENCIA", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(obra?.oficioIngreso, times8normal), prmsHeaderHoja)
-
-        addCellTabla(tablaHeader, new Paragraph("FECHA", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(printFecha(obra?.fechaCreacionObra).toUpperCase(), times8normal), prmsHeaderHoja)
-
-        addCellTabla(tablaHeader, new Paragraph("FECHA ACT. PRECIOS", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(" : ", times8bold), prmsHeaderHoja)
-        addCellTabla(tablaHeader, new Paragraph(printFecha(obra?.fechaPreciosRubros).toUpperCase(), times8normal), prmsHeaderHoja)
 
         addCellTabla(tablaHeader, new Paragraph(" ", times8bold), prmsHeaderHoja)
         addCellTabla(tablaHeader, new Paragraph(" ", times8bold), prmsHeaderHoja)
@@ -1193,6 +1185,9 @@ class ReportesController {
 
         def oferente = Persona.get(params.oferente)
 
+        def concurso = janus.pac.Concurso.findByObra(obra)
+
+        def firma = Persona.get(params.oferente).firma
 
         def lugar = obra.lugar
         def fecha = obra.fechaPreciosRubros
@@ -1211,6 +1206,7 @@ class ReportesController {
         com.lowagie.text.Font times16bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 16, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font times14bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 14, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font times10bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times10normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.NORMAL);
         com.lowagie.text.Font times8bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD)
         com.lowagie.text.Font times8normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL)
         com.lowagie.text.Font times10boldWhite = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
@@ -1235,6 +1231,7 @@ class ReportesController {
         def prmsHeaderHoja3 = [border: Color.WHITE, colspan: 2]
         def prmsHeaderHoja4 = [border: Color.WHITE, colspan: 1]
         def prmsHeaderHojaLeft = [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT]
+        def prmsHeaderHojaLeft2 = [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT,  bordeTop: "1"]
         def prmsHeader = [border: Color.WHITE, colspan: 8,
                 align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
         def prmsHeader3 = [border: Color.WHITE, colspan: 8,
@@ -1262,9 +1259,10 @@ class ReportesController {
             Paragraph headers = new Paragraph();
             addEmptyLine(headers, 1);
             headers.setAlignment(Element.ALIGN_CENTER);
-            headers.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", times14bold));
-            headers.add(new Paragraph(oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
-            headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS DE PRESUPUESTO", times12bold));
+            headers.add(new Paragraph("FORMULARIO N: 4", times14bold));
+            headers.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
+            headers.add(new Paragraph("# PROCESO: " + concurso?.codigo, times12bold));
+            headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times12bold));
 //            headers.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el " + new Date().format("dd/MM/yyyy hh:mm"), times8normal))
             addEmptyLine(headers, 1);
             document.add(headers);
@@ -1285,25 +1283,25 @@ class ReportesController {
             addCellTabla(headerRubroTabla, new Paragraph("Proyecto:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(obra.nombre?.toUpperCase(), times8normal), prmsHeaderHoja2)
 
-            addCellTabla(headerRubroTabla, new Paragraph("Código:", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(rubro.codigo, times8normal), prmsHeaderHoja2)
-
-            addCellTabla(headerRubroTabla, new Paragraph("Código Obra:", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigo, times8normal), prmsHeaderHoja2)
+//            addCellTabla(headerRubroTabla, new Paragraph("Código:", times8bold), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(rubro.codigo, times8normal), prmsHeaderHoja2)
+//
+//            addCellTabla(headerRubroTabla, new Paragraph("Código Obra:", times8bold), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigo, times8normal), prmsHeaderHoja2)
 
             addCellTabla(headerRubroTabla, new Paragraph("Descripción:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.nombre, times8normal), prmsHeaderHoja2)
-
-            addCellTabla(headerRubroTabla, new Paragraph("Concurso:", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigoConcurso, times8normal), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(" ", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(" ", times8normal), prmsHeaderHoja)
+//
+//            addCellTabla(headerRubroTabla, new Paragraph("Concurso:", times8bold), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigoConcurso, times8normal), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(" ", times8bold), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(" ", times8normal), prmsHeaderHoja)
 
             addCellTabla(headerRubroTabla, new Paragraph("Unidad:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.unidad.codigo, times8normal), prmsHeaderHoja2)
 
-            addCellTabla(headerRubroTabla, new Paragraph("Fecha presentación de la oferta:", times8bold), prmsHeaderHoja)
-            addCellTabla(headerRubroTabla, new Paragraph(printFecha(obra?.fechaOferta), times8normal), prmsHeaderHoja2)
+//            addCellTabla(headerRubroTabla, new Paragraph("Fecha presentación de la oferta:", times8bold), prmsHeaderHoja)
+//            addCellTabla(headerRubroTabla, new Paragraph(printFecha(obra?.fechaOferta), times8normal), prmsHeaderHoja2)
 
 
 
@@ -1420,8 +1418,34 @@ class ReportesController {
 //            addCellTabla(pieTabla, new Paragraph("Parámetros para los datos de presupuesto obtenidos de la obra: " + obra?.nombre, fonts.times8normal), prmsHeaderHojaLeft)
 //            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
-            addCellTabla(pieTabla, new Paragraph("Nota: Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales.   ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph("Nota: Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales, estos precios no incluyen IVA.   ", fonts.times8normal), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(concurso?.fechaLimiteEntregaOfertas), fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph("_____________________________", fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(firma, fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+
 
             addTablaHoja(document, headerRubroTabla, false)
             addTablaHoja(document, tablaHerramientas, false)
@@ -1766,6 +1790,8 @@ class ReportesController {
 
         def obra = Obra.get(params.id)
 
+        def concurso = janus.pac.Concurso.findByObra(obra)
+
         def auxiliar = Auxiliar.get(1)
 
 
@@ -1849,12 +1875,8 @@ class ReportesController {
         addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
 
-        addCellTabla(tablaCoeficiente, new Paragraph("Obra: ", times10bold), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente, new Paragraph("Proyecto: ", times10bold), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente, new Paragraph(obra?.nombre, times10normal), prmsHeaderHoja3)
-
-        addCellTabla(tablaCoeficiente, new Paragraph("Código: ", times10bold), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente, new Paragraph(obra?.codigo, times10normal), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente, new Paragraph(" ", times10bold), prmsHeaderHoja)
 
         addCellTabla(tablaCoeficiente, new Paragraph("Descripción: ", times10bold), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente, new Paragraph(obra?.descripcion, times10normal), prmsHeaderHoja3)
@@ -1872,12 +1894,9 @@ class ReportesController {
         addCellTabla(tablaCoeficiente, new Paragraph(obra?.plazoEjecucionMeses + " Mes(es)" + " " + obra?.plazoEjecucionDias + " Días", times10normal), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
 
-        addCellTabla(tablaCoeficiente, new Paragraph("Documento de Referencia: ", times10bold), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente, new Paragraph(obra?.oficioIngreso, times10normal), prmsHeaderHoja3)
+        addCellTabla(tablaCoeficiente, new Paragraph("Anticipo: ", times10bold), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente, new Paragraph(obra?.porcentajeAnticipo + " %", times10normal), prmsHeaderHoja3)
 
-        addCellTabla(tablaCoeficiente, new Paragraph("Oficio de Salida: ", times10bold), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente, new Paragraph(obra?.oficioSalida, times10normal), prmsHeaderHoja)
-        addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
 
         addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
         addCellTabla(tablaCoeficiente, new Paragraph(" ", times10normal), prmsHeaderHoja)
@@ -2010,9 +2029,13 @@ class ReportesController {
 //        addCellTabla(tablaCoeficiente2, new Paragraph(printFecha(obra?.fechaCreacionObra), times10normal), prmsHeaderHoja3)
 //
 //
-//        addCellTabla(tablaCoeficiente2, new Paragraph("Observaciones: ", times10bold), prmsHeaderHoja)
-//        addCellTabla(tablaCoeficiente2, new Paragraph(obra?.observaciones, times10normal), prmsHeaderHoja)
-//        addCellTabla(tablaCoeficiente2, new Paragraph(" ", times10normal), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente2, new Paragraph("Observaciones: ", times10bold), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente2, new Paragraph(obra?.observaciones, times10normal), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente2, new Paragraph(" ", times10normal), prmsHeaderHoja)
+
+        addCellTabla(tablaCoeficiente2, new Paragraph("# Proceso: ", times10bold), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente2, new Paragraph(concurso?.codigo, times10normal), prmsHeaderHoja)
+        addCellTabla(tablaCoeficiente2, new Paragraph(" ", times10normal), prmsHeaderHoja)
 
         document.add(tablaCoeficiente)
         document.add(tablaDistancias)

@@ -153,17 +153,15 @@
         <p style="font-size: 14px; text-align: left">
             <b> NOMBRE DEL OFERENTE: </b> ${oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase()}
         </p>
-
+        <p style="font-size: 14px; text-align: left">
+            <b> # PROCESO: </b> ${concurso?.codigo}
+        </p>
         <p style="font-size: 14px; text-align: left">
             <b> TABLA DE DESCRIPCIÓN DE RUBROS, UNIDADES, CANTIDADES Y PRECIOS </b>
         </p>
-
-
         <p style="font-size: 14px; text-align: left">
-            <b>G.A.D. PROVINCIA DE PICHINCHA</b>
+            <b>GOBIERNO AUTÓNOMO DESCENTRALIZADO DE LA PROVINCIA DE PICHINCHA</b>
         </p>
-
-
         <p style="font-size: 14px; text-align: left; margin-bottom: 80px">
             <b>NOMBRE DEL PROYECTO:</b> ${obra?.nombre.toUpperCase()}
         </p>
@@ -275,16 +273,21 @@
 
 
                 <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">
-                    QUITO,
+                    <b>QUITO, ${fechaOferta}</b>
                 </p>
 
                 <p style="text-align: left">
                     _____________________________________
                 </p>
 
-
                 <p style="font-size: 14px; text-align: left; margin-bottom: 50px">
-                    FIRMA DEL RESPONSABLE.
+                    <g:if test="${firma}">
+                       <b> ${firma.toUpperCase()}</b>
+                    </g:if>
+                    <g:else>
+                        FIRMA DEL RESPONSABLE
+                    </g:else>
+
                 </p>
 
             </div>

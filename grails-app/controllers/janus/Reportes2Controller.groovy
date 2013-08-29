@@ -107,6 +107,24 @@ class Reportes2Controller {
         if (params.pb) {
             cell.setPaddingBottom(params.pb.toFloat());
         }
+        if (params.bordeTop) {
+            cell.setBorderWidthTop(1)
+            cell.setBorderWidthLeft(0)
+            cell.setBorderWidthRight(0)
+            cell.setBorderWidthBottom(0)
+            cell.setPaddingTop(7);
+
+        }
+        if (params.bordeBot) {
+            cell.setBorderWidthBottom(1)
+            cell.setBorderWidthLeft(0)
+            cell.setBorderWidthRight(0)
+            cell.setPaddingBottom(7)
+
+            if (!params.bordeTop) {
+                cell.setBorderWidthTop(0)
+            }
+        }
 
         table.addCell(cell);
     }
@@ -505,6 +523,11 @@ class Reportes2Controller {
 
         def obra = Obra.get(params.id)
 
+        def concurso = janus.pac.Concurso.findByObra(obra)
+
+
+        def firma = Persona.get(session.usuario.id).firma
+
 
         def meses = obra.plazoEjecucionMeses + (obra.plazoEjecucionDias > 0 ? 1 : 0)
 
@@ -531,6 +554,7 @@ class Reportes2Controller {
         com.lowagie.text.Font info = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL)
         com.lowagie.text.Font fontTitle = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 9, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font fontTh = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font fontTh2 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font fontTd = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL);
 
         Document document
@@ -549,35 +573,39 @@ class Reportes2Controller {
         addEmptyLine(preface, 1);
         preface.setAlignment(Element.ALIGN_CENTER);
 
+        preface.add(new Paragraph("FORMULARIO N: 11", catFont3));
+        preface.add(new Paragraph("NOMBRE DEL OFERENTE: " +  session.usuario, catFont3));
+        preface.add(new Paragraph("# PROCESO: " + concurso?.codigo, catFont3));
         preface.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", catFont3));
-
-        preface.add(new Paragraph("CRONOGRAMA DE ${lbl.toUpperCase()} " + obra.nombre, catFont2));
+        preface.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont2));
+        preface.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont2));
         addEmptyLine(preface, 1);
-        Paragraph preface2 = new Paragraph();
-        preface2.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el: " + new Date().format("dd/MM/yyyy hh:mm"), info))
+//        Paragraph preface2 = new Paragraph();
+////        preface2.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el: " + new Date().format("dd/MM/yyyy hh:mm"), info))
+//        preface2.add(new Paragraph("Proyecto: " + obra?.nombre, info))
         document.add(preface);
-        document.add(preface2);
-        Paragraph pMeses = new Paragraph();
-        pMeses.add(new Paragraph("Obra: ${obra.descripcion} (${meses} mes${meses == 1 ? '' : 'es'})", info))
-        addEmptyLine(pMeses, 1);
-        document.add(pMeses);
-
-        Paragraph codigoObra = new Paragraph();
-        codigoObra.add(new Paragraph("Código de la Obra: ${obra?.codigo}", info))
-        document.add(codigoObra);
-
-        Paragraph docReferencia = new Paragraph();
-        docReferencia.add(new Paragraph("Doc. Referencia: ${obra?.oficioIngreso}", info))
-        document.add(docReferencia);
-
-        Paragraph fecha = new Paragraph();
-        fecha.add(new Paragraph("Fecha: ${printFecha(obra?.fechaCreacionObra)}", info))
-//        addEmptyLine(fecha, 1);
-        document.add(fecha);
-        Paragraph fechaP = new Paragraph();
-        fechaP.add(new Paragraph("Fecha Act. Precios: ${printFecha(obra?.fechaPreciosRubros)}", info))
-        addEmptyLine(fechaP, 1);
-        document.add(fechaP);
+//        document.add(preface2);
+//        Paragraph pMeses = new Paragraph();
+//        pMeses.add(new Paragraph("Obra: ${obra.descripcion} (${meses} mes${meses == 1 ? '' : 'es'})", info))
+//        addEmptyLine(pMeses, 1);
+//        document.add(pMeses);
+//
+//        Paragraph codigoObra = new Paragraph();
+//        codigoObra.add(new Paragraph("Código de la Obra: ${obra?.codigo}", info))
+//        document.add(codigoObra);
+//
+//        Paragraph docReferencia = new Paragraph();
+//        docReferencia.add(new Paragraph("Doc. Referencia: ${obra?.oficioIngreso}", info))
+//        document.add(docReferencia);
+//
+//        Paragraph fecha = new Paragraph();
+//        fecha.add(new Paragraph("Fecha: ${printFecha(obra?.fechaCreacionObra)}", info))
+////        addEmptyLine(fecha, 1);
+//        document.add(fecha);
+//        Paragraph fechaP = new Paragraph();
+//        fechaP.add(new Paragraph("Fecha Act. Precios: ${printFecha(obra?.fechaPreciosRubros)}", info))
+//        addEmptyLine(fechaP, 1);
+//        document.add(fechaP);
 
         /* ***************************************************** Fin Titulo del reporte ***************************************************/
         /* ***************************************************** Tabla cronograma *********************************************************/
@@ -719,6 +747,37 @@ class Reportes2Controller {
 
         document.add(tabla)
         /* ***************************************************** Fin Tabla cronograma *****************************************************/
+
+        PdfPTable pieTabla = new PdfPTable(2);
+        pieTabla.setWidthPercentage(100);
+        pieTabla.setWidths(arregloEnteros([99, 1]))
+
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(concurso?.fechaLimiteEntregaOfertas), fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph("________________________________________ ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        addCellTabla(pieTabla, new Paragraph(firma, fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT,  bordeTop: "1"])
+        addCellTabla(pieTabla, new Paragraph(" ", fontTh),[border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+
+        document.add(pieTabla);
+
         document.close();
 
         pdfw.close()
