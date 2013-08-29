@@ -307,6 +307,42 @@ class CronogramaController extends janus.seguridad.Shield {
 
     def cronogramaObra() {
         def obra = Obra.get(params.id)
+        def subpres = VolumenesObra.findAllByObra(obra, [sort: "orden"]).subPresupuesto.unique()
+
+        def subpre = params.subpre
+        if (!subpre) {
+            subpre = subpres[0].id
+        }
+
+        def detalle
+
+        if (subpre != "-1") {
+            detalle = VolumenesObra.findAllByObraAndSubPresupuesto(obra, SubPresupuesto.get(subpre), [sort: "orden"])
+        } else {
+            detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
+        }
+
+        def precios = [:]
+        def indirecto = obra.totales / 100
+
+        preciosService.ac_rbroObra(obra.id)
+
+        detalle.each {
+            it.refresh()
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", it.item.id, session.usuario.id)
+//            println "\t " + it.id + " " + res
+            if (res["precio"][0]) {
+                precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
+            } else {
+                precios.put(it.id.toString(), -1)
+            }
+        }
+
+        [detalle: detalle, precios: precios, obra: obra, subpres: subpres, subpre: subpre]
+    }
+
+    def cronogramaObra_bck_20130829() {
+        def obra = Obra.get(params.id)
 
 //        println "========"
 //        println obra.plazo
