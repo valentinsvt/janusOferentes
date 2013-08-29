@@ -11,10 +11,15 @@ class ElementosTagLib {
     static namespace = "elm"
 
     Closure numberToLetter = {attrs ->
-        println attrs
+        println "nt" + attrs
         def number = attrs.numero?: 0
         def dolares = attrs.dolares?: false
 
+        try{
+            number=number.toDouble()
+        }catch (e){
+            number=0
+        }
         if(dolares){
             out <<   NumberToLetterConverter.convertNumberToLetter(number)
         }  else {
