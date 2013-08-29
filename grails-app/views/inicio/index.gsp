@@ -22,46 +22,26 @@
         margin: auto;
         margin-top: 10px;
     }
-    .texto{
-        width: 90%;
-        height: 50px;
-        padding-top: 0px;
-        /*border: solid 1px black;*/
-        margin: auto;
-        margin: 8px;
-        /*font-family: fantasy; */
-        font-size: 16px;
-
-        /*
-                font-weight: bolder;
-        */
-        font-style: normal;
-        /*text-align: justify;*/
-    }
-    .fuera{
-        margin-left: 15px;
-        margin-top: 20px;
-        /*background-color: #317fbf; */
-        /*background-color: rgba(200,200,200,0.9);*/
-        background-color: #c1c1c1;
-        border: none;
-
-    }
     .desactivado{
         color: #bbc;
     }
-    h1 {
-        font-size: 24px;
+    .titl {
+        font-family: 'open sans condensed';
+        font-weight: bold;
+        text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);
+        color:#0088CC;
+        margin-top: 20px;
     }
+
     </style>
 </head>
 
 <body>
 <div class="dialog">
-    <div style="text-align: center;"><h1 style="font-family: 'open sans condensed';font-weight: bold;font-size: 25px;
-    text-shadow: -2px 2px 1px rgba(0, 0, 0, 0.25);color:#0068AC;">SEP - GADPP<br>
-        G.A.D PROVINCIA DE PICHINCHA<br><br>Registro de Ofertas en Línea</h1></div>
-    <div class="body ui-corner-all" style="width: 599px;position: relative;margin: auto;margin-top: 0px;height: 400px;
+    <div style="text-align: center;"><h1 class="titl" style="font-size: 20px;">SEGUIMIENTO Y EJECUCIÓN DE PROYECTOS DE OBRAS Y CONSULTORÍAS<br>
+            GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA</h1>
+        <h1 class="titl" style="font-size: 24px; color: #06a">Registro de Ofertas en Línea</h1></div>
+    <div class="body ui-corner-all" style="width: 600px;position: relative;margin: auto;margin-top: 0px;height: 383px;
     background: #2080b0;">
         <img src="${resource(dir: 'images', file: 'oferentes2.jpeg')}"/>
 
