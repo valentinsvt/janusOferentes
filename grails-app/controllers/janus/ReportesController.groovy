@@ -15,10 +15,11 @@ import java.awt.*
 
 class ReportesController {
 
-
     def index() {}
 
     def meses = ['', "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+    def prueba = "luz"
 
     private String printFecha(Date fecha) {
         if (fecha) {
