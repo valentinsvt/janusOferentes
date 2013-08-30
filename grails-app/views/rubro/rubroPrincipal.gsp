@@ -53,6 +53,7 @@
     %{--<i class="icon-truck"></i>--}%
     %{--Transporte--}%
     %{--</a>--}%
+<g:if test="${rubro}">
     <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
         <i class="icon-print"></i>
         Imprimir
@@ -61,6 +62,7 @@
         <i class="icon-print"></i>
         Excel
     </a>
+    </g:if>
     <g:if test="${rubro}">
         <a href="#" id="detalle" class="btn btn-ajax btn-new" >
             <i class="icon-list"></i>

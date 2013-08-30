@@ -31,7 +31,7 @@ class Reportes3Controller {
 
     private String printFecha(Date fecha) {
         if (fecha) {
-            return (fecha.format("dd")+' de '+ meses[fecha.format("MM").toInteger()]+' de '+fecha.format("yyyy")).toUpperCase()
+            return (fecha.format("dd")+' de '+ meses[fecha.format("MM").toInteger()]+' de '+fecha.format("yyyy")).toLowerCase()
         } else {
             return "Error: no hay fecha que mostrar"
         }
@@ -592,9 +592,32 @@ class Reportes3Controller {
         def obraOferente = Obra.findByOferente(oferente)
 
 
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
         def fechaOferta = printFecha(obraOferente?.fechaOferta)
 
-        println(obraOferente)
+        def fechaEntregaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas)
+
+        def firma = Persona.get(params.oferente).firma
+
+//        println(obraOferente)
 
         def lugar = params.lugar
         def indi = params.indi
@@ -777,7 +800,7 @@ class Reportes3Controller {
 //                tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obra, fechaPala: fecha1]
 
         [rubro: rubro, tablaTrans: tablaTrans, tablaTrans2: tablaTrans2, band: band, tablaMat2: tablaMat2, bandMat: bandMat, bandTrans: bandTrans , tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat,
-                tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obraOferente, oferente: oferente, fechaOferta: fechaOferta, obraOferente: obraOferente]
+                tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obraOferente, oferente: oferente, fechaOferta: fechaOferta, obraOferente: obraOferente, concurso: concurso, fechaEntregaOFerta: fechaEntregaOferta, firma: firma]
     }
 
 

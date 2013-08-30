@@ -132,7 +132,7 @@
 
     .row-fluid {
         width  : 100%;
-        height : 20px;
+        height : 10px;
     }
 
     .span3 {
@@ -157,59 +157,45 @@
     </style>
 </head>
 
-<body>
+<body  style="margin-top: 56pt !important">
 <div class="hoja">
 
     <div class="tituloPdf tituloHeader">
-        <p class="grande">
-            <b>G.A.D. PROVINCIA DE PICHINCHA</b>
+        <p style="font-size: 12pt; text-align: center">
+            <b>FORMULARIO N: 4</b>
         </p>
-
-        <p style="font-size: 14px">
-            <b>${oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase()}</b>
+        <p style="font-size: 12pt; text-align: left">
+            <b>NOMBRE DEL OFERENTE: ${oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase()}</b>
         </p>
-
-        <p style="font-size: 14px">
-            <b>ANÁLISIS DE PRECIOS UNITARIOS DE PRESUPUESTO</b>
+        <p style="font-size: 12pt; text-align: center">
+            <b>PROCESO: ${concurso?.codigo}</b>
+        </p>
+        <p style="font-size: 12pt; text-align: left">
+            <b>ANÁLISIS DE PRECIOS UNITARIOS</b>
         </p>
     </div>
 
     <div style="margin-top: 20px">
 
         <div class="row-fluid">
-            <div class="span12" style="margin-right: 195px !important;">
-            <b>Proyecto:</b>${obra?.nombre.toUpperCase()}
+            <div class="span12" style="margin-right: 195px !important; margin-top: 50px !important">
+            <b>Proyecto:    </b>${obra?.nombre.toUpperCase()}
             </div>
 
         </div>
-        <div class="row-fluid">
+        <div class="row-fluid" style="margin-top: 5px">
             <div>
-                <b>Código:</b> ${rubro.codigo}
-                <b style="margin-left: 300px">Unidad:</b> ${rubro.unidad.codigo}
+                <b style="margin-top: 5px">Rubro:   </b> ${rubro.nombre}
+            </div>
+        </div>
+        <div class="row-fluid" style="margin-top: 5px">
+            <div>
+                 <b style="margin-top: 5px">Unidad:  </b> ${rubro.unidad.codigo}
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span6" style="margin-right: 195px !important;">
-                <b>Concurso:</b>  ${obraOferente?.codigoConcurso}
-            </div>
-
-        </div>
-        <div class="row-fluid">
-            <div class="span6" style="margin-right: 195px !important;">
-                <b class="span6">Fecha presentación de la oferta:</b> ${fechaOferta}
-            </div>
-
-        </div>
 
 
-        <div class="row-fluid">
-            <div class="span12">
-                <g:set var="nombre" value="${rubro.nombre.replaceAll('<', '(menor)')}"></g:set>
-                <g:set var="nombre" value="${rubro.nombre.replaceAll('<', '(mayor)')}"></g:set>
-                <b>Descripción:</b> ${nombre}
-            </div>
-        </div>
     </div>
 
     <div style="width: 100%;margin-top: 10px;">
@@ -264,8 +250,24 @@
     </div>
 
     <div style="width: 100%;float: left;height: 20px;margin-top: 10px;text-align: left">
-        <b>Nota:</b> Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales.
+        <b>Nota:</b> Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales, estos precios no incluyen IVA.
+
+        <p style="font-size: 12pt; text-align: left">
+            <b>Quito, ${fechaEntregaOFerta}</b>
+        </p>
+         <p style="font-size: 12pt; text-align: left; margin-top: 60px">
+            <b>__________________________</b>
+        </p>
+        <p style="font-size: 12pt; text-align: left">
+            <b>${firma}</b>
+        </p>
     </div>
+
+
+    <div>
+
+    </div>
+
 
 </div>
 </body>

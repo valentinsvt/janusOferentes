@@ -887,6 +887,8 @@
 
         $("#btnRubros").click(function () {
             var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
+            %{--var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?oferente=${session.usuario.id}Wobra=${obra?.id}Wdesglose=";--}%
+
             $.box({
                 imageClass: "box_info",
                 text: "Como desea imprimir los rubros de la obra?",
@@ -900,6 +902,7 @@
                         "Pdf": function () {
                             url += "0";
                             location.href = url;
+                            %{--location.href = "${g.createLink(controller: 'pdf',action: 'pdfLink')}?url=" + url--}%
                         },
                         "Excel": function () {
                             var url = "${createLink(controller:'reportes', action:'imprimirRubrosExcel')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";

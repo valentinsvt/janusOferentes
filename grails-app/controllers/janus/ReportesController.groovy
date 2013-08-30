@@ -23,7 +23,7 @@ class ReportesController {
 
     private String printFecha(Date fecha) {
         if (fecha) {
-            return (fecha.format("dd") + ' de ' + meses[fecha.format("MM").toInteger()] + ' de ' + fecha.format("yyyy")).toUpperCase()
+            return (fecha.format("dd") + ' de ' + meses[fecha.format("MM").toInteger()] + ' de ' + fecha.format("yyyy")).toLowerCase()
         } else {
             return "Error: no hay fecha que mostrar"
         }
@@ -1229,6 +1229,7 @@ class ReportesController {
         def baos = new ByteArrayOutputStream()
         def name = "rubros_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
         com.lowagie.text.Font times12bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times12normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.NORMAL);
         com.lowagie.text.Font times18bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 18, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font times16bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 16, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font times14bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 14, com.lowagie.text.Font.BOLD);
@@ -1289,21 +1290,33 @@ class ReportesController {
             Paragraph headers = new Paragraph();
             addEmptyLine(headers, 1);
             headers.setAlignment(Element.ALIGN_CENTER);
-            headers.add(new Paragraph("FORMULARIO N: 4", times14bold));
-            headers.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
-            headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
-            headers.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times12bold));
-//            headers.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el " + new Date().format("dd/MM/yyyy hh:mm"), times8normal))
-            addEmptyLine(headers, 1);
+            headers.add(new Paragraph("FORMULARIO N: 4", times12bold));
+            Paragraph nombreOferente = new Paragraph();
+            addEmptyLine(nombreOferente, 1);
+            nombreOferente.setAlignment(Element.ALIGN_LEFT);
+            nombreOferente.setIndentationLeft(25)
+            nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
+            Paragraph proceso = new Paragraph();
+            addEmptyLine(proceso, 1);
+            proceso.setAlignment(Element.ALIGN_CENTER);
+            proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+            Paragraph analisis = new Paragraph();
+            addEmptyLine(analisis, 1);
+            analisis.setAlignment(Element.ALIGN_LEFT);
+            analisis.setIndentationLeft(25)
+            analisis.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times12bold));
+            addEmptyLine(analisis, 1);
+            addEmptyLine(analisis, 1);
+
             document.add(headers);
+            document.add(nombreOferente)
+            document.add(proceso)
+            document.add(analisis)
+
 
             def id = rubro.id
 
-//            def parametros = "" + id + "," + lugar.id + ",'" + fecha + "'," + obra.distanciaPeso + "," + obra.distanciaVolumen + "," + rendimientos["rdps"] + "," + rendimientos["rdvl"]
-//            preciosService.ac_rbro(id, lugar.id, fecha)
-//            def res = preciosService.rb_precios(parametros, "")
 
-//            def res = preciosService.precioUnitarioVolumenObraAsc("* ", obra.id, id)
             def res = preciosService.presioUnitarioVolumenObra("* ", id, params.oferente)
 
             PdfPTable headerRubroTabla = new PdfPTable(4); // 4 columns.
@@ -1312,28 +1325,10 @@ class ReportesController {
 
             addCellTabla(headerRubroTabla, new Paragraph("Proyecto:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(obra.nombre?.toUpperCase(), times8normal), prmsHeaderHoja2)
-
-//            addCellTabla(headerRubroTabla, new Paragraph("Código:", times8bold), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(rubro.codigo, times8normal), prmsHeaderHoja2)
-//
-//            addCellTabla(headerRubroTabla, new Paragraph("Código Obra:", times8bold), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigo, times8normal), prmsHeaderHoja2)
-
             addCellTabla(headerRubroTabla, new Paragraph("Rubro:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.nombre, times8normal), prmsHeaderHoja2)
-//
-//            addCellTabla(headerRubroTabla, new Paragraph("Concurso:", times8bold), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(obra?.codigoConcurso, times8normal), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(" ", times8bold), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(" ", times8normal), prmsHeaderHoja)
-
             addCellTabla(headerRubroTabla, new Paragraph("Unidad:", times8bold), prmsHeaderHoja)
             addCellTabla(headerRubroTabla, new Paragraph(rubro.unidad.codigo, times8normal), prmsHeaderHoja2)
-
-//            addCellTabla(headerRubroTabla, new Paragraph("Fecha presentación de la oferta:", times8bold), prmsHeaderHoja)
-//            addCellTabla(headerRubroTabla, new Paragraph(printFecha(obra?.fechaOferta), times8normal), prmsHeaderHoja2)
-
-
             PdfPTable tablaHerramientas = new PdfPTable(7);
             PdfPTable tablaManoObra = new PdfPTable(7);
             PdfPTable tablaMateriales = new PdfPTable(6);
@@ -1399,11 +1394,6 @@ class ReportesController {
             if (params.transporte == "1") {
                 addSubtotalTrans(tablaTransporte, totalTrans, fonts, prms)
 
-////                def addSubtotal( table, subtotal, fonts, params) {
-//                    addCellTabla(tablaTransporte, new Paragraph("TOTAL", fonts.times8bold), prmsHeader3)
-//                    addCellTabla(tablaTransporte, new Paragraph(g.formatNumber(number: totalTrans, minFractionDigits: 5, maxFractionDigits: 5, format: "##,#####0", locale: "ec"), fonts.times8bold), prmsHeader3)
-////                }
-
 
             }
 
@@ -1441,9 +1431,6 @@ class ReportesController {
             PdfPTable pieTabla = new PdfPTable(2);
             pieTabla.setWidthPercentage(90);
             pieTabla.setWidths(arregloEnteros([99, 1]))
-//
-//            addCellTabla(pieTabla, new Paragraph("Parámetros para los datos de presupuesto obtenidos de la obra: " + obra?.nombre, fonts.times8normal), prmsHeaderHojaLeft)
-//            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
             addCellTabla(pieTabla, new Paragraph("Nota: Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales, estos precios no incluyen IVA.   ", fonts.times8normal), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
