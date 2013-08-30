@@ -44,6 +44,14 @@ class Reportes3Controller {
         return [params: params]
     }
 
+
+    private static void addEmptyLine(Paragraph paragraph, int number) {
+        for (int i = 0; i < number; i++) {
+            paragraph.add(new Paragraph(" "));
+        }
+    }
+
+
     def imprimirTablaSub(){
 //        println "imprimir tabla sub "+params
         def obra = Obra.get(params.obra)
@@ -1166,9 +1174,12 @@ def reporteFormula () {
     Paragraph headers = new Paragraph();
 
     headers.setAlignment(Element.ALIGN_CENTER);
-    headers.add(new Paragraph("G.A.D. PROVINCIA PICHINCHA", times18bold));
+    headers.add(new Paragraph("G.A.D. PROVINCIA PICHINCHA", times12bold));
+    addEmptyLine(headers, 1);
     headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
-    headers.add(new Paragraph("FÓRMULA POLINÓMICA N°:" + obra?.formulaPolinomica, times12bold))
+    addEmptyLine(headers, 1);
+    headers.add(new Paragraph("FÓRMULA POLINÓMICA N°:" + obra?.formulaPolinomica, times12bold));
+    addEmptyLine(headers, 1);
     document.add(headers);
 
 
