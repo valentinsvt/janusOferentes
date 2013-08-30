@@ -29,6 +29,7 @@
         <i class="icon-file"></i>
         Lista
     </a>
+%{--
     <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
         <i class="icon-file"></i>
         Nuevo
@@ -37,23 +38,26 @@
         <i class="icon-file"></i>
         Guardar
     </a>
+--}%
     <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
         <i class="icon-file"></i>
         Cancelar
     </a>
+%{--
     <a href="#" class="btn btn-ajax btn-new" id="borrar">
         <i class="icon-file"></i>
         Borrar
     </a>
-    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">
-        <i class="icon-table"></i>
-        Calcular
-    </a>
+--}%
     %{--<a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">--}%
     %{--<i class="icon-truck"></i>--}%
     %{--Transporte--}%
     %{--</a>--}%
 <g:if test="${rubro}">
+    <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">
+        <i class="icon-table"></i>
+        Calcular
+    </a>
     <a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">
         <i class="icon-print"></i>
         Imprimir
@@ -98,16 +102,17 @@
         <div class="row-fluid">
             <div class="span2">
                 Código
-                <input type="text" name="rubro.codigo" class="span24" value="${rubro?.codigo}" id="input_codigo">
+                <input type="text" name="rubro.codigo" class="span24" value="${rubro?.codigo}" id="input_codigo" readonly="">
             </div>
 
             <div class="span7">
                 Descripción
-                <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion">
+                <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion"readonly="">
             </div>
             <div class="span2" style="width: 200px;">
                 Unidad
-                <g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}"/>
+                %{--<g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}" readonly=""/>--}%
+                <input type="text" name="unidad.id" class="span72" value="${rubro?.unidad?.descripcion}" readonly="">
             </div>
 
             %{--
@@ -189,6 +194,7 @@
     %{--<elm:datepicker name="item.fecha" class="span8" id="fecha_precios" value="${new java.util.Date()}" format="dd-MM-yyyy"/>--}%
     %{--</div>--}%
 
+%{--
         <g:if test="${!items}">
             <div class="span2">
                 <a class="btn btn-small btn-warning " href="#" rel="tooltip" title="Copiar " id="btn_copiarComp">
@@ -196,9 +202,10 @@
                 </a>
             </div>
         </g:if>
-        <div class="span3">
-            % costos indirectos
-            <input type="text" style="width: 30px;" id="costo_indi" value="${(obra)?obra.totales:'21'}">
+--}%
+        <div class="span12" style="color: #008">
+            Porcentaje de costos indirectos
+            <input type="text" style="width: 40px; color: #008; text-align: right" id="costo_indi" value="${(obra)?obra.totales:'21'}">
         </div>
 
     </div>
@@ -206,22 +213,22 @@
     <div class="row-fluid" style="margin-bottom: 5px">
         <div class="span2" style="margin-right: 0px">
             Código
-            <input type="text" name="item.codigo" id="cdgo_buscar" style="width: 105px;">
+            <input type="text" name="item.codigo" id="cdgo_buscar" style="width: 105px;" readonly="">
             <input type="hidden" id="item_id">
             <input type="hidden" id="item_tipoLista">
         </div>
 
         <div class="span5" style="margin-left: -20px" >
             Descripción
-            <input type="text" name="item.descripcion" id="item_desc" style="width: 430px">
+            <input type="text" name="item.descripcion" id="item_desc" style="width: 430px" readonly="">
         </div>
 
         <div class="span1">
             Unidad
-            <input type="text" name="item.unidad" id="item_unidad" class="span8">
+            <input type="text" name="item.unidad" id="item_unidad" class="span8" readonly="">
         </div>
         <div class="span2" style="margin-left: -3px">
-            Precio
+            Precio incluye transporte
             <input type="text" name="item.precio" class="span12" id="item_precio" value="1" style="text-align: right">
         </div>
 
