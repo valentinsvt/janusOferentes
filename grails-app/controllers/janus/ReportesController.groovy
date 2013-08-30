@@ -152,6 +152,9 @@ class ReportesController {
 
         Document document
         document = new Document(PageSize.A4.rotate());
+        // margins: left, right, top, bottom
+        // 1 in = 72, 1cm=28.1, 3cm = 86.4
+        document.setMargins(45.2, 30, 56.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         document.addTitle("Matriz Polinómica " + new Date().format("dd_MM_yyyy"));
@@ -160,17 +163,12 @@ class ReportesController {
         document.addAuthor("Janus");
         document.addCreator("Tedein SA");
         com.lowagie.text.Font small = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL);
-
-//        def titulo = obra.desgloseTransporte == "S" ? '(Con desglose de Transporte)' : '(Sin desglose de Transporte)'
-//        println titulo
         Paragraph headersTitulo = new Paragraph();
         addEmptyLine(headersTitulo, 1)
         headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", titleFont2));
+        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", titleFont3));
         addEmptyLine(headersTitulo, 1);
-//        headersTitulo.add(new Paragraph(obra?.departamento?.direccion?.nombre, titleFont));
-//        addEmptyLine(headersTitulo,1);
-        headersTitulo.add(new Paragraph("MATRIZ DE LA FORMULA POLINÓMICA - " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), titleFont));
+        headersTitulo.add(new Paragraph("MATRIZ DE LA FÓRMULA POLINÓMICA - " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), titleFont));
         addEmptyLine(headersTitulo, 1);
 
         document.add(headersTitulo)

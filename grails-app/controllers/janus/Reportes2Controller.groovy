@@ -545,11 +545,16 @@ class Reportes2Controller {
         def firma = Persona.get(session.usuario.id).firma
 
 
+        def oferente = Persona.get(session.usuario.id)
+
+
+
         def meses = obra.plazoEjecucionMeses + (obra.plazoEjecucionDias > 0 ? 1 : 0)
 
         def detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
 
         def precios = [:]
+
         def indirecto = obra.totales / 100
 
         preciosService.ac_rbroObra(obra.id)
@@ -557,6 +562,8 @@ class Reportes2Controller {
         detalle.each {
             it.refresh()
             def res = preciosService.precioUnitarioVolumenObraSinOrderBy("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+//            println("-->>" + res)
+
             precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
         }
 
@@ -567,6 +574,7 @@ class Reportes2Controller {
         com.lowagie.text.Font catFont = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font catFont2 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 14, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font catFont3 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 16, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font catFont4 = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font info = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL)
         com.lowagie.text.Font fontTitle = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 9, com.lowagie.text.Font.BOLD);
         com.lowagie.text.Font fontTh = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD);
@@ -575,6 +583,7 @@ class Reportes2Controller {
 
         Document document
         document = new Document(PageSize.A4.rotate());
+        document.setMargins(45.2, 30, 56.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         PdfContentByte cb = pdfw.getDirectContent();
@@ -585,43 +594,52 @@ class Reportes2Controller {
         document.addCreator("Tedein SA");
 
         /* ***************************************************** Titulo del reporte *******************************************************/
-        Paragraph preface = new Paragraph();
-        addEmptyLine(preface, 1);
-        preface.setAlignment(Element.ALIGN_CENTER);
+//        Paragraph preface = new Paragraph();
+//        addEmptyLine(preface, 1);
+//        preface.setAlignment(Element.ALIGN_CENTER);
+//
+//        preface.add(new Paragraph("FORMULARIO N: 11", catFont3));
+//        preface.add(new Paragraph("NOMBRE DEL OFERENTE: " +  session.usuario, catFont3));
+//        preface.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont3));
+//        preface.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", catFont3));
+//        preface.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont3));
+//        preface.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont3));
+//        addEmptyLine(preface, 1);
+//        document.add(preface);
 
-        preface.add(new Paragraph("FORMULARIO N: 11", catFont3));
-        preface.add(new Paragraph("NOMBRE DEL OFERENTE: " +  session.usuario, catFont3));
-        preface.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont3));
-        preface.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", catFont3));
-        preface.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont2));
-        preface.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont2));
-        addEmptyLine(preface, 1);
-//        Paragraph preface2 = new Paragraph();
-////        preface2.add(new Paragraph("Generado por el usuario: " + session.usuario + "   el: " + new Date().format("dd/MM/yyyy hh:mm"), info))
-//        preface2.add(new Paragraph("Proyecto: " + obra?.nombre, info))
-        document.add(preface);
-//        document.add(preface2);
-//        Paragraph pMeses = new Paragraph();
-//        pMeses.add(new Paragraph("Obra: ${obra.descripcion} (${meses} mes${meses == 1 ? '' : 'es'})", info))
-//        addEmptyLine(pMeses, 1);
-//        document.add(pMeses);
-//
-//        Paragraph codigoObra = new Paragraph();
-//        codigoObra.add(new Paragraph("Código de la Obra: ${obra?.codigo}", info))
-//        document.add(codigoObra);
-//
-//        Paragraph docReferencia = new Paragraph();
-//        docReferencia.add(new Paragraph("Doc. Referencia: ${obra?.oficioIngreso}", info))
-//        document.add(docReferencia);
-//
-//        Paragraph fecha = new Paragraph();
-//        fecha.add(new Paragraph("Fecha: ${printFecha(obra?.fechaCreacionObra)}", info))
-////        addEmptyLine(fecha, 1);
-//        document.add(fecha);
-//        Paragraph fechaP = new Paragraph();
-//        fechaP.add(new Paragraph("Fecha Act. Precios: ${printFecha(obra?.fechaPreciosRubros)}", info))
-//        addEmptyLine(fechaP, 1);
-//        document.add(fechaP);
+
+
+
+
+        Paragraph headers = new Paragraph();
+        addEmptyLine(headers, 1);
+        headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph("FORMULARIO N° 11", catFont4));
+        Paragraph nombreOferente = new Paragraph();
+        addEmptyLine(nombreOferente, 1);
+        nombreOferente.setAlignment(Element.ALIGN_LEFT);
+        nombreOferente.setIndentationLeft(25)
+        nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
+        Paragraph proceso = new Paragraph();
+        addEmptyLine(proceso, 1);
+        proceso.setAlignment(Element.ALIGN_CENTER);
+        proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont4));
+        Paragraph analisis = new Paragraph();
+        addEmptyLine(analisis, 1);
+        analisis.setAlignment(Element.ALIGN_LEFT);
+        analisis.setIndentationLeft(25)
+        analisis.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont4));
+        addEmptyLine(analisis, 1);
+        analisis.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont4));
+        addEmptyLine(analisis, 1);
+
+        document.add(headers);
+        document.add(nombreOferente)
+        document.add(proceso)
+        document.add(analisis)
+
+
+
 
         /* ***************************************************** Fin Titulo del reporte ***************************************************/
         /* ***************************************************** Tabla cronograma *********************************************************/
