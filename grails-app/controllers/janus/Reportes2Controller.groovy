@@ -28,7 +28,7 @@ class Reportes2Controller {
 
     private String printFecha(Date fecha) {
         if (fecha) {
-            return (fecha.format("dd")+' de '+ meses[fecha.format("MM").toInteger()]+' de '+fecha.format("yyyy")).toUpperCase()
+            return (fecha.format("dd")+' de '+ meses[fecha.format("MM").toInteger()]+' de '+fecha.format("yyyy")).toLowerCase()
         } else {
             return "Error: no hay fecha que mostrar"
         }
@@ -583,7 +583,7 @@ class Reportes2Controller {
 
         Document document
         document = new Document(PageSize.A4.rotate());
-        document.setMargins(45.2, 30, 56.2, 56.2);
+        document.setMargins(45.2, 30, 36.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         PdfContentByte cb = pdfw.getDirectContent();
@@ -615,11 +615,11 @@ class Reportes2Controller {
         addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
         headers.add(new Paragraph("FORMULARIO N° 11", catFont4));
-        Paragraph nombreOferente = new Paragraph();
-        addEmptyLine(nombreOferente, 1);
-        nombreOferente.setAlignment(Element.ALIGN_LEFT);
-        nombreOferente.setIndentationLeft(25)
-        nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
+//        Paragraph nombreOferente = new Paragraph();
+//        addEmptyLine(nombreOferente, 1);
+//        nombreOferente.setAlignment(Element.ALIGN_LEFT);
+//        nombreOferente.setIndentationLeft(25)
+//        nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
         Paragraph proceso = new Paragraph();
         addEmptyLine(proceso, 1);
         proceso.setAlignment(Element.ALIGN_CENTER);
@@ -628,13 +628,15 @@ class Reportes2Controller {
         addEmptyLine(analisis, 1);
         analisis.setAlignment(Element.ALIGN_LEFT);
         analisis.setIndentationLeft(25)
+        analisis.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
+        addEmptyLine(analisis, 1);
         analisis.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont4));
         addEmptyLine(analisis, 1);
         analisis.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont4));
         addEmptyLine(analisis, 1);
 
         document.add(headers);
-        document.add(nombreOferente)
+//        document.add(nombreOferente)
         document.add(proceso)
         document.add(analisis)
 
