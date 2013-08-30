@@ -261,8 +261,6 @@
         <p style="font-size: 12pt; text-align: left">
             <b>${firma}</b>
         </p>
-
-
     </div>
 
 
