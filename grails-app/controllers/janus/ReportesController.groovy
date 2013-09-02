@@ -166,7 +166,7 @@ class ReportesController {
         Paragraph headersTitulo = new Paragraph();
         addEmptyLine(headersTitulo, 1)
         headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", titleFont3));
+        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", titleFont));
         addEmptyLine(headersTitulo, 1);
         headersTitulo.add(new Paragraph("MATRIZ DE LA FÓRMULA POLINÓMICA - " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), titleFont));
         addEmptyLine(headersTitulo, 1);
@@ -1327,7 +1327,7 @@ class ReportesController {
             Paragraph headers = new Paragraph();
             addEmptyLine(headers, 1);
             headers.setAlignment(Element.ALIGN_CENTER);
-            headers.add(new Paragraph("FORMULARIO N: 4", times12bold));
+            headers.add(new Paragraph("Formulario N° 4", times12bold));
             Paragraph nombreOferente = new Paragraph();
             addEmptyLine(nombreOferente, 1);
             nombreOferente.setAlignment(Element.ALIGN_LEFT);

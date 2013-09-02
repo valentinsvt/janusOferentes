@@ -162,7 +162,7 @@
 
     <div class="tituloPdf tituloHeader">
         <p style="font-size: 12pt; text-align: center">
-            <b>FORMULARIO N: 4</b>
+            <b>Formulario N°4</b>
         </p>
         <p style="font-size: 12pt; text-align: left">
             <b>NOMBRE DEL OFERENTE: ${oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase()}</b>

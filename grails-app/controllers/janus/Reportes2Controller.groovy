@@ -662,7 +662,7 @@ class Reportes2Controller {
         Paragraph headers = new Paragraph();
         addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
-        headers.add(new Paragraph("FORMULARIO N° 11", catFont4));
+        headers.add(new Paragraph("Formulario N° 11", catFont4));
 //        Paragraph nombreOferente = new Paragraph();
 //        addEmptyLine(nombreOferente, 1);
 //        nombreOferente.setAlignment(Element.ALIGN_LEFT);

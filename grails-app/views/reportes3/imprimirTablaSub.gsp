@@ -147,7 +147,7 @@
 
 
         <p style="font-size: 14px">
-            <b> Formulario N°. 2 </b>
+            <b> Formulario N° 2 </b>
         </p>
 
         <p style="font-size: 14px; text-align: left">
@@ -284,7 +284,7 @@
 
                 <p style="font-size: 14px; text-align: left; margin-bottom: 50px">
                     <g:if test="${firma}">
-                       <b> ${firma.toUpperCase()}</b>
+                       <b> ${firma}</b>
                     </g:if>
                     <g:else>
                         FIRMA DEL RESPONSABLE
