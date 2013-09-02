@@ -275,7 +275,7 @@
 
 
                 <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">
-                    <b>QUITO, ${fechaOferta}</b>
+                    <b>Quito, ${fechaOferta}</b>
                 </p>
 
                 <p style="text-align: left">
@@ -368,7 +368,7 @@
 
 
             <p style="font-size: 14px; text-align: left; margin-top: 40px; margin-bottom: 60px">
-                QUITO,
+                Quito,
             </p>
 
             <p style="text-align: left">
