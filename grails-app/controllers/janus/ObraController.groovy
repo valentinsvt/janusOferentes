@@ -102,6 +102,8 @@ class ObraController extends janus.seguridad.Shield {
         if (obra.save(flush: true)) {
             render "ok"
             return
+        } else {
+            println obra.errors
         }
     }
 
