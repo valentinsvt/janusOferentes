@@ -7,10 +7,11 @@ class ObraService {
 
     def registrarObra(obra){
         def cn = dbConnectionService.getConnection()
-        def sql = " SELECT * from rgst_obra_v2(${obra.id})"
+        def sql = " SELECT * from rgst_obra_of(${obra.id})"
         def result = []
         cn.eachRow(sql.toString()){r->
             println "res "+r
+            result = r[0]
         }
         cn.close()
         return result
