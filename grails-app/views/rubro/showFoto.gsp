@@ -62,29 +62,7 @@
         <div class="tituloTree" style="width: 720px;">
             Rubro: ${rubro?.nombre}
         </div>
-        <fieldset class="borde_abajo" style="position: relative;width: 670px;padding-left: 50px;">
-            <div class="linea" style="height: 98%;"></div>
-            <g:uploadForm action="uploadFile" method="post" name="frmUpload" enctype="multipart/form-data">
-                <div class="fieldcontain required">
-                    <b>Archivo:</b>
-                    <input type="file" id="file" name="file" class=""/>
-                    <input type="hidden" name="rubro" value="${rubro?.id}">
 
-                    <div class="btn-group">
-                        %{--<input type="submit" value="Guardar" class="btn btn-primary">--}%
-                        <a href="#" id="submit" class="btn ">
-                            <i class="icon-save"></i> Guardar
-                        </a>
-                        <g:link action="downloadFile" id="${rubro.id}" class="btn ">
-                            <i class="icon-download-alt"></i> Descargar
-                        </g:link>
-                        <a href="#" id="salir" class="btn ">
-                            <i class="icon-minus-sign"></i> Salir
-                        </a>
-                    </div>
-                </div>
-            </g:uploadForm>
-        </fieldset>
         <g:if test="${ext.toLowerCase() == 'pdf'}">
             <div class="alert alert-info">
                 <p>

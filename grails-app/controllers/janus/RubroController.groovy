@@ -584,14 +584,28 @@ class RubroController extends janus.seguridad.Shield {
 
     def showFoto() {
         def rubro = Item.get(params.id)
+        def tipo = params.tipo
+
+        def filePath
+        def titulo
+        switch (tipo) {
+            case "il":
+                titulo = "Ilustración"
+                filePath = rubro.foto
+                break;
+            case "dt":
+                titulo = "Especificaciones"
+                filePath = rubro.especificaciones
+                break;
+        }
 
         def ext = ""
 
-        if (rubro.foto) {
-            ext = rubro.foto.split("\\.")
+        if (filePath) {
+            ext = filePath.split("\\.")
             ext = ext[ext.size() - 1]
         }
-        return [rubro: rubro, ext: ext]
+        return [rubro: rubro, ext: ext, tipo: tipo, titulo: titulo, filePath: filePath]
     }
 
     def downloadFile() {
