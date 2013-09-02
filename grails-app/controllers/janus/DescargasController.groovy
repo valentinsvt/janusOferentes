@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException
 class DescargasController extends janus.seguridad.Shield {
 
     def especificaciones() {
-        def filePath = "especificaciones.pdf"
+        def filePath = "especificaciones generales.pdf"
         def path = servletContext.getRealPath("/") + File.separatorChar + filePath
         def file = new File(path)
         def b = file.getBytes()

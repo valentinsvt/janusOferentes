@@ -272,6 +272,19 @@ class PreciosService {
         return result
     }
 
+    def rbro_pcun_of_item(obra, sbpr, item){
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from rbro_pcun_of(" + obra + ") where item__id = " + item + " and sbpr__id = " + sbpr
+        def valor = 0.0
+        cn.eachRow(sql.toString()) { r ->
+            valor = r.totl
+        }
+        cn.close()
+        return valor
+    }
+
+
     def precioUnitarioVolumenObraAsc(select, obra, item) {
         def cn = dbConnectionService.getConnection()
         def sql = "select ${select} from vlob_pcun_v2(${obra},${item}) order by itemcdgo asc "
