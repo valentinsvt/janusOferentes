@@ -971,8 +971,14 @@
                     <g:if test="${obra?.estado !='R'}">
                     $("#modal_footer_var").html("").append(btnSave);
                     </g:if>
+                    <g:else>
+                    $("#modal_footer_var").html("").append(btnCancel);
+                    </g:else>
 
-                    $("#modal_footer_var").html("").append(btnSave);
+
+
+
+//                    $("#modal_footer_var").html("").append(btnSave);
                     $("#modal-var").modal("show");
                 }
             });

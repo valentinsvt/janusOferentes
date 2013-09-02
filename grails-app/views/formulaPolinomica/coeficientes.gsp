@@ -123,11 +123,13 @@
                     Cuadrilla Tipo
                 </g:link>
             </div>
+            <g:if test="${obra?.estado != 'R'}">
             <a href="${g.createLink(action: 'borrarFP', params: [obra: obra?.id])}" class="btn " title="Borrar la Fórmula Polinómica"
                style="margin-top: -10px;" id="btnBorrar">
                 <i class="icon-trash"></i>
-                Borrar la Fórmula Polinomica
+                Borrar la Fórmula Polinómica
             </a>
+            </g:if>
             <a href="${g.createLink(controller: 'reportes3', action: 'reporteFormula', params: [obra: obra?.id])}" class="btn "
                style="margin-top: -10px;" id="btnFormula">
                 <i class="icon-print"></i>
@@ -362,7 +364,7 @@
 //                                ////console.log("NO");
                             }
                         });
-
+                     if(${obra?.estado != 'R'}){
                         menuItems.editar = {
                             label            : "Editar",
                             separator_before : false,
@@ -389,6 +391,8 @@
                                 </g:else>
                             }
                         };
+
+                     }
                     %{--if (hijos == 0 && num != "p01" && num != "p02" && num != "px" && num != "c01") {--}%
                     %{--menuItems.eliminar = {--}%
                     %{--label            : "Eliminar",--}%
@@ -442,6 +446,8 @@
                         node.parent().parent().children("a, .jstree-grid-cell").addClass("selected editable parent");
                         /*** Fin Selecciona el nodo y su padre ***/
 
+
+                       if(${obra?.estado != 'R'}){
                         menuItems.delete = {
                             label            : "Eliminar",
                             separator_before : false,
@@ -511,7 +517,10 @@
 
                             }
                         };
+     }
                         break;
+
+
                 }
 
                 return menuItems;
@@ -730,6 +739,7 @@
                             },
 
                             contextmenu : {
+
                                 items : createContextmenu
                             },
 
