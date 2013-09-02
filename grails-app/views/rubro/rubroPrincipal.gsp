@@ -1274,7 +1274,7 @@
             var volqueta=$("#costo_volqueta").val()
             var chofer=$("#costo_chofer").val()
 
-            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()+"&oferente=${session.usuario.id}"
+            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()+"&oferente=${session.usuario.id}" + "&obra=${obra?.id}"
 
 
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}?"+datos

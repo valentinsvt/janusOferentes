@@ -552,10 +552,38 @@ class ReportesController {
 
 
     def matrizExcel() {
+
+
+//        println("-->" + params)
+
+        def obra = Obra.get(params.id)
+
+        def oferente = Persona.get(session.usuario.id)
+
+
+        def sql1 = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn3 = dbConnectionService.getConnection()
+
+        def conc = cn3.rows(sql1.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
         def cn = dbConnectionService.getConnection()
         def cn1 = dbConnectionService.getConnection()
         def cn2 = dbConnectionService.getConnection()
-        def obra = Obra.get(params.id)
+//        def obra = Obra.get(params.id)
         def lugar = obra.lugar
         def fecha = obra.fechaPreciosRubros
         def itemsChofer = [obra.chofer]
@@ -593,17 +621,11 @@ class ReportesController {
         sheet.setColumnView(11, 15)
         sheet.setColumnView(12, 15)  // el resto por defecto..
 
-        def label = new jxl.write.Label(2, 1, "G.A.D. PROVINCIA DE PICHINCHA".toUpperCase(), times10format); sheet.addCell(label);
-
-//        label = new jxl.write.Label(2, 2, "${obra?.departamento?.direccion?.nombre}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 3, "Matriz de la Fórmula Polinómica", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 4, "", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 5, "Obra: ${obra.nombre}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 6, "Código: ${obra.codigo}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 7, "Memo Cant. Obra: ${obra.memoCantidadObra}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 8, "Doc. Referencia: ${obra.oficioIngreso}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 9, "Fecha: ${printFecha(obra?.fechaCreacionObra)}", times10format); sheet.addCell(label);
-        label = new jxl.write.Label(2, 10, "Fecha Act. Precios: ${printFecha(obra?.fechaPreciosRubros)}", times10format); sheet.addCell(label);
+        def label = new jxl.write.Label(2, 2, "G.A.D. PROVINCIA DE PICHINCHA".toUpperCase(), times10format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 3, "MATRIZ DE LA FÓRMULA POLINÓMICA - " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times10format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 5, "PROYECTO: " + obra?.nombre, times10format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 6, "PROCESO: " + concurso?.codigo, times10format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 7, "FECHA PRESENTACIÓN: " + printFecha(concurso?.fechaLimiteEntregaOfertas), times10format); sheet.addCell(label);
 
         // crea columnas
 
@@ -954,6 +976,34 @@ class ReportesController {
         def itemsChofer = [obra.chofer]
         def itemsVolquete = [obra.volquete]
         def indi = obra.totales
+
+        def oferente = Persona.get(params.oferente)
+
+
+
+        def obraOferente = Obra.findByOferente(oferente)
+
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
+
+
         WorkbookSettings workbookSettings = new WorkbookSettings()
         workbookSettings.locale = Locale.default
         def file = File.createTempFile('myExcelDocument', '.xls')
@@ -967,7 +1017,7 @@ class ReportesController {
         VolumenesObra.findAllByObra(obra, [sort: "orden"]).item.eachWithIndex { rubro, i ->
             def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id, params.oferente)
             WritableSheet sheet = workbook.createSheet(rubro.codigo, i)
-            rubroAExcel(sheet, res, rubro, fecha, indi)
+            rubroAExcel(sheet, res, rubro, fecha, indi, oferente, concurso, obra)
         }
         workbook.write();
         workbook.close();
@@ -980,7 +1030,7 @@ class ReportesController {
     }
 
 
-    def rubroAExcel(sheet, res, rubro, fecha, indi) {
+    def rubroAExcel(sheet, res, rubro, fecha, indi, oferente, concurso, obra) {
         WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, true);
         WritableCellFormat times16format = new WritableCellFormat(times16font);
         WritableFont times10Font = new WritableFont(WritableFont.TIMES, 10, WritableFont.NO_BOLD, true);
@@ -993,25 +1043,14 @@ class ReportesController {
         sheet.setColumnView(5, 15)
         sheet.setColumnView(6, 15)
 
-//        sheet.setColumnView(4, 30)
-//        sheet.setColumnView(8, 20)
-        def label = new Label(0, 1, "Gobierno Autónomo Descentralizado de la provincia de pichincha".toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(0, 2, "Departamento de costos".toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(0, 3, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
+        def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
+        label = new Label(1, 8, "UNIDAD:" + rubro?.unidad?.codigo, times16format); sheet.addCell(label);
 
-        sheet.mergeCells(0, 1, 1, 1)
-        sheet.mergeCells(0, 2, 1, 2)
-        sheet.mergeCells(0, 3, 1, 3)
-        label = new Label(0, 5, "Fecha: " + new Date().format("dd-MM-yyyy"), times16format); sheet.addCell(label);
-        sheet.mergeCells(0, 5, 1, 5)
-        label = new Label(0, 6, "Código: " + rubro.codigo, times16format); sheet.addCell(label);
-        sheet.mergeCells(0, 6, 1, 6)
-        label = new Label(0, 7, "Descripción: " + rubro.nombre, times16format); sheet.addCell(label);
-        sheet.mergeCells(0, 7, 1, 7)
-        label = new Label(5, 5, "Fecha Act. P.U: " + fecha?.format("dd-MM-yyyy"), times16format); sheet.addCell(label);
-        sheet.mergeCells(5, 5, 6, 5)
-        label = new Label(5, 6, "Unidad: " + rubro.unidad?.codigo, times16format); sheet.addCell(label);
-        sheet.mergeCells(5, 6, 6, 6)
+
 
         def fila = 9
         label = new Label(0, fila, "Herramientas", times16format); sheet.addCell(label);
@@ -4210,6 +4249,26 @@ class ReportesController {
 
         def oferente = Persona.get(params.oferente)
 
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
+
         def detalle
 
         detalle = VolumenesObra.findAllByObra(obra, [sort: "orden"])
@@ -4257,8 +4316,8 @@ class ReportesController {
         WritableCellFormat times16format = new WritableCellFormat(times16font);
         sheet.setColumnView(0, 12)
         sheet.setColumnView(1, 25)
-        sheet.setColumnView(2, 60)
-        sheet.setColumnView(3, 25)
+        sheet.setColumnView(2, 40)
+        sheet.setColumnView(3, 50)
         sheet.setColumnView(4, 25)
         sheet.setColumnView(5, 25)
         sheet.setColumnView(6, 25)
@@ -4278,14 +4337,15 @@ class ReportesController {
 
 
         label = new Label(2, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(2, 4, "ANÁLISIS DE PRECIOS UNITARIOS DEL SUBPRESUPUESTO: " + subPres?.descripcion.toString(), times16format); sheet.addCell(label);
-        label = new Label(2, 6, "G.A.D. PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
-        label = new Label(2, 8, "NOMBRE DEL PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(2, 3, "PROCESO: " + concurso?.codigo, times16format); sheet.addCell(label);
+        label = new Label(2, 4, "TABLA DE DESCRIPCIÓN DE RUBROS, UNIDADES, CANTIDADES Y PRECIOS", times16format); sheet.addCell(label);
+        label = new Label(2, 5, "GOBIERNO AUTÓNOMO DESCENTRALIZADO DE LA PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
+        label = new Label(2, 6, "NOMBRE DEL PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
 
-        label = new Label(0, 10, "#", times16format); sheet.addCell(label);
-        label = new Label(1, 10, "CÓDIGO", times16format); sheet.addCell(label);
+        label = new Label(0, 10, "N°", times16format); sheet.addCell(label);
+        label = new Label(1, 10, "RUBRO", times16format); sheet.addCell(label);
         label = new Label(2, 10, "SUBPRESUPUESTO", times16format); sheet.addCell(label);
-        label = new Label(3, 10, "RUBRO", times16format); sheet.addCell(label);
+        label = new Label(3, 10, "COMPONENTE DEL PROYECTO/ITEM", times16format); sheet.addCell(label);
         label = new Label(4, 10, "UNIDAD", times16format); sheet.addCell(label);
         label = new Label(5, 10, "CANTIDAD", times16format); sheet.addCell(label);
         label = new Label(6, 10, "UNITARIO", times16format); sheet.addCell(label);

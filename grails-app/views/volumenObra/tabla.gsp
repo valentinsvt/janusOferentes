@@ -62,7 +62,7 @@
         </th>
         <th class="col_precio" style="display: none;">Unitario</th>
         <th class="col_total" style="display: none;">C.Total</th>
-        <th style="width: 40px" class="col_delete"></th>
+        %{--<th style="width: 40px" class="col_delete"></th>--}%
     </tr>
     </thead>
     <tbody id="tabla_material">
@@ -80,10 +80,10 @@
             </td>
             <td class="col_precio" style="display: none;text-align: right" id="i_${vol.item.id}"><g:formatNumber number="${precios[vol.id.toString()]}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></td>
             <td class="col_total total" style="display: none;text-align: right"><g:formatNumber number="${precios[vol.id.toString()]*vol.cantidad}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></td>
-            <td style="width: 40px;text-align: center" class="col_delete">
-                <a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${vol.id}">
-                    <i class="icon-trash"></i></a>
-            </td>
+            %{--<td style="width: 40px;text-align: center" class="col_delete">--}%
+                %{--<a class="btn btn-small btn-danger borrarItem" href="#" rel="tooltip" title="Eliminar" iden="${vol.id}">--}%
+                    %{--<i class="icon-trash"></i></a>--}%
+            %{--</td>--}%
         </tr>
 
     </g:each>
@@ -273,7 +273,7 @@
 
     $(".item_row").dblclick(function(){
         $("#calcular").removeClass("active")
-        $(".col_delete").show()
+//        $(".col_delete").show()
         $(".col_precio").hide()
         $(".col_total").hide()
         $("#divTotal").html("")

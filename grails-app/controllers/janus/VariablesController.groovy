@@ -148,7 +148,7 @@ class VariablesController {
                 "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, \n" +
                 "g.grpo__id, g.grpodscr " +
                 "ORDER BY g.grpo__id ASC, i.itemcdgo"
-        println sql
+//        println sql
 
         def sqlSP = "SELECT\n" +
                 "  DISTINCT v.sbpr__id      id,\n" +
@@ -159,7 +159,7 @@ class VariablesController {
                 "    ON v.sbpr__id = s.sbpr__id\n" +
                 "WHERE v.obra__id = ${params.id}\n" +
                 "GROUP BY 1, 2"
-        println "SP:" + sqlSP
+//        println "SP:" + sqlSP
 
         def cn = dbConnectionService.getConnection()
 

@@ -179,7 +179,34 @@ class Reportes3Controller {
         def fechaOferta = printFecha(obra?.fechaOferta)
 
         def oferente = Persona.get(params.oferente)
-//        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
+
+
+
+        def obraOferente = Obra.findByOferente(oferente)
+
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
+        def fechaEntregaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas)
+
+        def firma = Persona.get(params.oferente).firma
+
         def indi = obra.totales
         try{
             indi=indi.toDouble()
@@ -332,7 +359,9 @@ class Reportes3Controller {
             tablaMat = ""
 //        println "fin reporte rubro"
         [rubro: rubro, tablaTrans: tablaTrans, tablaTrans2: tablaTrans2, band:  band, tablaMat2: tablaMat2, bandMat: bandMat,
-                bandTrans: bandTrans, tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat, tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obra, oferente: oferente, fechaOferta: fechaOferta]
+                bandTrans: bandTrans, tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat, tablaIndi: tablaIndi, totalRubro: totalRubro,
+                totalIndi: totalIndi, obra: obra, oferente: oferente,
+                fechaOferta: fechaOferta, concurso: concurso, fechaEntregaOferta: fechaEntregaOferta, firma: firma]
 
 
 
@@ -341,10 +370,26 @@ class Reportes3Controller {
     def imprimirRubroExcel(){
         println "imprimir rubro  excel "+params
         def rubro = Item.get(params.id)
-//        def fecha = new Date().parse("dd-MM-yyyy",params.fecha)
-//        def lugar = params.lugar
         def indi = params.indi
-//        def listas = params.listas
+        def obra = Obra.get(params.obra)
+        def oferente = Persona.get(params.oferente)
+        def obraOferente = Obra.findByOferente(oferente)
+
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+        }
+        def concurso = janus.pac.Concurso.get(cncrId)
 
         try{
             indi=indi.toDouble()
@@ -354,10 +399,6 @@ class Reportes3Controller {
         }
 
 
-//        def parametros = ""+params.id+","+params.lugar+",'"+fecha.format("yyyy-MM-dd")+"',"+params.dsps.toDouble()+","+params.dsvs.toDouble()+","+rendimientos["rdps"]+","+rendimientos["rdvl"]
-//        def parametros = ""+rubro.id+","+params.oferente
-//        preciosService.ac_rbroV2(params.id,params.oferente)
-//        def res = preciosService.rb_precios(parametros,"order by grpocdgo desc")
 
         def parametros = ""+rubro.id+","+params.oferente
         preciosService.ac_rbroObra(params.id)
@@ -385,25 +426,12 @@ class Reportes3Controller {
         sheet.setColumnView(5, 15)
         sheet.setColumnView(6, 15)
 
-//        sheet.setColumnView(4, 30)
-//        sheet.setColumnView(8, 20)
-        def label = new Label(0, 1,"GOBIERNO  AUTÓNOMO DESCENTRALIZADO DE LA PROVINCIA DE PICHINCHA".toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(0,2, "GESTIÓN DE PRESUPUESTOS".toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(0, 3, "ANÁLISIS DE PRECIOS UNITARIOS".toUpperCase(), times16format); sheet.addCell(label);
-
-        sheet.mergeCells(0,1, 1, 1)
-        sheet.mergeCells(0,2, 1,2)
-        sheet.mergeCells(0,3, 1, 3)
-        label = new Label(0, 5, "Fecha: "+new Date().format("dd-MM-yyyy"), times16format); sheet.addCell(label);
-        sheet.mergeCells(0,5, 1, 5)
-        label = new Label(0, 6, "Código: "+rubro.codigo, times16format); sheet.addCell(label);
-        sheet.mergeCells(0,6, 1, 6)
-        label = new Label(0, 7, "Descripción: "+rubro.nombre, times16format); sheet.addCell(label);
-        sheet.mergeCells(0,7, 1, 7)
-//        label = new Label(5, 5, "Fecha Act. P.U: "+fecha?.format("dd-MM-yyyy"), times16format); sheet.addCell(label);
-//        sheet.mergeCells(5,5, 6, 5)
-        label = new Label(5, 6, "Unidad: "+rubro.unidad?.codigo, times16format); sheet.addCell(label);
-        sheet.mergeCells(5,6, 6, 6)
+        def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
+        label = new Label(1, 8, "UNIDAD:" + rubro?.unidad?.codigo, times16format); sheet.addCell(label);
 
         def fila = 9
         label = new Label(0, fila,"Herramientas", times16format); sheet.addCell(label);

@@ -2,6 +2,7 @@ package janus
 
 import com.lowagie.text.Document
 import com.lowagie.text.Element
+import com.lowagie.text.Font
 import com.lowagie.text.PageSize
 import com.lowagie.text.Paragraph
 import com.lowagie.text.pdf.PdfContentByte
@@ -43,13 +44,101 @@ class Reportes2Controller {
         return ia
     }
 
-    private static void addCellTabla(PdfPTable table, paragraph, params) {
+//    private static void addCellTabla(PdfPTable table, paragraph, params) {
+//        PdfPCell cell = new PdfPCell(paragraph);
+//        if (params.height) {
+//            cell.setFixedHeight(params.height.toFloat());
+//        }
+//        if (params.border) {
+//            cell.setBorderColor(params.border);
+//        }
+//        if (params.bg) {
+//            cell.setBackgroundColor(params.bg);
+//        }
+//        if (params.colspan) {
+//            cell.setColspan(params.colspan);
+//        }
+//        if (params.align) {
+//            cell.setHorizontalAlignment(params.align);
+//        }
+//        if (params.valign) {
+//            cell.setVerticalAlignment(params.valign);
+//        }
+//        if (params.w) {
+//            cell.setBorderWidth(params.w);
+//            cell.setUseBorderPadding(true);
+//        }
+//        if (params.bwl) {
+//            cell.setBorderWidthLeft(params.bwl.toFloat());
+//            cell.setUseBorderPadding(true);
+//        }
+//        if (params.bwb) {
+//            cell.setBorderWidthBottom(params.bwb.toFloat());
+//            cell.setUseBorderPadding(true);
+//        }
+//        if (params.bwr) {
+//            cell.setBorderWidthRight(params.bwr.toFloat());
+//            cell.setUseBorderPadding(true);
+//        }
+//        if (params.bwt) {
+//            cell.setBorderWidthTop(params.bwt.toFloat());
+//            cell.setUseBorderPadding(true);
+//        }
+//        if (params.bcl) {
+//            cell.setBorderColorLeft(params.bcl);
+//        }
+//        if (params.bcb) {
+//            cell.setBorderColorBottom(params.bcb);
+//        }
+//        if (params.bcr) {
+//            cell.setBorderColorRight(params.bcr);
+//        }
+//        if (params.bct) {
+//            cell.setBorderColorTop(params.bct);
+//        }
+//        if (params.pl) {
+//            cell.setPaddingLeft(params.pl.toFloat());
+//        }
+//        if (params.pr) {
+//            cell.setPaddingRight(params.pr.toFloat());
+//        }
+//        if (params.pt) {
+//            cell.setPaddingTop(params.pt.toFloat());
+//        }
+//        if (params.pb) {
+//            cell.setPaddingBottom(params.pb.toFloat());
+//        }
+//        if (params.bordeTop) {
+//            cell.setBorderWidthTop(1)
+//            cell.setBorderWidthLeft(0)
+//            cell.setBorderWidthRight(0)
+//            cell.setBorderWidthBottom(0)
+//            cell.setPaddingTop(7);
+//
+//        }
+//        if (params.bordeBot) {
+//            cell.setBorderWidthBottom(1)
+//            cell.setBorderWidthLeft(0)
+//            cell.setBorderWidthRight(0)
+//            cell.setPaddingBottom(7)
+//
+//            if (!params.bordeTop) {
+//                cell.setBorderWidthTop(0)
+//            }
+//        }
+//
+//        table.addCell(cell);
+//    }
+
+
+    def addCellTabla(table, paragraph, params) {
         PdfPCell cell = new PdfPCell(paragraph);
-        if (params.height) {
-            cell.setFixedHeight(params.height.toFloat());
-        }
+//        println "params "+params
+        cell.setBorderColor(Color.BLACK);
         if (params.border) {
-            cell.setBorderColor(params.border);
+            if (!params.bordeBot)
+                if (!params.bordeTop)
+                    cell.setBorderColor(params.border);
         }
         if (params.bg) {
             cell.setBackgroundColor(params.bg);
@@ -65,47 +154,6 @@ class Reportes2Controller {
         }
         if (params.w) {
             cell.setBorderWidth(params.w);
-            cell.setUseBorderPadding(true);
-        }
-        if (params.bwl) {
-            cell.setBorderWidthLeft(params.bwl.toFloat());
-            cell.setUseBorderPadding(true);
-        }
-        if (params.bwb) {
-            cell.setBorderWidthBottom(params.bwb.toFloat());
-            cell.setUseBorderPadding(true);
-        }
-        if (params.bwr) {
-            cell.setBorderWidthRight(params.bwr.toFloat());
-            cell.setUseBorderPadding(true);
-        }
-        if (params.bwt) {
-            cell.setBorderWidthTop(params.bwt.toFloat());
-            cell.setUseBorderPadding(true);
-        }
-        if (params.bcl) {
-            cell.setBorderColorLeft(params.bcl);
-        }
-        if (params.bcb) {
-            cell.setBorderColorBottom(params.bcb);
-        }
-        if (params.bcr) {
-            cell.setBorderColorRight(params.bcr);
-        }
-        if (params.bct) {
-            cell.setBorderColorTop(params.bct);
-        }
-        if (params.pl) {
-            cell.setPaddingLeft(params.pl.toFloat());
-        }
-        if (params.pr) {
-            cell.setPaddingRight(params.pr.toFloat());
-        }
-        if (params.pt) {
-            cell.setPaddingTop(params.pt.toFloat());
-        }
-        if (params.pb) {
-            cell.setPaddingBottom(params.pb.toFloat());
         }
         if (params.bordeTop) {
             cell.setBorderWidthTop(1)
@@ -125,9 +173,9 @@ class Reportes2Controller {
                 cell.setBorderWidthTop(0)
             }
         }
-
         table.addCell(cell);
     }
+
 
     private String numero(num, decimales, cero) {
         if (num == 0 && cero.toString().toLowerCase() == "hide") {
@@ -809,7 +857,7 @@ class Reportes2Controller {
         addCellTabla(pieTabla, new Paragraph("________________________________________ ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
         addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
 
-        addCellTabla(pieTabla, new Paragraph(firma, fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT,  bordeTop: "1"])
+        addCellTabla(pieTabla, new Paragraph(firma, fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
         addCellTabla(pieTabla, new Paragraph(" ", fontTh),[border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
 
         document.add(pieTabla);
@@ -827,7 +875,7 @@ class Reportes2Controller {
 
 
 
-    def reporteExcelComposicion() {
+    def reporteExcelComposicion1() {
 
         def obra = Obra.get(params.id)
 
@@ -1062,6 +1110,594 @@ class Reportes2Controller {
         output.write(file.getBytes());
 
 
+    }
+
+
+    def reporteComposicion () {
+
+        def obra = Obra.get(params.id)
+
+        def totales
+
+        def valorTotal
+
+        def total1 = 0
+
+        def totalesMano
+        def valorTotalMano
+        def total2 = 0
+
+        def totalesEquipos
+        def valorTotalEquipos
+        def total3 = 0
+
+
+        def sql4 = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn4 = dbConnectionService.getConnection()
+
+        def conc = cn4.rows(sql4.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
+
+        if (!params.tipo) {
+            params.tipo = "-1"
+        }
+        if (!params.rend) {
+            params.rend = "screen"
+        }
+        if (!params.sp) {
+            params.sp = '-1'
+        }
+        if (params.tipo == "-1") {
+            params.tipo = "1,2,3"
+        }
+        def wsp = ""
+        if (params.sp.toString() != "-1") {
+            wsp = "      AND v.sbpr__id = ${params.sp} \n"
+        }
+
+
+
+        def sql = "SELECT i.itemcdgo codigo, i.itemnmbr item, u.unddcdgo unidad, sum(v.voitcntd) cantidad, \n" +
+                "v.voitpcun punitario, v.voittrnp transporte, v.voitpcun + v.voittrnp  costo, \n" +
+                "sum((v.voitpcun + v.voittrnp) * v.voitcntd)  total, g.grpodscr grupo, g.grpo__id grid \n" +
+                "FROM vlobitem v INNER JOIN item i ON v.item__id = i.item__id\n" +
+                "INNER JOIN undd u ON i.undd__id = u.undd__id\n" +
+                "INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
+                "INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
+                "INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.tipo}) \n" +
+                "WHERE v.obra__id = ${params.id} and v.voitcntd >0 \n" + wsp +
+                "group by i.itemcdgo, i.itemnmbr, u.unddcdgo, v.voitpcun, v.voittrnp, v.voitpcun, \n" +
+                "g.grpo__id, g.grpodscr " +
+                "ORDER BY g.grpo__id ASC, i.itemcdgo"
+
+
+        def cn = dbConnectionService.getConnection()
+        def res = cn.rows(sql.toString())
+
+
+        def baos = new ByteArrayOutputStream()
+        def name = "composicion_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        Font times12bold = new Font(Font.TIMES_ROMAN, 12, Font.BOLD);
+        Font times10bold = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font times18bold = new Font(Font.TIMES_ROMAN, 18, Font.BOLD);
+        Font times14bold = new Font(Font.TIMES_ROMAN, 14, Font.BOLD);
+        Font times8bold = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+        Font times8normal = new Font(Font.TIMES_ROMAN, 8, Font.NORMAL)
+        Font times10boldWhite = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+        Font times8boldWhite = new Font(Font.TIMES_ROMAN, 8, Font.BOLD)
+        times8boldWhite.setColor(Color.BLACK)
+        times10boldWhite.setColor(Color.BLACK)
+        def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
+                times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal]
+
+        Document document
+        document = new Document(PageSize.A4);
+        def pdfw = PdfWriter.getInstance(document, baos);
+        document.open();
+        document.addTitle("Composicion " + new Date().format("dd_MM_yyyy"));
+        document.addSubject("Generado por el sistema Janus");
+        document.addKeywords("reporte, janus, composicion");
+        document.addAuthor("Janus");
+        document.addCreator("Tedein SA");
+
+        def prmsHeaderHoja = [border: Color.WHITE]
+        def prmsHeader = [border: Color.WHITE, colspan: 7,
+                align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsRight = [border: Color.WHITE, colspan: 7,
+                align: Element.ALIGN_RIGHT, valign: Element.ALIGN_RIGHT]
+        def prmsHeader2 = [border: Color.WHITE, colspan: 3,
+                align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellHead = [border: Color.WHITE,
+                align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellHead3 = [border: Color.WHITE,
+                align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT]
+        def prmsCellHead2 = [border: Color.WHITE,
+                align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeTop: "1", bordeBot: "1"]
+        def prmsCellIzquierda = [border: Color.WHITE,
+                align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT]
+        def prmsCellDerecha = [border: Color.WHITE,
+                align: Element.ALIGN_RIGHT, valign: Element.ALIGN_RIGHT]
+        def prmsCellDerecha2 = [border: Color.WHITE,
+                align: Element.ALIGN_RIGHT, valign: Element.ALIGN_RIGHT, bordeTop: "1", bordeBot: "1"]
+        def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellLeft = [border: Color.WHITE, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotal = [border: Color.WHITE, colspan: 6,
+                align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsNum = [border: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+
+        def prms = [prmsHeaderHoja: prmsHeaderHoja, prmsHeader: prmsHeader, prmsHeader2: prmsHeader2,
+                prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum, prmsRight: prmsRight,
+                prmsCellDerecha: prmsCellDerecha, prmsCellIzquierda: prmsCellIzquierda]
+
+        Paragraph headersTitulo = new Paragraph();
+        addEmptyLine(headersTitulo, 1);
+        headersTitulo.setAlignment(Element.ALIGN_CENTER);
+        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", times18bold));
+        headersTitulo.add(new Paragraph("COMPOSICIÓN", times14bold));
+//        headersTitulo.add(new Paragraph(obra?.departamento?.direccion?.nombre, times12bold));
+        headersTitulo.add(new Paragraph("", times12bold));
+        document.add(headersTitulo)
+
+        PdfPTable header = new PdfPTable(3)
+        header.setWidthPercentage(100)
+        header.setWidths(arregloEnteros([10,2,65]))
+
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+
+        addCellTabla(header, new Paragraph("PROYECTO", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(" : ", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(obra?.nombre, times8bold), prmsCellHead3)
+
+        addCellTabla(header, new Paragraph("PROCESO", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(" : ", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(concurso?.codigo, times8bold), prmsCellHead3)
+
+        addCellTabla(header, new Paragraph("FECHA", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(" : ", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(printFecha(concurso?.fechaLimiteEntregaOfertas), times8bold), prmsCellHead3)
+
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
+
+        document.add(header);
+
+
+        PdfPTable tablaHeader = new PdfPTable(8)
+        tablaHeader.setWidthPercentage(100)
+        tablaHeader.setWidths(arregloEnteros([12, 36, 5, 9, 9, 9, 10, 10]))
+
+        PdfPTable tablaTitulo = new PdfPTable(2)
+        tablaTitulo.setWidthPercentage(100)
+        tablaTitulo.setWidths(arregloEnteros([90, 10]))
+
+        PdfPTable tablaComposicion = new PdfPTable(8)
+        tablaComposicion.setWidthPercentage(100)
+        tablaComposicion.setWidths(arregloEnteros([12, 36, 5, 9, 9, 9, 10, 10]))
+
+        PdfPTable tablaTotales = new PdfPTable(2)
+        tablaTotales.setWidthPercentage(100)
+        tablaTotales.setWidths(arregloEnteros([70, 30]))
+
+
+        addCellTabla(tablaHeader, new Paragraph("Código", times8bold), prmsCellHead2)
+        addCellTabla(tablaHeader, new Paragraph("Item", times8bold), prmsCellHead2)
+        addCellTabla(tablaHeader, new Paragraph("U", times8bold), prmsCellHead2)
+        addCellTabla(tablaHeader, new Paragraph("Cantidad", times8bold), prmsCellHead2)
+        addCellTabla(tablaHeader, new Paragraph("Precio Unitario", times8bold), prmsCellDerecha2)
+        addCellTabla(tablaHeader, new Paragraph("Transporte", times8bold), prmsCellDerecha2)
+        addCellTabla(tablaHeader, new Paragraph("Costo", times8bold), prmsCellDerecha2)
+        addCellTabla(tablaHeader, new Paragraph("Total", times8bold), prmsCellDerecha2)
+
+
+        addCellTabla(tablaTitulo, new Paragraph("Materiales ", times14bold), prmsCellIzquierda)
+        addCellTabla(tablaTitulo, new Paragraph(" ", times10bold), prmsCellIzquierda)
+
+
+
+        res.each { r ->
+
+            if (r?.grid == 1) {
+
+                addCellTabla(tablaComposicion, new Paragraph(r?.codigo, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion, new Paragraph(r?.item, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion, new Paragraph(r?.unidad, times8normal), prmsCellHead)
+                addCellTabla(tablaComposicion, new Paragraph(g.formatNumber(number: r?.cantidad, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion, new Paragraph(g.formatNumber(number: r?.punitario, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion, new Paragraph(g.formatNumber(number: r?.transporte, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion, new Paragraph(g.formatNumber(number: r?.costo, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion, new Paragraph(g.formatNumber(number: r?.total, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+
+                totales = r?.total
+
+                valorTotal = (total1 += totales)
+            }
+
+        }
+
+        addCellTabla(tablaTotales, new Paragraph("Total Materiales", times10bold), prmsCellDerecha)
+        addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: valorTotal, minFractionDigits:
+                3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times10bold), prmsNum)
+
+        addCellTabla(tablaTotales, new Paragraph(" ", times10bold), prmsNum)
+        addCellTabla(tablaTotales, new Paragraph(" ", times10bold), prmsNum)
+
+
+
+
+        PdfPTable tablaTitulo2 = new PdfPTable(2)
+        tablaTitulo2.setWidthPercentage(100)
+        tablaTitulo2.setWidths(arregloEnteros([90, 10]))
+
+        PdfPTable tablaComposicion2 = new PdfPTable(8)
+        tablaComposicion2.setWidthPercentage(100)
+        tablaComposicion2.setWidths(arregloEnteros([12, 36, 5, 9, 9, 9, 10, 10]))
+
+        PdfPTable tablaTotalesMano = new PdfPTable(2)
+        tablaTotalesMano.setWidthPercentage(100)
+        tablaTotalesMano.setWidths(arregloEnteros([70, 30]))
+//
+//        println("h:" + tablaTitulo2.getHeaderHeight())
+
+        addCellTabla(tablaTitulo2, new Paragraph("Mano de obra ", times14bold), prmsCellIzquierda)
+        addCellTabla(tablaTitulo2, new Paragraph(" ", times10bold), prmsCellIzquierda)
+
+
+
+        res.each { j ->
+
+
+            if (j?.grid == 2) {
+                addCellTabla(tablaComposicion2, new Paragraph(j?.codigo, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion2, new Paragraph(j?.item, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion2, new Paragraph(j?.unidad, times8normal), prmsCellHead)
+                addCellTabla(tablaComposicion2, new Paragraph(g.formatNumber(number: j?.cantidad, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion2, new Paragraph(g.formatNumber(number: j?.punitario, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion2, new Paragraph(g.formatNumber(number: j?.transporte, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion2, new Paragraph(g.formatNumber(number: j?.costo, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion2, new Paragraph(g.formatNumber(number: j?.total, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+
+                totalesMano = j?.total
+                valorTotalMano = (total2 += totalesMano)
+
+
+            }
+
+        }
+
+        addCellTabla(tablaTotalesMano, new Paragraph("Total Mano de Obra:", times10bold), prmsCellDerecha)
+        addCellTabla(tablaTotalesMano, new Paragraph(g.formatNumber(number: valorTotalMano, minFractionDigits:
+                3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times10bold), prmsNum)
+
+        addCellTabla(tablaTotalesMano, new Paragraph(" ", times10bold), prmsNum)
+        addCellTabla(tablaTotalesMano, new Paragraph(" ", times10bold), prmsNum)
+
+
+        PdfPTable tablaTitulo3 = new PdfPTable(2)
+        tablaTitulo3.setWidthPercentage(100)
+        tablaTitulo3.setWidths(arregloEnteros([90, 10]))
+
+        PdfPTable tablaComposicion3 = new PdfPTable(8)
+        tablaComposicion3.setWidthPercentage(100)
+        tablaComposicion3.setWidths(arregloEnteros([12, 36, 5, 9, 9, 9, 10, 10]))
+
+        PdfPTable tablaTotalesEquipos = new PdfPTable(2)
+        tablaTotalesEquipos.setWidthPercentage(100)
+        tablaTotalesEquipos.setWidths(arregloEnteros([70, 30]))
+
+
+        addCellTabla(tablaTitulo3, new Paragraph("Equipos ", times14bold), prmsCellIzquierda)
+        addCellTabla(tablaTitulo3, new Paragraph(" ", times10bold), prmsCellIzquierda)
+
+
+        res.each { k ->
+
+            if (k?.grid == 3) {
+                addCellTabla(tablaComposicion3, new Paragraph(k?.codigo, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion3, new Paragraph(k?.item, times8normal), prmsCellIzquierda)
+                addCellTabla(tablaComposicion3, new Paragraph(k?.unidad, times8normal), prmsCellHead)
+                addCellTabla(tablaComposicion3, new Paragraph(g.formatNumber(number: k?.cantidad, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion3, new Paragraph(g.formatNumber(number: k?.punitario, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion3, new Paragraph(g.formatNumber(number: k?.transporte, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion3, new Paragraph(g.formatNumber(number: k?.costo, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+                addCellTabla(tablaComposicion3, new Paragraph(g.formatNumber(number: k?.total, minFractionDigits:
+                        3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times8normal), prmsNum)
+
+                totalesEquipos = k?.total
+                valorTotalEquipos = (total3 += totalesEquipos)
+
+
+            }
+
+        }
+
+        addCellTabla(tablaTotalesEquipos, new Paragraph("Total Equipos:", times10bold), prmsCellDerecha)
+        addCellTabla(tablaTotalesEquipos, new Paragraph(g.formatNumber(number: valorTotalEquipos, minFractionDigits:
+                3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times10bold), prmsNum)
+
+//
+        PdfPTable tablaTotalGeneral = new PdfPTable(2)
+        tablaTotalGeneral.setWidthPercentage(100)
+        tablaTotalGeneral.setWidths(arregloEnteros([70, 30]))
+
+        addCellTabla(tablaTotalGeneral, new Paragraph("Total General:", times10bold), prmsCellDerecha)
+        addCellTabla(tablaTotalGeneral, new Paragraph(g.formatNumber(number: (valorTotal + valorTotalMano + valorTotalEquipos), minFractionDigits:
+                3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times10bold), prmsNum)
+
+//        println("size: " + document.pageSize.getHeight())
+
+        document.add(tablaHeader);
+        document.add(tablaTitulo);
+        document.add(tablaComposicion);
+        document.add(tablaTotales)
+        document.add(tablaTitulo2)
+        document.add(tablaComposicion2);
+        document.add(tablaTotalesMano)
+        document.add(tablaTitulo3)
+        document.add(tablaComposicion3);
+        document.add(tablaTotalesEquipos)
+        document.add(tablaTotalGeneral)
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+
+
+    }
+
+
+
+    def reporteExcelComposicion() {
+
+//        println("!!!" + params)
+
+
+        def obra = Obra.get(params.id)
+
+
+        def sql4 = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn4 = dbConnectionService.getConnection()
+
+        def conc = cn4.rows(sql4.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+
+        if (!params.tipo) {
+            params.tipo = "-1"
+        }
+        if (!params.sp) {
+
+            params.sp = '-1'
+        }
+        if (params.tipo == "-1") {
+            params.tipo = "1,2,3"
+        }
+
+        def wsp = ""
+
+        if (params.sp.toString() != "-1") {
+
+            wsp = "      AND v.sbpr__id = ${params.sp} \n"
+        }
+
+//        params.tipo = "1,2,3"
+
+        def sql = "SELECT\n" +
+                "  v.voit__id                            id,\n" +
+                "  i.itemcdgo                            codigo,\n" +
+                "  i.itemnmbr                            item,\n" +
+                "  u.unddcdgo                            unidad,\n" +
+                "  v.voitcntd                            cantidad,\n" +
+                "  v.voitpcun                            punitario,\n" +
+                "  v.voittrnp                            transporte,\n" +
+                "  v.voitpcun + v.voittrnp               costo,\n" +
+                "  (v.voitpcun + v.voittrnp)*v.voitcntd  total,\n" +
+                "  d.dprtdscr                            departamento,\n" +
+                "  s.sbgrdscr                            subgrupo,\n" +
+                "  g.grpodscr                            grupo,\n" +
+                "  g.grpo__id                            grid,\n" +
+                "  v.sbpr__id                            sp,\n" +
+                "  b.sbprdscr                            subpresupuesto\n" +
+                "FROM vlobitem v\n" +
+                "INNER JOIN item i ON v.item__id = i.item__id\n" +
+                "INNER JOIN undd u ON i.undd__id = u.undd__id\n" +
+                "INNER JOIN dprt d ON i.dprt__id = d.dprt__id\n" +
+                "INNER JOIN sbgr s ON d.sbgr__id = s.sbgr__id\n" +
+                "INNER JOIN sbpr b ON v.sbpr__id = b.sbpr__id\n" +
+                "INNER JOIN grpo g ON s.grpo__id = g.grpo__id AND g.grpo__id IN (${params.tipo})\n" +
+                "WHERE v.obra__id = ${params.id} \n" + wsp +
+                "ORDER BY v.sbpr__id, grid ASC, i.itemnmbr"
+
+
+
+        def cn = dbConnectionService.getConnection()
+
+        def res = cn.rows(sql.toString())
+
+//        println("--->>" + res)
+
+        //excel
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+
+        def row = 0
+        WritableSheet sheet = workbook.createSheet('Composicion', 0)
+
+        WritableFont times16font = new WritableFont(WritableFont.ARIAL, 11, WritableFont.BOLD, false);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        sheet.setColumnView(0, 20)
+        sheet.setColumnView(1, 60)
+        sheet.setColumnView(2, 10)
+        sheet.setColumnView(3, 20)
+        sheet.setColumnView(4, 20)
+        sheet.setColumnView(5, 20)
+        sheet.setColumnView(6, 20)
+        sheet.setColumnView(7, 20)
+        sheet.setColumnView(8, 25)
+        sheet.setColumnView(9, 20)
+
+        def label
+        def number
+        def fila = 14;
+        def totalE = 0;
+        def totalM = 0;
+        def totalMO = 0;
+        def totalEquipo = 0;
+        def totalManoObra = 0;
+        def totalMaterial = 0;
+        def totalDirecto = 0;
+        def ultimaFila
+
+        label = new jxl.write.Label(1, 2, " G.A.D. PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 4, "COMPOSICIÓN: " + obra?.nombre, times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 6, "PROCESO: " + concurso?.codigo, times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 8, "FECHA: " + printFecha(concurso?.fechaLimiteEntregaOfertas), times16format); sheet.addCell(label);
+
+        label = new jxl.write.Label(0, 12, "CODIGO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 12, "ITEM", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(2, 12, "UNIDAD", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(3, 12, "CANTIDAD", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(4, 12, "P.UNITARIO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(5, 12, "TRANSPORTE", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(6, 12, "COSTO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(7, 12, "TOTAL", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(8, 12, "TIPO", times16format); sheet.addCell(label);
+        label = new jxl.write.Label(9, 12, "SUBPRESUPUESTO", times16format); sheet.addCell(label);
+
+        res.each {
+
+            if (it?.item == null) {
+
+                it?.item = " "
+            }
+
+            if (it?.cantidad == null) {
+
+
+                it?.cantidad = 0
+            }
+            if (it?.punitario == null) {
+
+                it?.punitario = 0
+
+            }
+            if (it?.transporte == null) {
+
+                it?.transporte = 0
+            }
+            if (it?.costo == null) {
+
+                it?.costo = 0
+
+            }
+            if (it?.total == null) {
+
+                it?.total = 0
+            }
+
+            label = new jxl.write.Label(0, fila, it?.codigo.toString()); sheet.addCell(label);
+            label = new jxl.write.Label(1, fila, it?.item.toString()); sheet.addCell(label);
+            label = new jxl.write.Label(2, fila, it?.unidad.toString()); sheet.addCell(label);
+            number = new jxl.write.Number(3, fila, it?.cantidad.toDouble().round(2) ?: 0); sheet.addCell(number);
+            number = new jxl.write.Number(4, fila, it?.punitario.toDouble().round(2) ?: 0); sheet.addCell(number);
+            number = new jxl.write.Number(5, fila, it?.transporte.toDouble().round(2) ?: 0); sheet.addCell(number);
+            number = new jxl.write.Number(6, fila, it?.costo.toDouble().round(2) ?: 0); sheet.addCell(number);
+            number = new jxl.write.Number(7, fila, it?.total.toDouble().round(2) ?: 0); sheet.addCell(number);
+            label = new jxl.write.Label(8, fila, it?.grupo.toString()); sheet.addCell(label);
+            label = new jxl.write.Label(9, fila, it?.subpresupuesto.toString()); sheet.addCell(label);
+
+            fila++
+
+            if (it?.grid == 1) {
+                totalMaterial = (totalM += it?.total)
+            }
+            if (it?.grid == 2) {
+                totalManoObra = (totalMO += it?.total)
+            }
+            if (it?.grid == 3) {
+                totalEquipo = (totalE += it?.total)
+            }
+            totalDirecto = totalEquipo + totalManoObra + totalMaterial;
+            ultimaFila = fila
+        }
+
+        label = new jxl.write.Label(6, ultimaFila, "Total Materiales: ", times16format); sheet.addCell(label);
+        number = new jxl.write.Number(7, ultimaFila, totalMaterial.toDouble()?.round(2) ?: 0); sheet.addCell(number);
+
+        label = new jxl.write.Label(6, ultimaFila + 1, "Total Mano de Obra: ", times16format); sheet.addCell(label);
+        number = new jxl.write.Number(7, ultimaFila + 1, totalManoObra.toDouble()?.round(2) ?: 0); sheet.addCell(number);
+
+        label = new jxl.write.Label(6, ultimaFila + 2, "Total Equipos: ", times16format); sheet.addCell(label);
+//        number = new jxl.write.Number(7, ultimaFila + 2, totalEquipo); sheet.addCell(number);
+        number = new jxl.write.Number(7, ultimaFila + 2, totalEquipo.toDouble()?.round(2) ?: 0); sheet.addCell(number);
+
+        label = new jxl.write.Label(6, ultimaFila + 3, "TOTAL DIRECTO: ", times16format); sheet.addCell(label);
+        number = new jxl.write.Number(7, ultimaFila + 3, totalDirecto.toDouble()?.round(2) ?: 0); sheet.addCell(number);
+
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + "ComposicionExcel.xls";
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
     }
 
 

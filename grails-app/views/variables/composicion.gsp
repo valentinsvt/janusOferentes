@@ -194,12 +194,13 @@
 
 
                     <div class="btn-group">
-                        <g:link action="composicion" id="${obra?.id}" params="[tipo: tipo, rend: 'pdf']" class="btn btn-print btnPdf">
-                            <i class="icon-print"></i>
-                            Pdf
-                        </g:link>
+                        %{--<g:link action="composicion" id="${obra?.id}" params="[tipo: tipo, rend: 'pdf']" class="btn btn-print btnPdf">--}%
+                            %{--<i class="icon-print"></i>--}%
+                            %{--Pdf--}%
+                        %{--</g:link>--}%
+                        <g:link controller="reportes2" action="reporteComposicion" class="btn btn-print btnPdf" id="${obra?.id}"><i class="icon-print"></i> Pdf</g:link>
                     %{--<g:link action="composicion" id="${obra.id}" params="[tipo: tipo, rend: 'xls']" class="btn btn-print btnExcel"> </g:link>--}%
-                        <g:link controller="reportes2" action="reporteExcelComposicion" class="btn btn-print btnExcel" id="${obra?.id}"><i class="icon-table"></i>Excel</g:link>
+                        <g:link controller="reportes2" action="reporteExcelComposicion" class="btn btn-print btnExcel" id="${obra?.id}"><i class="icon-table"></i> Excel</g:link>
                     </div>
                 </div>
             </g:if>
@@ -331,17 +332,17 @@
                         }
                     });
 
-                    $(".btnPdf").click(function () {
-                        var url = $(this).attr("href");
-                        url = url.replace("&", "W");
-//                        console.log(url);
+                    %{--$(".btnPdf").click(function () {--}%
+                        %{--var url = $(this).attr("href");--}%
+                        %{--url = url.replace("&", "W");--}%
+%{--//                        console.log(url);--}%
 
-                        var actionUrl = "${createLink(controller:'pdf',action:'pdfLink')}?filename=composicion.pdf&url=" + url;
-//                        console.log(actionUrl);
-                        location.href = actionUrl;
+                        %{--var actionUrl = "${createLink(controller:'pdf',action:'pdfLink')}?filename=composicion.pdf&url=" + url;--}%
+%{--//                        console.log(actionUrl);--}%
+                        %{--location.href = actionUrl;--}%
 
-                        return false;
-                    });
+                        %{--return false;--}%
+                    %{--});--}%
 
                 });
             </script>
