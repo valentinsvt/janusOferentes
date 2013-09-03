@@ -129,19 +129,23 @@
                 window.menubar.visible = false;
             }
         },
-        <g:if test="${obra?.estado!='R'}">
         items: {
-            "edit": {name: "Editar", icon: "edit"},
-            "print": {name: "Imprimir", icon: "print"},
-            "foto":{name:"Ilustración",icon:"doc"}
+//            "edit": {name: "Editar", icon: "edit"},
+            "print": {name: "Imprimir", icon: "print",
+
+                items: {
+
+                    "print-key1": {"name": "Imprimir sin Desglose", icon: "print"
+
+                    },
+                    "print-key2": {"name": "Imprimir con Desglose", icon: "print"}
+
+                }
+
+            },
+            "foto": {name: "Ilustración", icon: "doc"},
+            "espc": {name: "Especificaciones", icon: "doc"}
         }
-        </g:if>
-        <g:else>
-        items: {
-            "print": {name: "Imprimir", icon: "print"},
-            "foto":{name:"Foto",icon:"doc"}
-        }
-        </g:else>
     });
 
     $("#imprimir_sub").click(function(){

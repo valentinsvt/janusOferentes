@@ -218,28 +218,28 @@
             <input type="hidden" id="item_tipoLista">
         </div>
 
-        <div class="span5" style="margin-left: -20px" >
+        <div class="span5" style="margin-left: -30px" >
             Descripción
             <input type="text" name="item.descripcion" id="item_desc" style="width: 430px" readonly="">
         </div>
 
-        <div class="span1">
+        <div class="span1" style="margin-left: 5px" >
             Unidad
             <input type="text" name="item.unidad" id="item_unidad" class="span8" readonly="">
         </div>
-        <div class="span2" style="margin-left: -3px">
+        <div class="span2" style="margin-left: -12px">
             Precio incluye transporte
             <input type="text" name="item.precio" class="span12" id="item_precio" value="1" style="text-align: right">
         </div>
 
-        <div class="span1">
+        <div class="span1" style="margin-left: 5px">
             Cantidad
             <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1" style="text-align: right">
         </div>
 
-        <div class="span1">
+        <div class="span2" style="margin-left: 5px">
             Rendimiento
-            <input type="text" name="item.rendimiento" class="span12" id="item_rendimiento" value="1" style="text-align: right">
+            <input type="text" name="item.rendimiento" class="span12" id="item_rendimiento" value="1" style="text-align: right;width: 100px;" >
         </div>
 
         <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 5px">
@@ -287,7 +287,7 @@
 
                     <td class="col_tarifa" style="display: none;text-align: right" id="i_${rub.item.id}"></td>
                     <td class="col_hora" style="display: none;text-align: right"></td>
-                    <td class="col_rend rend" style="width: 50px;text-align: right">
+                    <td class="col_rend rend" style="width: 50px;text-align: right"  valor="${rub.rendimiento}">
                         <g:formatNumber number="${rub.rendimiento}" format="##,#####0" minFractionDigits="5" maxFractionDigits="7" locale="ec" />
                     </td>
                     <td class="col_total" style="display: none;text-align: right"></td>
@@ -332,7 +332,7 @@
 
                     <td class="col_jornal" style="display: none;text-align: right" id="i_${rub.item.id}"></td>
                     <td class="col_hora" style="display: none;text-align: right"></td>
-                    <td class="col_rend rend" style="width: 50px;text-align: right">
+                    <td class="col_rend rend" style="width: 50px;text-align: right"  valor="${rub.rendimiento}">
                         <g:formatNumber number="${rub.rendimiento}" format="##,#####0" minFractionDigits="5" maxFractionDigits="7" locale="ec"  />
                     </td>
                     <td class="col_total" style="display: none;text-align: right"></td>
@@ -643,7 +643,7 @@
                                     var tdCant = $(this).parent().find(".cant")
                                     var tdRend = $(this).parent().find(".rend")
                                     tdCant.html(number_format(parts[3], 5, ".", ""))
-                                    tdRend.html(number_format(parts[4], 5, ".", ""))
+                                    tdRend.html(number_format(parts[4], 7, ".", ""))
                                     tdRend.attr("valor", parts[4]);
                                     band = false
                                 }
@@ -680,7 +680,7 @@
                                         var tdCant = $(this).parent().find(".cant")
                                         var tdRend = $(this).parent().find(".rend")
                                         tdCant.html(number_format(parts[3], 5, ".", ""))
-                                        tdRend.html(number_format(parts[4], 5, ".", ""))
+                                        tdRend.html(number_format(parts[4], 7, ".", ""))
                                         tdRend.attr("valor", parts[4]);
                                         band = false
                                     }
@@ -714,7 +714,7 @@
                                         var tdCant = $(this).parent().find(".cant")
                                         var tdRend = $(this).parent().find(".rend")
                                         tdCant.html(number_format(parts[3], 5, ".", ""))
-                                        tdRend.html(number_format(parts[4], 5, ".", ""))
+                                        tdRend.html(number_format(parts[4], 7, ".", ""))
                                         tdRend.attr("valor", parts[4]);
                                         band = false
                                     }
@@ -822,7 +822,7 @@
                         $("#item_cantidad").val("1")
                         $("#cdgo_buscar").val("")
                         $("#item_unidad").val("")
-                        $("#item_rendimiento").val("1")
+//                        $("#item_rendimiento").val("1")
                         $("#item_precio").val("1")
 
                         $("#cdgo_buscar").focus()
@@ -1393,7 +1393,7 @@
                 if($(hijos[i]).hasClass("col_unidad"))
                     unidad=$(hijos[i]).html()
                 if($(hijos[i]).hasClass("col_rend"))
-                    rendimiento=$(hijos[i]).html()
+                    rendimiento=$(hijos[i]).attr("valor")
                 if($(hijos[i]).hasClass("col_tarifa"))
                     item=$(hijos[i]).attr("id")
                 if($(hijos[i]).hasClass("col_precioUnit"))
@@ -1538,8 +1538,9 @@
                                 if(celdaHora.hasClass("col_hora")){
                                     celdaHora.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html()), 5, ".", ""))
                                 }
-                                if(celdaRend.html()){
-                                    rend=celdaRend.html()*1
+                                if (celdaRend.html()) {
+                                    rend = celdaRend.attr("valor") * 1
+//                                            console.log("rend ",celdaRend,rend)
                                 }
                                 celdaTotal.html(number_format(parseFloat(celda.html())*parseFloat(celdaCant.html())*parseFloat(rend), 5, ".", ""))
 
