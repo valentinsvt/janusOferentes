@@ -296,6 +296,7 @@
                 var total = 0;
 
                 $("#tree").children("ul").children("li").each(function () {
+//                    console.log($(this))
                     total += parseFloat($(this).attr("valor"));
                 });
                 $("#spanTotal").text(number_format(total, 3, ".", "")).data("valor", total);
@@ -730,7 +731,7 @@
 
                             $("#rightContents").show();
 
-                            updateSumaTotal();
+//                            updateSumaTotal();
                         }).jstree({
                             plugins   : ["themes", "json_data", "grid", "types", "contextmenu", "search", "crrm", "cookies", "types" ],
                             json_data : {data : ${json.toString()}},
