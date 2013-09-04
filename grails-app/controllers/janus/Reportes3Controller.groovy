@@ -893,6 +893,8 @@ def reporteFormula () {
 
     def auxiliarFijo = Auxiliar.get(1)
 
+    def oferente = Persona.get(session.usuario.id)
+
     def obra = Obra.get(params.obra)
 
     def sql1 = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
@@ -1015,30 +1017,29 @@ def reporteFormula () {
     addEmptyLine(headers, 1);
     headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
     addEmptyLine(headers, 1);
-    headers.add(new Paragraph("FÓRMULA POLINÓMICA N°:" + obra?.formulaPolinomica, times12bold));
+    headers.add(new Paragraph("FÓRMULA POLINÓMICA", times12bold));
     addEmptyLine(headers, 1);
     document.add(headers);
 
-
-    Paragraph txtIzq = new Paragraph();
-    txtIzq.setAlignment(Element.ALIGN_CENTER);
-    txtIzq.setIndentationLeft(20)
-    txtIzq.add(new Paragraph("De existir variaciones en los costos de los componentes de precios unitarios estipulados en el contrato para la contrucción de: ", times10normal));
-    document.add(txtIzq);
-
-//    PdfPTable tablaObra = new PdfPTable(2);
-//    tablaObra.setWidthPercentage(90);
-//    tablaObra.setWidths(arregloEnteros([15, 85]))
-
-    PdfPTable tablaHeader = new PdfPTable(4);
+    PdfPTable tablaHeader = new PdfPTable(3);
     tablaHeader.setWidthPercentage(90);
-    tablaHeader.setWidths(arregloEnteros([15, 42, 15, 28]))
+    tablaHeader.setWidths(arregloEnteros([20, 2, 60]))
 
-    addCellTabla(tablaHeader, new Paragraph("Proyecto: ", times10bold), prmsHeaderHoja)
+    addCellTabla(tablaHeader, new Paragraph("Nombre del Oferente", times10bold), prmsHeaderHoja)
+    addCellTabla(tablaHeader, new Paragraph(" : ", times10bold), prmsHeaderHoja)
+    addCellTabla(tablaHeader, new Paragraph(oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times10normal), prmsHeaderHoja2)
+
+    addCellTabla(tablaHeader, new Paragraph("Proyecto", times10bold), prmsHeaderHoja)
+    addCellTabla(tablaHeader, new Paragraph(" : ", times10bold), prmsHeaderHoja)
     addCellTabla(tablaHeader, new Paragraph(obra?.nombre, times10normal), prmsHeaderHoja2)
 
-//    document.add(tablaObra)
     document.add(tablaHeader)
+
+    Paragraph txtIzq = new Paragraph();
+    txtIzq.setAlignment(Element.ALIGN_LEFT);
+    txtIzq.setIndentationLeft(20)
+    txtIzq.add(new Paragraph("De existir variaciones en los costos de los componentes de precios unitarios estipulados en el contrato para la contrucción de Proyecto: " + obra?.nombre, times10normal));
+    document.add(txtIzq);
 
     Paragraph txtIzqHeader = new Paragraph();
     txtIzqHeader.setAlignment(Element.ALIGN_LEFT);

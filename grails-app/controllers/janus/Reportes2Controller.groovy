@@ -551,21 +551,9 @@ class Reportes2Controller {
 
     def reporteCronogramaPdf() {
 
-        println("--Z" + params)
+//        println("--Z" + params)
 
         def tipo = "obra"
-//        def obra = null, contrato = null, lbl = ""
-//        switch (tipo) {
-//            case "obra":
-//                obra = Obra.get(params.id.toLong())
-//                lbl = " la obra"
-//                break;
-//            case "contrato":
-//                contrato = Contrato.get(params.id)
-//                obra = contrato.obra
-//                lbl = "l contrato de la obra"
-//                break;
-//        }
 
         def contrato = null, lbl =""
 
@@ -663,23 +651,18 @@ class Reportes2Controller {
         addEmptyLine(headers, 1);
         headers.setAlignment(Element.ALIGN_CENTER);
         headers.add(new Paragraph("Formulario N° 11", catFont4));
-//        Paragraph nombreOferente = new Paragraph();
-//        addEmptyLine(nombreOferente, 1);
-//        nombreOferente.setAlignment(Element.ALIGN_LEFT);
-//        nombreOferente.setIndentationLeft(25)
-//        nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
         Paragraph proceso = new Paragraph();
-        addEmptyLine(proceso, 1);
+//        addEmptyLine(proceso, 1);
         proceso.setAlignment(Element.ALIGN_CENTER);
         proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont4));
         Paragraph analisis = new Paragraph();
-        addEmptyLine(analisis, 1);
+//        addEmptyLine(analisis, 1);
         analisis.setAlignment(Element.ALIGN_LEFT);
         analisis.setIndentationLeft(25)
         analisis.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), catFont4));
-        addEmptyLine(analisis, 1);
+//        addEmptyLine(analisis, 1);
         analisis.add(new Paragraph("CRONOGRAMA VALORADO DE TRABAJO", catFont4));
-        addEmptyLine(analisis, 1);
+//        addEmptyLine(analisis, 1);
         analisis.add(new Paragraph("PROYECTO: " + obra?.nombre, catFont4));
         addEmptyLine(analisis, 1);
 
@@ -1102,6 +1085,8 @@ class Reportes2Controller {
 
         def obra = Obra.get(params.id)
 
+        def oferente = Persona.get(session.usuario.id)
+
         def totales
 
         def valorTotal
@@ -1191,6 +1176,7 @@ class Reportes2Controller {
 
         Document document
         document = new Document(PageSize.A4);
+        document.setMargins(45.2, 30, 56.2, 56.2);
         def pdfw = PdfWriter.getInstance(document, baos);
         document.open();
         document.addTitle("Composicion " + new Date().format("dd_MM_yyyy"));
@@ -1228,14 +1214,30 @@ class Reportes2Controller {
                 prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum, prmsRight: prmsRight,
                 prmsCellDerecha: prmsCellDerecha, prmsCellIzquierda: prmsCellIzquierda]
 
-        Paragraph headersTitulo = new Paragraph();
-        addEmptyLine(headersTitulo, 1);
-        headersTitulo.setAlignment(Element.ALIGN_CENTER);
-        headersTitulo.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", times18bold));
-        headersTitulo.add(new Paragraph("COMPOSICIÓN", times14bold));
-//        headersTitulo.add(new Paragraph(obra?.departamento?.direccion?.nombre, times12bold));
-        headersTitulo.add(new Paragraph("", times12bold));
-        document.add(headersTitulo)
+        Paragraph headers = new Paragraph();
+        addEmptyLine(headers, 1);
+        headers.setAlignment(Element.ALIGN_CENTER);
+        headers.add(new Paragraph("G.A.D. PROVINCIA DE PICHINCHA", times12bold));
+        Paragraph nombreOferente = new Paragraph();
+        addEmptyLine(nombreOferente, 1);
+        nombreOferente.setAlignment(Element.ALIGN_LEFT);
+//        nombreOferente.setIndentationLeft(25)
+        nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
+        Paragraph proceso = new Paragraph();
+        addEmptyLine(proceso, 1);
+        proceso.setAlignment(Element.ALIGN_CENTER);
+        proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+        Paragraph analisis = new Paragraph();
+        addEmptyLine(analisis, 1);
+        analisis.setAlignment(Element.ALIGN_LEFT);
+//        analisis.setIndentationLeft(25)
+        analisis.add(new Paragraph("COMPOSICIÓN", times12bold));
+        addEmptyLine(analisis, 1);
+
+        document.add(headers);
+        document.add(nombreOferente)
+        document.add(proceso)
+        document.add(analisis)
 
         PdfPTable header = new PdfPTable(3)
         header.setWidthPercentage(100)
