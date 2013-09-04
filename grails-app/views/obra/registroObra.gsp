@@ -945,7 +945,7 @@
                         if ($("#frmSave-var").valid()) {
                             btnSave.replaceWith(spinner);
                         }
-                        var data = $("#frmSave-var").serialize() + "&id=" + $("#id").val();//+"&lang=en_US";
+                        var data = $("#frmSave-var").serialize() + "&id=" + $("#id").val()+"&lang=en_US";
                         var url = $("#frmSave-var").attr("action");
 
 //                                console.log(url);

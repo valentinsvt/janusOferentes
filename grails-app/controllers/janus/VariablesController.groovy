@@ -39,6 +39,7 @@ class VariablesController {
         if (precioMecanico) {
 
             precioMecanico.precio = params.mecanico.toDouble()
+            println "precio double "+precioMecanico.precio
             precioMecanico.save(flush: true)
 //            render "OK"
 

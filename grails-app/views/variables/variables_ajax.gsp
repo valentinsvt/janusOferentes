@@ -151,7 +151,7 @@
         <div class="span2">
             <g:textField type="text" name="indiceCostosIndirectosTimbresProvinciales" class="inputVar sum2 num"
                          value="${g.formatNumber(number: (obra?.indiceCostosIndirectosTimbresProvinciales?:2.5), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"
-                         tabindex="10" readonly=""/>
+                         tabindex="10" />
         </div>
     </div>
 
@@ -245,38 +245,6 @@
         update.val(number_format(sum1, 2, ".", ""));
     }
 
-/*
-    function costoItem($campo, $update) {
-        var id = $campo.val();
-        var fecha = $("#fechaPreciosRubros").val();
-        var ciudad = $("#lugar\\.id").val();
-//        console.log(id, fecha, ciudad);
-        if (id != "" && fecha != "" && ciudad != "") {
-            $.ajax({
-                type: "POST",
-                url: "${g.createLink(controller: 'rubro',action:'getPreciosTransporte')}",
-                data: {
-                    fecha: fecha,
-                    ciudad: ciudad,
-                    ids: id
-                },
-                success: function (msg) {
-                    var precios = msg.split("&");
-                    for (var i = 0; i < precios.length; i++) {
-                        if ($.trim(precios[i]) != "") {
-                            var parts = precios[i].split(";");
-                            if (parts.length > 1) {
-                                $update.val(parts[1].toString().trim());
-                            }
-                        }
-                    }
-                }
-            });
-        } else {
-            $update.val("0.00");
-        }
-    }
-*/
 
     $(function () {
         $(".sum1").keyup(function (ev) {
