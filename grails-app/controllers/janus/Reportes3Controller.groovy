@@ -174,7 +174,9 @@ class Reportes3Controller {
             indi=21.5
         }
 
-        preciosService.ac_rbroObra(obra.id)
+//        preciosService.ac_rbroObra(obra.id)
+        preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
+
         def res = preciosService.presioUnitarioVolumenObra("*",rubro.id,params.oferente)
 
         def tablaHer = '<table class=""> '
@@ -631,7 +633,7 @@ class Reportes3Controller {
 
 
         def parametros = ""+rubro.id+","+params.oferente
-        println "llama a ac_rbroObra obra: ${Obra.findByOferente(oferente).id}"
+//        println "llama a ac_rbroObra obra: ${Obra.findByOferente(oferente).id}"
         preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
         def res = preciosService.rb_precios(parametros,"")
 

@@ -1117,7 +1117,9 @@ class ReportesController {
 
         def indi = obra.totales
 //         println "aqui es el reporte"
-        preciosService.ac_rbroObra(obra.id)
+//        preciosService.ac_rbroObra(obra.id)
+        preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
+
 
         def baos = new ByteArrayOutputStream()
         def name = "rubros_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
