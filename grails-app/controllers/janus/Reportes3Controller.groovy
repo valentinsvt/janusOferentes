@@ -631,7 +631,8 @@ class Reportes3Controller {
 
 
         def parametros = ""+rubro.id+","+params.oferente
-        preciosService.ac_rbroObra(params.id)
+        println "llama a ac_rbroObra obra: ${Obra.findByOferente(oferente).id}"
+        preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
         def res = preciosService.rb_precios(parametros,"")
 
 
