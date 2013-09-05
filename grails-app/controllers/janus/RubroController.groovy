@@ -583,6 +583,9 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def showFoto() {
+
+//        println("entro:" + params)
+
         def rubro = Item.get(params.id)
         def tipo = params.tipo
 

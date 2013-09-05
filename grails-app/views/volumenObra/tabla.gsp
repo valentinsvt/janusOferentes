@@ -111,8 +111,12 @@
                 location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
             }
             if (key == "foto") {
+                console.log($(this).attr("cdgo"))
+
                 %{--var child = window.open('${createLink(controller:"rubro",action:"showFoto")}/'+$(this).attr("item"), 'Mies', 'width=850,height=800,toolbar=0,resizable=0,menubar=0,scrollbars=1,status=0');--}%
-                var child = window.open('${createLink(controller:"rubro", action:"showFoto")}/' + $(this).attr("cdgo") +
+
+                var datosFoto = "Wid=" + $(this).attr("item")
+                var child = window.open('${createLink(controller:"rubro", action:"showFoto")}/' + $(this).attr("item") +
                         '?tipo=il', 'GADPP', 'width=850,height=800,toolbar=0,resizable=0,menubar=0,scrollbars=1,status=0');
                 if (child.opener == null)
                     child.opener = self;
@@ -121,7 +125,7 @@
             }
 
             if (key == "espc") {
-                var child = window.open('${createLink(controller:"rubro", action:"showFoto")}/' + $(this).attr("cdgo") +
+                var child = window.open('${createLink(controller:"rubro", action:"showFoto")}/' + $(this).attr("item") +
                         '?tipo=dt', 'GADPP', 'width=850,height=800,toolbar=0,resizable=0,menubar=0,scrollbars=1,status=0');
                 if (child.opener == null)
                     child.opener = self;
@@ -133,14 +137,14 @@
 //            "edit": {name: "Editar", icon: "edit"},
             "print": {name: "Imprimir", icon: "print",
 
-                items: {
-
-                    "print-key1": {"name": "Imprimir sin Desglose", icon: "print"
-
-                    },
-                    "print-key2": {"name": "Imprimir con Desglose", icon: "print"}
-
-                }
+//                items: {
+//
+//                    "print-key1": {"name": "Imprimir sin Desglose", icon: "print"
+//
+//                    },
+//                    "print-key2": {"name": "Imprimir con Desglose", icon: "print"}
+//
+//                }
 
             },
             "foto": {name: "Ilustración", icon: "doc"},
