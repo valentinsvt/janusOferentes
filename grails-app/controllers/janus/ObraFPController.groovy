@@ -303,11 +303,12 @@ class ObraFPController {
         def cn = dbConnectionService.getConnection()
         def er = 0;
         def tx_sql = "select count(*) nada from prco, item where item.item__id = prco.item__id and " +
-                "itemcdgo = '009.001' and prco.prsn__id = ${obra.oferente.id}"
+                "itemcdgo = '009.001' and prco.prsn__id = ${obra.oferente.id} and prcoprco > 0"
         cn.eachRow(tx_sql.toString()) {row ->
             er = row.nada
         }
         cn.close()
+//        println "mecanico: $er"
         return er
     }
 
