@@ -151,7 +151,7 @@
         <div class="span2">
             <g:textField type="text" name="indiceCostosIndirectosTimbresProvinciales" class="inputVar sum2 num"
                          value="${g.formatNumber(number: (obra?.indiceCostosIndirectosTimbresProvinciales?:2.5), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"
-                         tabindex="10" />
+                         tabindex="10"  readonly=""/>
         </div>
     </div>
 
