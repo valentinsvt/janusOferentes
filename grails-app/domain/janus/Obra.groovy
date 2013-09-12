@@ -110,6 +110,9 @@ class Obra implements Serializable {
     Persona firmaInicioObra
     String anexos
 
+
+    String observacionesInicioObra
+
     String codigoConcurso
     Date fechaOferta
 
@@ -230,6 +233,7 @@ class Obra implements Serializable {
             memoInicioObra column: 'obrammio'
             firmaInicioObra column: 'prsnfrio'
             anexos column: 'obraanxo'
+            observacionesInicioObra column: 'obraobin'
         }
     }
     static constraints = {
@@ -342,6 +346,7 @@ class Obra implements Serializable {
         memoInicioObra(blank: true, nullable: true, maxSize: 20, attributes: [title: 'Memo de inicio de obra'])
         anexos(blank: true, nullable: true, maxSize: 255, attributes: [title: 'Anexos y planos ingresados a la biblioteca'])
         firmaInicioObra(blank: true, nullable: true, attributes: [title: 'Firma para el memo de inicio de obra'])
+        observacionesInicioObra(blank: true,nullable: true,size: 1..255)
     }
 
     String toString() {
