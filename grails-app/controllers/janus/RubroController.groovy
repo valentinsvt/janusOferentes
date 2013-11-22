@@ -89,10 +89,11 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def getDatosItem() {
-//        println "get datos items "+params
+        println "get datos items "+params
         def item = Item.get(params.id)
+        def precio = Precio.findByItemAndPersona(item,session.usuario)
 //        println "render "+  item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad.codigo + "&" + item.rendimiento+"&"+((item.tipoLista)?item.tipoLista?.id:"0")
-        render "" + item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad?.codigo?.trim() + "&" + item.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")+"&"+item.departamento.subgrupo.grupo.id
+        render "" + item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad?.codigo?.trim() + "&" + item.rendimiento + "&" + ((item.tipoLista) ? item.tipoLista?.id : "0")+"&"+item.departamento.subgrupo.grupo.id+"&"+((precio)?precio.precio:"1")
     }
 
     def addItem() {
@@ -168,6 +169,7 @@ class RubroController extends janus.seguridad.Shield {
         funcionJs += '$("#item_unidad").val(parts[3]);'
         funcionJs += '$("#item_tipoLista").val(parts[5]);'
         funcionJs += '$("#modal-rubro").modal("hide");'
+        funcionJs += '$("#item_precio").val(parts[7]);'
         funcionJs += '}'
         funcionJs += '});'
         funcionJs += '}'

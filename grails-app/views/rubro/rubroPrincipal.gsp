@@ -867,8 +867,6 @@
         }
     }
     function getPrecio(){
-//      console.log("getPrecio")
-
         $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecioOferente')}",
             data     : "id="+$("#item_id").val(),
             success  : function (msg) {
