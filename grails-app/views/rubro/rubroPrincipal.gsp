@@ -779,7 +779,7 @@
                             $("#cdgo_buscar").val(codigo)
                             $("#item_desc").val(desc)
                             $("#item_unidad").val(unidad)
-
+                            getPrecio();
 
 
                         })
@@ -1404,7 +1404,6 @@
 //            $("#item_cantidad").val(1.22852)
             $("#item_cantidad").val(cant.toString().trim())
 
-//            console.log(item)
             if(rendimiento)
                 $("#item_rendimiento").val(rendimiento.toString().trim())
             $("#item_id").val(item)

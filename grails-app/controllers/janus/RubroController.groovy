@@ -142,6 +142,7 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def getPrecioOferente(){
+        println "get precio of "+params
         def item = Item.get(params.id)
         def precio = 0
         def tmp = Precio.findByItemAndPersona(item,session.usuario)
