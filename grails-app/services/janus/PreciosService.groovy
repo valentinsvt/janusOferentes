@@ -262,7 +262,7 @@ class PreciosService {
     def presioUnitarioVolumenObra(select, item, obra) {
         def cn = dbConnectionService.getConnection()
 //        def sql = "select ${select} from vlob_pcun_v2(${obra},${item}) "
-//        def sql = "select ${select} from rb_precios_of(${item},${persona}) "
+//        def sql = "select ${select} from rb_precios_of(${item},${persona})"
         def sql = "select ${select} from rb_precios_of(${item}, ${obra}) "
         println "----sql "+sql
         def result = []
