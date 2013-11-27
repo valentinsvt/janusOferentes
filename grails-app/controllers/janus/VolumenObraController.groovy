@@ -11,10 +11,8 @@ class VolumenObraController extends janus.seguridad.Shield{
         def campos = ["codigo": ["Código", "string"], "nombre": ["Descripción", "string"]]
 
         [obra:obra,volumenes:volumenes,campos:campos]
-
-
-
     }
+
     def buscarRubroCodigo(){
         def rubro = Item.findByCodigoAndTipoItem(params.codigo?.trim(),TipoItem.get(2))
         if (rubro){
@@ -65,8 +63,6 @@ class VolumenObraController extends janus.seguridad.Shield{
         else
             detalle= VolumenesObra.findAllByObra(obra,[sort:"orden"])
 
-
-
         def subPres = VolumenesObra.findAllByObra(obra,[sort:"orden"]).subPresupuesto.unique()
 
         def precios = [:]
@@ -92,7 +88,8 @@ class VolumenObraController extends janus.seguridad.Shield{
 //        println "paso!!! ac_rbroObra"
         detalle.each{
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,session.usuario.id)
+//            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,session.usuario.id)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id, obra.id )
 
 //            println "r->" + (res["precio"][0]+res["precio"][0]*indirecto)+"   <<<>>> "+res
 
