@@ -107,7 +107,7 @@
 
         <div class="btn-toolbar" style="margin-top: 15px;">
             <div class="btn-group">
-                <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" class="btn " title="Regresar a la obra">
+                <a href="${g.createLink(controller: 'obra', action: 'registroObra', params: [obra: obra?.id])}" id="btnRegresar" class="btn " title="Regresar a la obra">
                     <i class="icon-arrow-left"></i>
                     Regresar
                 </a>
@@ -123,17 +123,10 @@
                     Cuadrilla Tipo
                 </g:link>
             </div>
-            <g:if test="${obra?.estado != 'R'}">
             <a href="${g.createLink(action: 'borrarFP', params: [obra: obra?.id])}" class="btn " title="Borrar la Fórmula Polinómica"
                style="margin-top: -10px;" id="btnBorrar">
                 <i class="icon-trash"></i>
-                Borrar la Fórmula Polinómica
-            </a>
-            </g:if>
-            <a href="${g.createLink(controller: 'reportes3', action: 'reporteFormula', params: [obra: obra?.id])}" class="btn "
-               style="margin-top: -10px;" id="btnFormula">
-                <i class="icon-print"></i>
-                Imprimir Fórmula
+                Borrar la Fórmula Polinomica
             </a>
         </div>
 
@@ -296,8 +289,10 @@
                 var total = 0;
 
                 $("#tree").children("ul").children("li").each(function () {
-//                    console.log($(this))
-                    total += parseFloat($(this).attr("valor"));
+                    var val = $(this).attr("valor");
+                    val = val.replace(",", ".");
+                    val = parseFloat(val);
+                    total += val;
                 });
                 $("#spanTotal").text(number_format(total, 3, ".", "")).data("valor", total);
             }
@@ -340,32 +335,57 @@
 
                             var indiceNombre = $("#indice option:selected").text();
 
-                            if (valor != "") {
-                                btnSave.replaceWith(spinner);
+                            var cantNombre = $("#tree").find("span:contains('" + indiceNombre + "')").length;
+
+                            if (indiceNombre == nodeText) {
+                                cantNombre = 0;
+                            }
+
+                            if (cantNombre == 0) {
+                                if (valor != "") {
+                                    btnSave.replaceWith(spinner);
 //                                ////console.log("SI!!");
-                                $.ajax({
-                                    type    : "POST",
-                                    url     : "${createLink(action: 'guardarGrupo')}",
-                                    data    : {
-                                        id     : nodeId,
-                                        indice : indice,
-                                        valor  : valor
-                                    },
-                                    success : function (msg) {
-                                        if (msg == "OK") {
+                                    $.ajax({
+                                        type    : "POST",
+                                        url     : "${createLink(action: 'guardarGrupo')}",
+                                        data    : {
+                                            id     : nodeId,
+                                            indice : indice,
+                                            valor  : valor
+                                        },
+                                        success : function (msg) {
+                                            if (msg == "OK") {
 //                                            valor = number_format(valor,)
-                                            node.attr("nombre", indiceNombre).trigger("change_node.jstree");
-                                            node.attr("valor", valor).trigger("change_node.jstree");
-                                            $("#modal-formula").modal("hide");
-                                            updateSumaTotal();
+                                                node.attr("nombre", indiceNombre).trigger("change_node.jstree");
+                                                node.attr("valor", valor).trigger("change_node.jstree");
+                                                $("#modal-formula").modal("hide");
+                                                updateSumaTotal();
+                                            }
+                                        }
+                                    });
+                                } else {
+//                                ////console.log("NO");
+                                }
+                            } else {
+                                $("#modal-formula").modal("hide");
+                                $.box({
+                                    imageClass : "box_info",
+                                    text       : "No puede ingresar dos coeficientes con el mismo nombre",
+                                    title      : "Alerta",
+                                    iconClose  : false,
+                                    dialog     : {
+                                        resizable     : false,
+                                        draggable     : false,
+                                        closeOnEscape : false,
+                                        buttons       : {
+                                            "Aceptar" : function () {
+                                            }
                                         }
                                     }
                                 });
-                            } else {
-//                                ////console.log("NO");
                             }
                         });
-                     if(${obra?.estado != 'R'}){
+
                         menuItems.editar = {
                             label            : "Editar",
                             separator_before : false,
@@ -392,8 +412,6 @@
                                 </g:else>
                             }
                         };
-
-                     }
                     %{--if (hijos == 0 && num != "p01" && num != "p02" && num != "px" && num != "c01") {--}%
                     %{--menuItems.eliminar = {--}%
                     %{--label            : "Eliminar",--}%
@@ -447,8 +465,6 @@
                         node.parent().parent().children("a, .jstree-grid-cell").addClass("selected editable parent");
                         /*** Fin Selecciona el nodo y su padre ***/
 
-
-                       if(${obra?.estado != 'R'}){
                         menuItems.delete = {
                             label            : "Eliminar",
                             separator_before : false,
@@ -497,10 +513,12 @@
                                                             $("#tblDisponibles").children("tbody").prepend(tr);
                                                             tr.show("pulsate");
                                                             parent.attr("valor", number_format(msgParts[1], 3, '.', '')).trigger("change_node.jstree");
-
 //                                                    console.log( $("#spanTotal"),nodeValor,msg)
                                                             totalInit -= parseFloat(nodeValor);
                                                             $("#spanTotal").text(number_format(totalInit, 3, ".", "")).data("valor", totalInit);
+                                                            if (parent.children("ul").length == 0) {
+                                                                parent.attr("nombre", "").trigger("change_node.jstree");
+                                                            }
                                                         }
                                                     }
                                                 });
@@ -513,15 +531,26 @@
 
                                 </g:if>
                                 <g:else>
-                                alert("No puede modificar los coeficientes de una obra ya registrada")
+                                $.box({
+                                    imageClass : "box_info",
+                                    text       : "No puede modificar los coeficientes de una obra ya registrada",
+                                    title      : "Alerta",
+                                    iconClose  : false,
+                                    dialog     : {
+                                        resizable     : false,
+                                        draggable     : false,
+                                        closeOnEscape : false,
+                                        buttons       : {
+                                            "Aceptar" : function () {
+                                            }
+                                        }
+                                    }
+                                });
                                 </g:else>
 
                             }
                         };
-     }
                         break;
-
-
                 }
 
                 return menuItems;
@@ -547,6 +576,94 @@
             }
 
             $(function () {
+
+                $("#btnRegresar").click(function () {
+                    var url = $(this).attr("href");
+                    var total = parseFloat($("#spanTotal").data("valor"));
+
+//                    console.log(total, Math.abs(total - 1), Math.abs(total - 1) > 0.0001);
+
+                    var liCont = 0;
+                    var liEq = 0;
+                    $("#tree").find("li[rel=fp]").each(function () {
+                        var liNombre = $.trim($(this).attr("nombre"));
+                        var liValor = parseFloat($(this).attr("valor"));
+                        var liUl = $(this).children("ul").length;
+                        var liNextNombre = $.trim($(this).next().attr("nombre"));
+                        if ((liValor > 0 && liNombre == "") || (liUl > 0 && liNombre == "")) {
+                            liCont++;
+                        }
+                        if (liNombre != "" && liNombre == liNextNombre) {
+                            liEq++;
+                        }
+                    });
+                    if (liCont > 0) {
+                        $.box({
+                            imageClass : "box_info",
+                            text       : "Seleccione un nombre para todos los coeficientes con items.",
+                            title      : "Alerta",
+                            iconClose  : false,
+                            dialog     : {
+                                resizable     : false,
+                                draggable     : false,
+                                closeOnEscape : false,
+                                buttons       : {
+                                    "Aceptar" : function () {
+                                    }
+                                }
+                            }
+                        });
+                        return false;
+                    }
+                    if (liEq > 0) {
+                        $.box({
+                            imageClass : "box_info",
+                            text       : "Seleccione un nombre único para cada coeficiente con items.",
+                            title      : "Alerta",
+                            iconClose  : false,
+                            dialog     : {
+                                resizable     : false,
+                                draggable     : false,
+                                closeOnEscape : false,
+                                buttons       : {
+                                    "Aceptar" : function () {
+                                    }
+                                }
+                            }
+                        });
+                        return false;
+                    }
+
+                    var tipo = "${tipo}";
+                    if (Math.abs(total - 1) <= 0.0001) {
+                        return true;
+                    }
+                    var msg = "La fórmula polinómica no suma 1. ¿Está seguro de querer salir de esta página?";
+                    if (tipo == "c") {
+                        msg = "La cuadrilla tipo no suma 1. ¿Está seguro de querer salir de esta página?";
+                    }
+                    $.box({
+                        imageClass : "box_info",
+                        text       : msg,
+                        title      : "Confirme",
+                        iconClose  : false,
+                        dialog     : {
+                            resizable     : false,
+                            draggable     : false,
+                            closeOnEscape : false,
+                            buttons       : {
+                                "Salir"                  : function () {
+                                    location.href = url;
+                                    return false;
+                                },
+                                "Continuar en la página" : function () {
+                                    return false;
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                });
 
                 $("#btnRemoveSelection").click(function () {
                     if (!$(this).hasClass("disabled")) {
@@ -731,7 +848,7 @@
 
                             $("#rightContents").show();
 
-//                            updateSumaTotal();
+                            updateSumaTotal();
                         }).jstree({
                             plugins   : ["themes", "json_data", "grid", "types", "contextmenu", "search", "crrm", "cookies", "types" ],
                             json_data : {data : ${json.toString()}},
@@ -740,7 +857,6 @@
                             },
 
                             contextmenu : {
-
                                 items : createContextmenu
                             },
 
@@ -785,7 +901,8 @@
                             }
                         });
 
-            });
+            })
+            ;
         </script>
 
     </body>
