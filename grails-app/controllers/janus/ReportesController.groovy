@@ -835,17 +835,17 @@ class ReportesController {
 
         def oferente = Persona.get(params.oferente)
 
-
-
         def obraOferente = Obra.findByOferente(oferente)
 
-        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
-
-//        println("sql:" + sql)
-
+//        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+//
+        println("sql:" + sql)
+//
         def cn = dbConnectionService.getConnection()
 
         def conc = cn.rows(sql.toString())
+
 
         def cncrId
 
@@ -871,7 +871,10 @@ class ReportesController {
 
         preciosService.ac_rbroObra(obra.id)
         VolumenesObra.findAllByObra(obra, [sort: "orden"]).item.eachWithIndex { rubro, i ->
-            def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id, params.oferente)
+//            def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id, params.oferente)
+            def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id,obra?.id)
+
+
             WritableSheet sheet = workbook.createSheet(rubro.codigo, i)
             rubroAExcel(sheet, res, rubro, fecha, indi, oferente, concurso, obra)
         }
@@ -887,6 +890,8 @@ class ReportesController {
 
 
     def rubroAExcel(sheet, res, rubro, fecha, indi, oferente, concurso, obra) {
+
+
         WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, true);
         WritableCellFormat times16format = new WritableCellFormat(times16font);
         WritableFont times10Font = new WritableFont(WritableFont.TIMES, 10, WritableFont.NO_BOLD, true);
@@ -905,8 +910,6 @@ class ReportesController {
         label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
         label = new Label(1, 8, "UNIDAD:" + rubro?.unidad?.codigo, times16format); sheet.addCell(label);
-
-
 
         def fila = 9
         label = new Label(0, fila, "Herramientas", times16format); sheet.addCell(label);
@@ -1212,7 +1215,8 @@ class ReportesController {
             def id = rubro.id
 
 
-            def res = preciosService.presioUnitarioVolumenObra("* ", id, params.oferente)
+//            def res = preciosService.presioUnitarioVolumenObra("* ", id, params.oferente)
+            def res = preciosService.presioUnitarioVolumenObra("* ", id, obra?.id)
 
             PdfPTable headerRubroTabla = new PdfPTable(4); // 4 columns.
             headerRubroTabla.setWidthPercentage(90);
