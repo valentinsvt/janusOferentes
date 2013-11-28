@@ -1796,6 +1796,7 @@ class ReportesController {
         addCellTabla(tablaCoeficiente, new Paragraph(obra?.descripcion, times10normal), prmsHeaderHoja3)
 
         addCellTabla(tablaCoeficiente, new Paragraph("Dirección: ", times10bold), prmsHeaderHoja)
+//        addCellTabla(tablaCoeficiente, new Paragraph(obra?.departamento?.descripcion, times10normal), prmsHeaderHoja3)
         addCellTabla(tablaCoeficiente, new Paragraph(obra?.departamento?.descripcion, times10normal), prmsHeaderHoja3)
 
         addCellTabla(tablaCoeficiente, new Paragraph("Programa: ", times10bold), prmsHeaderHoja)
@@ -2327,7 +2328,7 @@ class ReportesController {
 
         detalle.each {
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", it.item.id, params.oferente)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", it.item.id, obra?.id)
 
             def precio = 0
             if (res["precio"][0] != null && res["precio"][0] != "null")
@@ -2835,7 +2836,8 @@ class ReportesController {
         preciosService.ac_rbroObra(obra.id)
 
         detalle.each {
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+//            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", obra.id, it.item.id)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ", it.item.id, obra?.id)
             precios.put(it.id.toString(), (res["precio"][0] + res["precio"][0] * indirecto).toDouble().round(2))
         }
 
