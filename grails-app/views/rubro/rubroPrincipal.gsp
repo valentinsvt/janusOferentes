@@ -1287,6 +1287,8 @@
 
         $("#imprimir").click(function(){
 
+            console.log("obra" + ${obra?.id})
+
             var dsp0=$("#dist_p1").val()
             var dsp1=$("#dist_p2").val()
             var dsv0=$("#dist_v1").val()
@@ -1296,7 +1298,7 @@
             var volqueta=$("#costo_volqueta").val()
             var chofer=$("#costo_chofer").val()
 
-            datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Woferente=${session.usuario.id}Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()
+            datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Woferente=${session.usuario.id}Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()+"Wobra2=" + ${obra?.id}
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos
             location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
 

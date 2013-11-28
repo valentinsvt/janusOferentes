@@ -329,14 +329,20 @@ class Reportes3Controller {
     }
 
     def imprimirRubroExcel(){
-        println "imprimir rubro  excel "+params
+//        println "imprimir rubro  excel "+params
         def rubro = Item.get(params.id)
         def indi = params.indi
         def obra = Obra.get(params.obra)
+        def obra2 = Obra.get(params.obra.toLong())
+
+//        println(obra)
+
         def oferente = Persona.get(params.oferente)
+
         def obraOferente = Obra.findByOferente(oferente)
 
-        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+//        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra2?.idJanus}"
 
 //        println("sql:" + sql)
 
@@ -352,6 +358,9 @@ class Reportes3Controller {
         }
         def concurso = janus.pac.Concurso.get(cncrId)
 
+//        println("concurso" + concurso)
+
+
         try{
             indi=indi.toDouble()
         } catch (e){
@@ -361,9 +370,15 @@ class Reportes3Controller {
 
 
 
-        def parametros = ""+rubro.id+","+params.oferente
-        preciosService.ac_rbroObra(params.id)
-        def res = preciosService.rb_precios(parametros,"")
+//        def parametros = ""+rubro.id+","+params.oferente
+//        preciosService.ac_rbroObra(params.id)
+//        def res = preciosService.rb_precios(parametros,"")
+
+
+        def parametros = ""+rubro.id+","+oferente.id
+        preciosService.ac_rbroV2(rubro?.id, oferente?.id)
+        def res = preciosService.rb_preciosV3(parametros)
+
 
 
         WorkbookSettings workbookSettings = new WorkbookSettings()
@@ -388,7 +403,15 @@ class Reportes3Controller {
         sheet.setColumnView(6, 15)
 
         def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+
+        if (concurso != null){
+
+            label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+        } else {
+            label = new Label(1, 3, "PROCESO:", times16format); sheet.addCell(label);
+
+        }
+
         label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
@@ -581,15 +604,19 @@ class Reportes3Controller {
 
 
     def imprimirRubro() {
-        println "imprimir rubro "+params
+//        println "imprimir rubro "+params
         def rubro = Item.get(params.id)
 
         def oferente = Persona.get(params.oferente)
 
         def obraOferente = Obra.findByOferente(oferente)
 
+        def obra2 = Obra.get(params.obra2.toLong())
 
-        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+//        println("--->>" + obra2?.idJanus)
+
+//        def sql = "SELECT * FROM cncr WHERE obra__id=${obraOferente?.idJanus}"
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra2?.idJanus}"
 
 //        println("sql:" + sql)
 
@@ -606,6 +633,8 @@ class Reportes3Controller {
         }
 
         def concurso = janus.pac.Concurso.get(cncrId)
+
+//        println("con" + concurso)
 
 
         def fechaOferta = printFecha(obraOferente?.fechaOferta)
@@ -632,12 +661,13 @@ class Reportes3Controller {
         }
 
 
-        def parametros = ""+rubro.id+","+params.oferente
-//        println "llama a ac_rbroObra obra: ${Obra.findByOferente(oferente).id}"
-        preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
-        def res = preciosService.rb_precios(parametros,"")
+//        def parametros = ""+rubro.id+","+params.oferente
+//        preciosService.ac_rbroV2(rubro?.id, oferente?.id)
+//        def res = preciosService.rb_precios(parametros,"")
 
-
+                def parametros = ""+rubro.id+","+oferente.id
+        preciosService.ac_rbroV2(rubro?.id, oferente?.id)
+        def res = preciosService.rb_preciosV3(parametros)
 
 
         def tablaHer = '<table class=""> '
@@ -645,7 +675,7 @@ class Reportes3Controller {
         def tablaMat = '<table class=""> '
         def tablaMat2 = '<table class="marginTop"> '
         def tablaTrans = '<table class=""> '
-        def tablaTrans2 = '<table class="marginTop"> '
+//        def tablaTrans2 = '<table class="marginTop"> '
         def tablaIndi = '<table class="marginTop"> '
         def total = 0, totalHer = 0, totalMan = 0, totalMat = 0
         def band = 0
@@ -657,15 +687,21 @@ class Reportes3Controller {
         tablaMano += "<thead><tr><th colspan='7' class='tituloHeader'>MANO DE OBRA</th></tr><tr><th colspan='7' class='theader'></th></tr><tr><th style='width: 80px;' class='padTopBot'>CÓDIGO</th><th style='width:610px'>DESCRIPCIÓN</th><th>CANTIDAD</th><th style='width:70px'>JORNAL(\$/H)</th><th>COSTO(\$)</th><th>RENDIMIENTO</th><th>C.TOTAL(\$)</th></tr>  <tr><th colspan='7' class='theaderup'></th></tr> </thead><tbody>"
         tablaMat += "<thead><tr><th colspan='6' class='tituloHeader'>MATERIALES INCLUYE TRANSPORTE</th></tr><tr><th colspan='6' class='theader'></th></tr><tr><th style='width: 80px;' class='padTopBot'>CÓDIGO</th><th style='width:610px'>DESCRIPCIÓN</th><th>UNIDAD</th><th>CANTIDAD</th><th>UNITARIO(\$)</th><th>C.TOTAL(\$)</th></tr> <tr><th colspan='6' class='theaderup'></th></tr> </thead><tbody>"
         tablaMat2 += "<thead><tr><th colspan='6' class='tituloHeader'>MATERIALES INCLUYE TRANSPORTE</th></tr><tr><th colspan='6' class='theader'></th></tr><tr><th style='width: 80px;' class='padTopBot'>CÓDIGO</th><th style='width:610px'>DESCRIPCIÓN</th><th>UNIDAD</th><th>CANTIDAD</th><th>UNITARIO(\$)</th><th>C.TOTAL(\$)</th></tr> <tr><th colspan='6' class='theaderup'></th></tr> </thead><tbody>"
-        tablaTrans2 += "<thead><tr><th colspan='8' class='tituloHeader'>TRANSPORTE</th></tr><tr><th colspan='8' class='theader'></th></tr><tr><th style='width: 80px;' class='padTopBot'>CÓDIGO</th><th style='width:610px'>DESCRIPCIÓN</th><th>UNIDAD</th><th>PES/VOL</th><th>CANTIDAD</th><th>DISTANCIA</th><th>TARIFA</th><th>C.TOTAL(\$)</th></tr>  <tr><th colspan='8' class='theaderup'></th></tr> </thead><tbody>"
+//        tablaTrans2 += "<thead><tr><th colspan='8' class='tituloHeader'>TRANSPORTE</th></tr><tr><th colspan='8' class='theader'></th></tr><tr><th style='width: 80px;' class='padTopBot'>CÓDIGO</th><th style='width:610px'>DESCRIPCIÓN</th><th>UNIDAD</th><th>PES/VOL</th><th>CANTIDAD</th><th>DISTANCIA</th><th>TARIFA</th><th>C.TOTAL(\$)</th></tr>  <tr><th colspan='8' class='theaderup'></th></tr> </thead><tbody>"
 
-//        println "rends "+rendimientos
 
-//        println "res "+res
+
+
+
+
 
         res.each { r ->
-//            println "res "+res
+//            println "res zzzzz "+r
+
             if (r["grpocdgo"] == 3) {
+
+//                println("entro" + r['itemnmbr'])
+
                 tablaHer += "<tr>"
                 tablaHer += "<td style='width: 80px;'>" + r["itemcdgo"] + "</td>"
                 tablaHer += "<td>" + r["itemnmbr"] + "</td>"
@@ -677,7 +713,7 @@ class Reportes3Controller {
                 totalHer += r["parcial"]
                 tablaHer += "</tr>"
             }
-            if (r["grpocdgo"] == 2) {
+            else if (r["grpocdgo"] == 2) {
                 tablaMano += "<tr>"
                 tablaMano += "<td style='width: 80px;'>" + r["itemcdgo"] + "</td>"
                 tablaMano += "<td>" + r["itemnmbr"] + "</td>"
@@ -689,7 +725,7 @@ class Reportes3Controller {
                 totalMan += r["parcial"]
                 tablaMano += "</tr>"
             }
-            if (r["grpocdgo"] == 1) {
+            else if (r["grpocdgo"] == 1) {
 
                 bandMat = 1
 
@@ -725,7 +761,7 @@ class Reportes3Controller {
                 }
                 tablaMat += "</tr>"
             }
-            if (r["grpocdgo"]== 1 && params.trans != 'no') {
+           else if (r["grpocdgo"]== 1 && params.trans != 'no') {
                 tablaTrans += "<tr>"
                 tablaTrans += "<td style='width: 80px;'>" + r["itemcdgo"] + "</td>"
                 tablaTrans += "<td>" + r["itemnmbr"] + "</td>"
@@ -754,15 +790,15 @@ class Reportes3Controller {
         tablaMano += "</tbody></table>"
         tablaMat += "<tr><td></td><td></td><td></td><td></td><td style='text-align: right'><b>TOTAL</b></td><td style='width: 50px;text-align: right'><b>${g.formatNumber(number: totalMat, format: "##,##0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec")}</b></td></tr>"
         tablaMat += "</tbody></table>"
-        tablaTrans2 += "</tbody></table>"
+//        tablaTrans2 += "</tbody></table>"
         tablaMat2 += "</tbody></table>"
 
-        def totalRubro = 0
-        if (!params.trans) {
-            totalRubro = total + totalHer + totalMan + totalMat
-        } else {
+            def totalRubro = 0
+//        if (!params.trans) {
+//            totalRubro = total + totalHer + totalMan + totalMat
+//        } else {
             totalRubro = totalHer + totalMan + totalMat
-        }
+//        }
 
         band = total
 
@@ -771,21 +807,25 @@ class Reportes3Controller {
         tablaIndi += "<tbody><tr><td>COSTOS INDIRECTOS</td><td style='text-align:center'>${indi}%</td><td style='text-align:right'>${g.formatNumber(number: totalIndi, format: "##,##0", minFractionDigits: "5", maxFractionDigits: "5")}</td></tr></tbody>"
         tablaIndi += "</table>"
 
-        if (total == 0 || params.trans == "no")
-            tablaTrans = ""
-        if (totalHer == 0)
-            tablaHer = ""
-        if (totalMan == 0)
-            tablaMano = ""
-        if (totalMat == 0)
-            tablaMat = ""
+//        if (total == 0 || params.trans == "no")
+//            tablaTrans = ""
+//        if (totalHer == 0)
+//            tablaHer = ""
+//        if (totalMan == 0)
+//            tablaMano = ""
+//        if (totalMat == 0)
+//            tablaMat = ""
 //        println "fin reporte rubro"
 //        [rubro: rubro, fechaPrecios: fecha, tablaTrans: tablaTrans, tablaTrans2: tablaTrans2, band: band, tablaMat2: tablaMat2, bandMat: bandMat, bandTrans: bandTrans , tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat,
 //                tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obra, fechaPala: fecha1]
+//
+//        [rubro: rubro, tablaTrans: tablaTrans, tablaTrans2: tablaTrans2, band: band, tablaMat2: tablaMat2, bandMat: bandMat, bandTrans: bandTrans , tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat,
+//                tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obraOferente, oferente: oferente, fechaOferta: fechaOferta, obraOferente: obraOferente, concurso: concurso, fechaEntregaOFerta: fechaEntregaOferta, firma: firma]
 
-        [rubro: rubro, tablaTrans: tablaTrans, tablaTrans2: tablaTrans2, band: band, tablaMat2: tablaMat2, bandMat: bandMat, bandTrans: bandTrans , tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat,
+        [rubro: rubro, tablaTrans: tablaTrans, band: band, bandMat: bandMat, tablaMat2: tablaMat2, bandTrans: bandTrans , tablaHer: tablaHer, tablaMano: tablaMano, tablaMat: tablaMat,
                 tablaIndi: tablaIndi, totalRubro: totalRubro, totalIndi: totalIndi, obra: obraOferente, oferente: oferente, fechaOferta: fechaOferta, obraOferente: obraOferente, concurso: concurso, fechaEntregaOFerta: fechaEntregaOferta, firma: firma]
     }
+
 
 
 
