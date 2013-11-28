@@ -123,10 +123,17 @@
                     Cuadrilla Tipo
                 </g:link>
             </div>
-            <a href="${g.createLink(action: 'borrarFP', params: [obra: obra?.id])}" class="btn " title="Borrar la Fórmula Polinómica"
-               style="margin-top: -10px;" id="btnBorrar">
-                <i class="icon-trash"></i>
-                Borrar la Fórmula Polinomica
+            <g:if test="${obra?.estado != 'R'}">
+                <a href="${g.createLink(action: 'borrarFP', params: [obra: obra?.id])}" class="btn " title="Borrar la Fórmula Polinómica"
+                   style="margin-top: -10px;" id="btnBorrar">
+                    <i class="icon-trash"></i>
+                    Borrar la Fórmula Polinómica
+                </a>
+            </g:if>
+            <a href="${g.createLink(controller: 'reportes3', action: 'reporteFormula', params: [obra: obra?.id])}" class="btn "
+               style="margin-top: -10px;" id="btnFormula">
+                <i class="icon-print"></i>
+                Imprimir Fórmula
             </a>
         </div>
 
