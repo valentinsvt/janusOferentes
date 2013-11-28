@@ -541,16 +541,11 @@ class ObraFPController {
 //        println "descomposicion: " + tx_sql
         def contador = 1
         cn.eachRow(tx_sql.toString()) {row ->
-            if (obra.estado == 'N') {
-/*
-                tx_cr = "select itemcdgo, parcial pcun, cmpo from rb_precios (${row.item__id}, "
-                tx_cr += "${obra.lugarId},'${obra.fechaPreciosRubros}',null, null, null, null) where grpocdgo = 2"
-*/
-                tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 2"  //v2
-            } else {
-                tx_cr = "select item__id, itemcdgo, parcial pcun from rb_precios_r(${id}, ${row.item__id}) where grpocdgo = 2"
-            }
-//            println "descomposicion: tx_cr: " + tx_cr
+            /****
+             * ya no hace falata ivocar por separado a rb_precios_r,vlob_pcun_of maneja registrado o no
+             */
+            tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 2"  //v2
+            //println "descomposicion: tx_cr: " + tx_cr
             cn1.eachRow(tx_cr.toString()) {cr ->
                 poneValores(id, cr.item__id, cr.pcun, cr.pcun * row.vlobcntd, row.vlobcntd, row.itemcdgo)
             }
@@ -628,31 +623,23 @@ class ObraFPController {
             tx_sql += "where item.item__id = vlob.item__id and obra__id = ${id} and "
             tx_sql += "vlobcntd > 0 and undd.undd__id = item.undd__id and sbpr__id = ${sbpr} "
         }
-        //println "des_Materiales: " + tx_sql
+        println "des_Materiales: " + tx_sql
 
         cn.eachRow(tx_sql.toString()) {row ->
             if (conTrnp) {
-                if (obra.estado == 'N') {
-/*
-                    tx_cr = "select itemcdgo, parcial pcun, cmpo from rb_precios (${row.item__id}, "
-                    tx_cr += "${obra.lugarId},'${obra.fechaPreciosRubros}',null, null, null, null) where grpocdgo = 1"
-*/
-                    tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"  //v2
-                } else {
-                    tx_cr = "select item__id, itemcdgo, parcial pcun from rb_precios_r(${id}, ${row.item__id}) where grpocdgo = 1"
-                }
+                tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"  //v2
+//                if (obra.estado == 'N') {
+//                    tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"  //v2
+//                } else {
+//                    tx_cr = "select item__id, itemcdgo, parcial pcun from rb_precios_r(${id}, ${row.item__id}) where grpocdgo = 1"
+//                }
             } else {
-                if (obra.estado == 'N') {
-/*
-                    tx_cr = "select itemcdgo, parcial + parcial_t pcun, cmpo from rb_precios (${row.item__id}, "
-                    tx_cr += "${obra.lugarId},'${obra.fechaPreciosRubros}',${dsps}, ${dsvl}, ${rdps}, ${rdvl}) where grpocdgo = 1"
-*/
-
-                    tx_cr = "select item__id, itemcdgo, parcial + parcial_t pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"
-
-                } else {
-                    tx_cr = "select item__id, itemcdgo, parcial + parcial_t pcun from rb_precios_r(${id}, ${row.item__id}) where grpocdgo = 1"
-                }
+                tx_cr = "select item__id, itemcdgo, parcial + parcial_t pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"
+//                if (obra.estado == 'N') {
+//                    tx_cr = "select item__id, itemcdgo, parcial + parcial_t pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 1"
+//                } else {
+//                    tx_cr = "select item__id, itemcdgo, parcial + parcial_t pcun from rb_precios_r(${id}, ${row.item__id}) where grpocdgo = 1"
+//                }
             }
             //println "des_Materiales: " + tx_cr
             cn1.eachRow(tx_cr.toString()) {cr ->
@@ -739,15 +726,12 @@ class ObraFPController {
         }
         //println "acEquipos: " + tx_sql
         cn.eachRow(tx_sql.toString()) {row ->
-            if (obra.estado == 'N') {
-/*
-                tx_cr = "select sum(parcial) pcun from rb_precios (${row.item__id}, ${obra.lugarId},"
-                tx_cr += "'${obra.fechaPreciosRubros}',null, null, null, null) where grpocdgo = 3 and cmbs = 'S'"
-*/
-                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id},${row.item__id}) where grpocdgo = 3 and cmbs = 'S'"  //v2
-            } else {
-                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'S'"
-            }
+            tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id},${row.item__id}) where grpocdgo = 3 and cmbs = 'S'"  //v2
+//            if (obra.estado == 'N') {
+//                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id},${row.item__id}) where grpocdgo = 3 and cmbs = 'S'"  //v2
+//            } else {
+//                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'S'"
+//            }
             cn1.eachRow(tx_cr.toString()) {d ->
                 if (d.pcun > 0) {
                     clmn = columnaCdgo(id, "${id_equipo}_T")
@@ -759,15 +743,12 @@ class ObraFPController {
                             " and clmncdgo = ${clmn}")
                 }
             }
-            if (obra.estado == 'N') {
-/*
-                tx_cr = "select sum(parcial) pcun from rb_precios (${row.item__id}, ${obra.lugarId},"
-                tx_cr += "'${obra.fechaPreciosRubros}',null, null, null, null) where grpocdgo = 3 and cmbs = 'N'"
-*/
-                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'N'"   //v2
-            } else {
-                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'N'"
-            }
+            tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'N'"   //v2
+//            if (obra.estado == 'N') {
+//                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'N'"   //v2
+//            } else {
+//                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3 and cmbs = 'N'"
+//            }
             cn1.eachRow(tx_cr.toString()) {d ->
                 if (d.pcun > 0) {
 //                    clmn = columnaCdgo(id, "SALDO_T")
@@ -783,15 +764,12 @@ class ObraFPController {
                 }
             }
 
-            if (obra.estado == 'N') {
-/*
-                tx_cr = "select sum(parcial) pcun from rb_precios (${row.item__id}, ${obra.lugarId},"
-                tx_cr += "'${obra.fechaPreciosRubros}',null, null, null, null) where grpocdgo = 3"
-*/
-                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3"   //v2
-            } else {
-                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3"
-            }
+            tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3"   //v2
+//            if (obra.estado == 'N') {
+//                tx_cr = "select sum(parcial) pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 3"   //v2
+//            } else {
+//                tx_cr = "select sum(parcial) pcun from rb_precios_r (${id}, ${row.item__id}) where grpocdgo = 3"
+//            }
             cn1.eachRow(tx_cr.toString()) {d ->
                 if (d.pcun > 0) {
                     clmn = columnaCdgo(id, "TOTAL_T")
