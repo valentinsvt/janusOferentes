@@ -116,7 +116,7 @@ class Reportes3Controller {
 
         detalle.each{
 
-            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,params.oferente)
+            def res = preciosService.presioUnitarioVolumenObra("sum(parcial)+sum(parcial_t) precio ",it.item.id,obra?.id)
 
             def precio = 0
             if(res["precio"][0]!=null && res["precio"][0]!="null" )
@@ -177,7 +177,7 @@ class Reportes3Controller {
 //        preciosService.ac_rbroObra(obra.id)
         preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
 
-        def res = preciosService.presioUnitarioVolumenObra("*",rubro.id,params.oferente)
+        def res = preciosService.presioUnitarioVolumenObra("*",rubro.id,obra?.id)
 
         def tablaHer = '<table class=""> '
         def tablaMano = '<table class=""> '
