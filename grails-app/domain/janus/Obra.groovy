@@ -97,14 +97,13 @@ class Obra implements Serializable {
 
     String coordenadas //coordenadas en sistema WGS84: -0.21,-78.5199 => S 0 12.5999999 W 78 31.194
 
-    int liquidacion  = 0
+    int liquidacion = 0
 
     Item transporteCamioneta
     Item transporteAcemila
 
-    double distanciaCamioneta=0
-    double distanciaAcemila=0
-
+    double distanciaCamioneta = 0
+    double distanciaAcemila = 0
 
     String memoInicioObra
     Persona firmaInicioObra
@@ -112,9 +111,16 @@ class Obra implements Serializable {
 
 
     String observacionesInicioObra
+	Date fechaImpresionInicioObra
 
     String codigoConcurso
     Date fechaOferta
+
+	double longitudVia = 0
+    double anchoVia = 0
+
+    String memoSif
+    String estadoSif
 
     static mapping = {
         table 'obra'
@@ -136,7 +142,7 @@ class Obra implements Serializable {
             claseObra column: 'csob__id'
             departamento column: 'dpto__id'
             departamentoDestino column: 'dptodstn'
-            direccionDestino  column: 'dircdstn'
+            direccionDestino column: 'dircdstn'
             lugar column: 'lgar__id'
             codigo column: 'obracdgo'
             nombre column: 'obranmbr'
@@ -207,8 +213,6 @@ class Obra implements Serializable {
             listaVolumen2 column: 'lgarvl02'
             listaManoObra column: 'lgarlsmq'
 
-            oferente column: 'ofrt__id'
-
             plazoPersonas column: 'obraplpr'
             plazoMaquinas column: 'obraplmq'
 
@@ -233,12 +237,21 @@ class Obra implements Serializable {
             memoInicioObra column: 'obrammio'
             firmaInicioObra column: 'prsnfrio'
             anexos column: 'obraanxo'
+
             observacionesInicioObra column: 'obraobin'
+            fechaImpresionInicioObra column: 'obrafcii'
+
+            longitudVia column: 'obralgvi'
+            anchoVia column: 'obraanvi'
+
+            memoSif column: 'obrammsf'
+            estadoSif column: 'obraetsf'
+            oferente column: 'ofrt__id'
         }
     }
     static constraints = {
 
-        codigo(size: 1..20, blank: false, attributes: [title: 'numero'])
+        codigo(size: 1..25, blank: false, attributes: [title: 'numero'])
         nombre(size: 1..127, blank: true, nullable: true, attributes: [title: 'nombre'])
         responsableObra(blank: true, nullable: true, attributes: [title: 'responsableObra'])
         revisor(blank: true, nullable: true, attributes: [title: 'revisor'])
@@ -336,17 +349,25 @@ class Obra implements Serializable {
 
 
         transporteCamioneta(blank: true, nullable: true, attibutes: [title: 'Transporte en Camioneta'])
-        transporteAcemila(blank: true, nullable: true, attributes: [title: 'Transporte en Acemila'])
-
+        transporteAcemila(blank: true, nullable: true, attributes: [title: 'Transporte en Acémila'])
 
         distanciaCamioneta(blank: true, nullable: true)
         distanciaAcemila(blank: true, nullable: true)
         codigoConcurso    (blank: true, nullable: true)
         fechaOferta    (blank: true, nullable: true)
         memoInicioObra(blank: true, nullable: true, maxSize: 20, attributes: [title: 'Memo de inicio de obra'])
-        anexos(blank: true, nullable: true, maxSize: 255, attributes: [title: 'Anexos y planos ingresados a la biblioteca'])
         firmaInicioObra(blank: true, nullable: true, attributes: [title: 'Firma para el memo de inicio de obra'])
-        observacionesInicioObra(blank: true,nullable: true,size: 1..255)
+        anexos(blank: true, nullable: true, maxSize: 255, attributes: [title: 'Anexos y planos ingresados a la biblioteca'])
+
+        observacionesInicioObra(blank: true, nullable: true, size: 1..255)
+
+        fechaImpresionInicioObra(blank: true, nullable: true)
+        longitudVia(blank: true, nullable: true, attributes: [title: 'longitud de la vía'])
+        anchoVia(blank: true, nullable: true, attributes: [title: 'ancho de la vía'])
+
+        memoSif(blank: true, maxSize: 20, nullable: true)
+        estadoSif(blank: true, maxSize: 1, nullable: true)
+        oferente(blank:true,nullable:true)
     }
 
     String toString() {
