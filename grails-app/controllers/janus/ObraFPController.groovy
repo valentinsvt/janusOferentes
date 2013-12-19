@@ -542,7 +542,7 @@ class ObraFPController {
         def contador = 1
         cn.eachRow(tx_sql.toString()) {row ->
             /****
-             * ya no hace falata ivocar por separado a rb_precios_r,vlob_pcun_of maneja registrado o no
+             * ya no hace falata invocar por separado a rb_precios_r,vlob_pcun_of maneja registrado o no
              */
             tx_cr = "select item__id, itemcdgo, parcial pcun from vlob_pcun_of (${id}, ${row.item__id}) where grpocdgo = 2"  //v2
             //println "descomposicion: tx_cr: " + tx_cr
