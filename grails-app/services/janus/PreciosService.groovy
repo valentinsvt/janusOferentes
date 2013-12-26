@@ -72,6 +72,40 @@ class PreciosService {
         return res
     }
 
+
+    def rbro_pcun_v4(obra,orden){
+
+
+//        println("ordenv4:" + orden)
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from rbro_pcun_of(" + obra + ") order by vlobordn ${orden}"
+        def result = []
+        //println "rbro_pcun_v4 " + sql
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+        return result
+
+    }
+
+    def rbro_pcun_v5(obra,subpres,orden){
+
+//        println("ordenv3:" + orden)
+
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from rbro_pcun_of(" + obra + ") where sbpr__id= ${subpres} order by vlobordn ${orden}"
+//        println "rbro_pcun_v5   vlob_pcun_v2 " + sql
+        def result = []
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+        return result
+
+    }
+
     def getPrecioRubroItemEstado(fecha, lugar, items, registrado) {
         def cn = dbConnectionService.getConnection()
         def itemsId = items
