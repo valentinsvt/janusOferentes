@@ -114,6 +114,7 @@ class Obra implements Serializable {
 	Date fechaImpresionInicioObra
 
     String codigoConcurso
+    String descripcionConcurso
     Date fechaOferta
 
 	double longitudVia = 0
@@ -247,6 +248,7 @@ class Obra implements Serializable {
             memoSif column: 'obrammsf'
             estadoSif column: 'obraetsf'
             oferente column: 'ofrt__id'
+            descripcionConcurso column: 'cncrdscr'
         }
     }
     static constraints = {
@@ -367,6 +369,7 @@ class Obra implements Serializable {
 
         memoSif(blank: true, maxSize: 20, nullable: true)
         estadoSif(blank: true, maxSize: 1, nullable: true)
+        descripcionConcurso(blank: true, size: 1..510, nullable: true)
         oferente(blank:true,nullable:true)
     }
 
