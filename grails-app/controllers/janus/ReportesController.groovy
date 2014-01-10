@@ -905,7 +905,7 @@ class ReportesController {
         sheet.setColumnView(6, 15)
 
         def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 3, "PROCESO:" + obra?.codigoConcurso.toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
@@ -1197,7 +1197,7 @@ class ReportesController {
             Paragraph proceso = new Paragraph();
             addEmptyLine(proceso, 1);
             proceso.setAlignment(Element.ALIGN_CENTER);
-            proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+            proceso.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, times12bold));
             Paragraph analisis = new Paragraph();
             addEmptyLine(analisis, 1);
             analisis.setAlignment(Element.ALIGN_LEFT);
@@ -1340,7 +1340,7 @@ class ReportesController {
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
-            addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(concurso?.fechaLimiteEntregaOfertas), fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(obra?.fechaOferta), fonts.times10bold), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
@@ -1770,7 +1770,7 @@ class ReportesController {
         headers.setAlignment(Element.ALIGN_CENTER);
         headers.add(new Paragraph("G.A.D. PROVINCIA PICHINCHA", times14bold));
         headers.add(new Paragraph(" ", times10bold));
-        headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+        headers.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, times12bold));
         headers.add(new Paragraph(" ", times10bold));
         headers.add(new Paragraph("DATOS DE LA OBRA ", times12bold));
         headers.add(new Paragraph(" ", times10bold));
@@ -2312,7 +2312,7 @@ class ReportesController {
 
 
         label = new Label(2, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
-        label = new Label(2, 3, "PROCESO: " + concurso?.codigo, times16format); sheet.addCell(label);
+        label = new Label(2, 3, "PROCESO: " + obra?.codigoConcurso, times16format); sheet.addCell(label);
         label = new Label(2, 4, "TABLA DE DESCRIPCIÓN DE RUBROS, UNIDADES, CANTIDADES Y PRECIOS", times16format); sheet.addCell(label);
         label = new Label(2, 5, "GOBIERNO AUTÓNOMO DESCENTRALIZADO DE LA PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
         label = new Label(2, 6, "NOMBRE DEL PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);

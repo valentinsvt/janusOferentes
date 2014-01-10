@@ -154,7 +154,7 @@
             <b> NOMBRE DEL OFERENTE: </b> ${oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase()}
         </p>
         <p style="font-size: 14px; text-align: left">
-            <b>PROCESO: </b> ${concurso?.codigo}
+            <b>PROCESO: </b> ${obra?.codigoConcurso}
         </p>
         <p style="font-size: 14px; text-align: left">
             <b> TABLA DE DESCRIPCIÓN DE RUBROS, UNIDADES, CANTIDADES Y PRECIOS </b>

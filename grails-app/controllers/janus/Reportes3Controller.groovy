@@ -82,7 +82,9 @@ class Reportes3Controller {
         def concurso = janus.pac.Concurso.get(cncrId)
 
 
-        def fechaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas);
+//        def fechaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas);
+        def fechaOferta = printFecha(obra?.fechaOferta);
+
 
         def firma = Persona.get(params.oferente).firma
 
@@ -390,7 +392,7 @@ class Reportes3Controller {
         def concurso = janus.pac.Concurso.get(cncrId)
 
 
-        def fechaEntregaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas)
+        def fechaEntregaOferta = printFecha(obra?.fechaOferta)
 
         def firma = Persona.get(params.oferente).firma
 
@@ -875,7 +877,7 @@ class Reportes3Controller {
 
         def fechaOferta = printFecha(obraOferente?.fechaOferta)
 
-        def fechaEntregaOferta = printFecha(concurso?.fechaLimiteEntregaOfertas)
+
 
         def firma = Persona.get(params.oferente).firma
 
@@ -897,9 +899,7 @@ class Reportes3Controller {
         }
 
 
-//        def parametros = ""+rubro.id+","+params.oferente
-//        preciosService.ac_rbroV2(rubro?.id, oferente?.id)
-//        def res = preciosService.rb_precios(parametros,"")
+        def fechaEntregaOferta = printFecha(obraOferente?.fechaOferta)
 
                 def parametros = ""+rubro.id+","+oferente.id
         preciosService.ac_rbroV2(rubro?.id, oferente?.id)
@@ -1294,7 +1294,7 @@ def reporteFormula () {
     headers.setAlignment(Element.ALIGN_CENTER);
     headers.add(new Paragraph("G.A.D. PROVINCIA PICHINCHA", times12bold));
     addEmptyLine(headers, 1);
-    headers.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+    headers.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, times12bold));
     addEmptyLine(headers, 1);
     headers.add(new Paragraph("FÓRMULA POLINÓMICA", times12bold));
     addEmptyLine(headers, 1);
@@ -1515,7 +1515,7 @@ def reporteFormula () {
     addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
     addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
-    addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(concurso?.fechaLimiteEntregaOfertas), fonts.times10bold), prmsHeaderHojaLeft)
+    addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(obra?.fechaOferta), fonts.times10bold), prmsHeaderHojaLeft)
     addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
     addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)

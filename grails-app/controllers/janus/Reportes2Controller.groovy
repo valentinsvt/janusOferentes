@@ -654,7 +654,7 @@ class Reportes2Controller {
         Paragraph proceso = new Paragraph();
 //        addEmptyLine(proceso, 1);
         proceso.setAlignment(Element.ALIGN_CENTER);
-        proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, catFont4));
+        proceso.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, catFont4));
         Paragraph analisis = new Paragraph();
 //        addEmptyLine(analisis, 1);
         analisis.setAlignment(Element.ALIGN_LEFT);
@@ -810,7 +810,7 @@ class Reportes2Controller {
         addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
         addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
 
-        addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(concurso?.fechaLimiteEntregaOfertas), fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
+        addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(obra?.fechaOferta), fontTh2), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
         addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
 
         addCellTabla(pieTabla, new Paragraph(" ", fontTh), [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT])
@@ -1089,7 +1089,7 @@ class Reportes2Controller {
 
         def totales
 
-        def valorTotal
+        def valorTotal = 0
 
         def total1 = 0
 
@@ -1226,7 +1226,7 @@ class Reportes2Controller {
         Paragraph proceso = new Paragraph();
         addEmptyLine(proceso, 1);
         proceso.setAlignment(Element.ALIGN_CENTER);
-        proceso.add(new Paragraph("PROCESO: " + concurso?.codigo, times12bold));
+        proceso.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, times12bold));
         Paragraph analisis = new Paragraph();
         addEmptyLine(analisis, 1);
         analisis.setAlignment(Element.ALIGN_LEFT);
@@ -1253,11 +1253,11 @@ class Reportes2Controller {
 
         addCellTabla(header, new Paragraph("PROCESO", times8bold), prmsCellHead3)
         addCellTabla(header, new Paragraph(" : ", times8bold), prmsCellHead3)
-        addCellTabla(header, new Paragraph(concurso?.codigo, times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(obra?.codigoConcurso, times8bold), prmsCellHead3)
 
         addCellTabla(header, new Paragraph("FECHA", times8bold), prmsCellHead3)
         addCellTabla(header, new Paragraph(" : ", times8bold), prmsCellHead3)
-        addCellTabla(header, new Paragraph(printFecha(concurso?.fechaLimiteEntregaOfertas), times8bold), prmsCellHead3)
+        addCellTabla(header, new Paragraph(printFecha(obra?.fechaOferta), times8bold), prmsCellHead3)
 
         addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
         addCellTabla(header, new Paragraph("", times8bold), prmsCellHead3)
@@ -1323,11 +1323,13 @@ class Reportes2Controller {
                 totales = r?.total
 
                 valorTotal = (total1 += totales)
-            }
+
+                           }
 
         }
 
         addCellTabla(tablaTotales, new Paragraph("Total Materiales", times10bold), prmsCellDerecha)
+
         addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: valorTotal, minFractionDigits:
                 3, maxFractionDigits: 3, format: "##,##0", locale: "ec"), times10bold), prmsNum)
 
@@ -1594,8 +1596,8 @@ class Reportes2Controller {
 
         label = new jxl.write.Label(1, 2, " G.A.D. PROVINCIA DE PICHINCHA", times16format); sheet.addCell(label);
         label = new jxl.write.Label(1, 4, "COMPOSICIÓN: " + obra?.nombre, times16format); sheet.addCell(label);
-        label = new jxl.write.Label(1, 6, "PROCESO: " + concurso?.codigo, times16format); sheet.addCell(label);
-        label = new jxl.write.Label(1, 8, "FECHA: " + printFecha(concurso?.fechaLimiteEntregaOfertas), times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 6, "PROCESO: " + obra?.codigoConcurso, times16format); sheet.addCell(label);
+        label = new jxl.write.Label(1, 8, "FECHA: " + printFecha(obra?.fechaOferta), times16format); sheet.addCell(label);
 
         label = new jxl.write.Label(0, 12, "CODIGO", times16format); sheet.addCell(label);
         label = new jxl.write.Label(1, 12, "ITEM", times16format); sheet.addCell(label);
