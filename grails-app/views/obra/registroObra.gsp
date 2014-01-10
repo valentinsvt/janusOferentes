@@ -322,8 +322,9 @@
                 </span>
             </div>
 
-            <div class="controls">
-                ${obra?.estado}
+            <div class="controls" style="font-weight:bold ">
+                ${obra?.estado == "N" ? "Acepta modificaciones" : "Registrado"}
+                %{--${obra?.estado}--}%
             </div>
         </div>
     </div>
