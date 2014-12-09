@@ -1,3 +1,4 @@
+<%@ page import="janus.Item" %>
 <style type="text/css">
 .tab {
     height: 300px !important;
@@ -196,7 +197,7 @@
         <div class="span2" style="margin-top: 30px; margin-left: 40px">
 
             <g:textField name="mecanico" type="text" class="inputVar num"
-                         value="${g.formatNumber(number: (janus.Precio.findByItemAndPersona(janus.Item.get(3978), session.usuario)?.precio), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"/>
+                         value="${g.formatNumber(number: (janus.Precio.findByItemAndPersona(janus.Item.findByCodigo('009.001'), session.usuario)?.precio), maxFractionDigits: 2, minFractionDigits: 2, format: '##,##0', locale: 'ec')}"/>
 
         </div>
 

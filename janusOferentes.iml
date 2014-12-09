@@ -23,6 +23,7 @@
           <unit-entry name="Gorm" />
           <unit-entry name="sessionFactory" />
         </datasource-map>
+        <naming-strategy-map />
       </configuration>
     </facet>
   </component>
@@ -36,9 +37,9 @@
       <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/grails-app/utils" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/utils" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -51,6 +52,15 @@
           <root url="jar://$USER_HOME$/.grails/ivy-cache/org.springframework/spring-test/jars/spring-test-3.1.0.RELEASE.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.activation/activation/jars/activation-1.1.jar!/" />
           <root url="jar://$USER_HOME$/.grails/ivy-cache/javax.mail/mail/jars/mail-1.4.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/core-renderer.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/itext-xtra-5.3.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/postgresql-9.1-903.jdbc4.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/jxl.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/itext-pdfa-5.3.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/itextpdf-5.3.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/itextpdf-5.3.3-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/itextpdf-5.3.3-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../fossil/janusOferentes/lib/iText-2.0.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -60,4 +70,3 @@
     <orderEntry type="module" module-name="janusOferentes-grailsPlugins" />
   </component>
 </module>
-

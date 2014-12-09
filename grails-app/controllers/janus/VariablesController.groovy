@@ -30,7 +30,7 @@ class VariablesController {
         println "save vars aqui"
         println params
 
-        def itemMecanico = Item.get(3978)
+        def itemMecanico = Item.findByCodigo('009.001')
 
         def precioMecanico = Precio.findByItemAndPersona(itemMecanico, session.usuario)
 
