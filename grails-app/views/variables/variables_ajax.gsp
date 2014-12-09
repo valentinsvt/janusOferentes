@@ -19,6 +19,15 @@
     /*}*/
 </style>
 
+<g:if test="${flash.message}">
+    <div class="span12" style="margin-bottom: 10px;">
+        <div class="alert ${flash.clase ?: 'alert-info'}" role="status">
+            <a class="close" data-dismiss="alert" href="#">×</a>
+            ${flash.message}
+        </div>
+    </div>
+</g:if>
+
 <g:form controller="variables" action="saveVar_ajax" name="frmSave-var">
 <div id="tabs" style="height: 360px">
 <ul>
@@ -247,6 +256,9 @@
     }
 
 
+
+
+
     $(function () {
         $(".sum1").keyup(function (ev) {
             suma($(".sum1"), $("#indiceGastosGenerales"));
@@ -276,7 +288,11 @@
         $("#cmb_chof").change(function () {
             costoItem($(this), $("#costo_chofer"));
         });
+
+
+
 */
+
     });
 
 </script>

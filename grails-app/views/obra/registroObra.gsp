@@ -958,6 +958,11 @@
                             data: data,
                             success: function (msg) {
 //                                console.log("Data Saved: " + msg);
+                                if(msg == 'flash'){
+                                    location.reload(true)
+                                }else{
+                                    location.reload(true)
+                                }
                                 $("#modal-var").modal("hide");
                             }
                         });

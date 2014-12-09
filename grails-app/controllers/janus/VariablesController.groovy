@@ -30,6 +30,13 @@ class VariablesController {
         println "save vars aqui"
         println params
 
+        if(!params.mecanico){
+            flash.clase = "alert-error"
+            flash.message = "No se pudo actualizar las variables, debe ingresar una cantidad válida en mecánico"
+            render "flash"
+            return
+        }
+
         def itemMecanico = Item.findByCodigo('009.001')
 
         def precioMecanico = Precio.findByItemAndPersona(itemMecanico, session.usuario)
@@ -55,6 +62,7 @@ class VariablesController {
 
             precioMecanico.save(flush: true)
 //            render "OK"
+//            println("okf")
 ////
             if (precioMecanico.save(flush: true)) {
 
@@ -77,6 +85,8 @@ class VariablesController {
 //        obra.capacidadVolquete=params.asdas.toDouble()
 //        obra.factorVolumen=params.factorVolumen.toDouble()
         if (obra.save(flush: true)) {
+            flash.clase = "alert-success"
+            flash.message = "Variables actualizadas"
             render "OK"
         } else {
             println obra.errors
