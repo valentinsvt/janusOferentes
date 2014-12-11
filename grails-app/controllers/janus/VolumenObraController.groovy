@@ -135,12 +135,12 @@ class VolumenObraController extends janus.seguridad.Shield{
 //        def grupo = Grupo.findAllByDireccion(direccion)
 //        def subPresupuesto1 = SubPresupuesto.findAllByGrupoInList(grupo)
 //
+        params.ord  = params.ord?:'1'
 //        println "params --->>>> "+params
+
         def obra = Obra.get(params.obra)
 
-
         def volumenes = VolumenesObra.findAllByObra(obra);
-
 
         def detalle
         def valores
@@ -152,6 +152,7 @@ class VolumenObraController extends janus.seguridad.Shield{
             orden = 'desc'
         }
 
+//        println "orden: " + orden
         preciosService.ac_rbroObra(obra.id)
         if (params.sub && params.sub != "-1") {
 //            println("entro1")
