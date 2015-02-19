@@ -97,7 +97,6 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def addItem() {
-        println "add item " + params
         def rubro = Item.get(params.rubro)
         def item = Item.get(params.item)
         def detalle
@@ -128,7 +127,7 @@ class RubroController extends janus.seguridad.Shield {
         } else {
             rubro.fechaModificacion = new Date()
             rubro.save(flush: true)
-            def precio = Precio.findByItemAndPersona(item,session.usuario)
+            def precio = Precio.findByItemAndPersona(item, session.usuario)
             if (!precio){
                 precio = new Precio()
                 precio.item=item
@@ -136,19 +135,24 @@ class RubroController extends janus.seguridad.Shield {
                 precio.fecha=new Date()
             }
             precio.precio=params.precio.toDouble()
+            precio.vae = params.vae.toDouble()
             if (precio.save(flush: true))
                 render "" + item.departamento.subgrupo.grupo.id + ";" + detalle.id + ";" + detalle.item.id + ";" + detalle.cantidad + ";" + detalle.rendimiento + ";" + ((item.tipoLista) ? item.tipoLista?.id : "0")
         }
     }
 
     def getPrecioOferente(){
-        println "get precio of "+params
+//        println "get precio of "+params
         def item = Item.get(params.id)
         def precio = 0
+        def vae = 100
         def tmp = Precio.findByItemAndPersona(item,session.usuario)
-        if (tmp)
+        if (tmp){
             precio = tmp.precio
-        render ""+precio
+            vae = tmp.vae
+        }
+
+        render "" + precio + "_" + vae
     }
 
     def buscaItem() {

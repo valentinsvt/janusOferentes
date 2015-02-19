@@ -105,14 +105,20 @@
                 <input type="text" name="rubro.codigo" class="span24" value="${rubro?.codigo}" id="input_codigo" readonly="">
             </div>
 
+            <div class="span7" style="width: 120px;">
+                Especificación
+                %{--<input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion"readonly="">--}%
+                %{--<input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion"readonly="">--}%
+                <input type="text" name="rubro.codigoEspecificacion" class="span1" value="${rubro?.codigoEspecificacion}" id="input_codigo_es" readonly style="width:120px">
+            </div>
             <div class="span7">
                 Descripción
                 <input type="text" name="rubro.nombre" class="span72" value="${rubro?.nombre}" id="input_descripcion"readonly="">
             </div>
-            <div class="span2" style="width: 200px;">
+            <div class="span2" style="width: 60px;">
                 Unidad
                 %{--<g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}" readonly=""/>--}%
-                <input type="text" name="unidad.id" class="span72" value="${rubro?.unidad?.descripcion}" readonly="">
+                <input type="text" name="unidad.id" class="span72" value="${rubro?.unidad?.descripcion}" readonly="" style="width:60px;">
             </div>
 
             %{--
@@ -218,18 +224,18 @@
             <input type="hidden" id="item_tipoLista">
         </div>
 
-        <div class="span5" style="margin-left: -30px" >
+        <div class="span5" style="margin-left: -30px; width: 470px" >
             Descripción
-            <input type="text" name="item.descripcion" id="item_desc" style="width: 430px" readonly="">
+            <input type="text" name="item.descripcion" id="item_desc" style="width: 450px" readonly="">
         </div>
 
         <div class="span1" style="margin-left: 5px" >
             Unidad
             <input type="text" name="item.unidad" id="item_unidad" class="span8" readonly="">
         </div>
-        <div class="span2" style="margin-left: -12px">
-            Precio incluye transporte
-            <input type="text" name="item.precio" class="span12" id="item_precio" value="1" style="text-align: right">
+        <div class="span2" style="margin-left: -12px; width: 130px">
+            Precio incluye transp.
+            <input type="text" name="item.precio" class="span12" id="item_precio" value="1" style="text-align: right; width: 120px;">
         </div>
 
         <div class="span1" style="margin-left: 5px">
@@ -237,12 +243,16 @@
             <input type="text" name="item.cantidad" class="span12" id="item_cantidad" value="1" style="text-align: right">
         </div>
 
-        <div class="span2" style="margin-left: 5px">
+        <div class="span2" style="margin-left: 10px; width: 100px">
             Rendimiento
             <input type="text" name="item.rendimiento" class="span12" id="item_rendimiento" value="1" style="text-align: right;width: 100px;" >
         </div>
+        <div class="span2" style="margin-left: 10px; width: 60px">
+            VAE (%)
+            <input type="text" name="item.vae" class="span12" id="item_vae" value="100" style="text-align: right;width: 60px;" >
+        </div>
 
-        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 5px">
+        <div class="span1" style="border: 0px solid black;height: 45px;padding-top: 22px;margin-left: 15px; width: 35px">
             <a class="btn btn-small btn-primary btn-ajax" href="#" rel="tooltip" title="Agregar" id="btn_agregarItem">
                 <i class="icon-plus"></i>
             </a>
@@ -613,9 +623,13 @@
         if (isNaN(precio))
             precio = 0
 
+        var vae = $("#item_vae").val()
+        if (isNaN(vae))
+            vae = 0
+
         if ($("#item_id").val() * 1 > 0) {
             if (cant > 0 && precio>0) {
-                var data = "rubro=${rubro?.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio
+                var data = "rubro=${rubro?.id}&item=" + $("#item_id").val() + "&cantidad=" + cant + "&rendimiento=" + rend+"&precio="+precio+"&vae="+vae
                 $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'addItem')}",
                     data     : data,
                     success  : function (msg) {
@@ -779,6 +793,7 @@
                             $("#cdgo_buscar").val(codigo)
                             $("#item_desc").val(desc)
                             $("#item_unidad").val(unidad)
+                            $("#item_vae").val(vae)
                             getPrecio();
 
 
@@ -824,6 +839,7 @@
                         $("#item_unidad").val("")
 //                        $("#item_rendimiento").val("1")
                         $("#item_precio").val("1")
+                        $("#item_vae").val("100")
 
                         $("#cdgo_buscar").focus()
 //                            $("#item_rendimiento").val("1")
@@ -870,7 +886,9 @@
         $.ajax({type : "POST", url : "${g.createLink(controller: 'rubro',action:'getPrecioOferente')}",
             data     : "id="+$("#item_id").val(),
             success  : function (msg) {
-                $("#item_precio").val(number_format(msg, 2, ".", ""))
+//                console.log(msg)
+                $("#item_precio").val(number_format(msg.split('_')[0], 2, ".", ""))
+                $("#item_vae").val(number_format(msg.split('_')[1], 2, ".", ""))
             }
         });
     }

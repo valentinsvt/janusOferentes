@@ -5,6 +5,7 @@ class Precio {
     Persona persona
     double precio
     Date fecha
+    double vae
 
     static mapping = {
         table 'prco'
@@ -18,6 +19,7 @@ class Precio {
             persona column: 'prsn__id'
             precio column: 'prcoprco'
             fecha column: 'prcofcha'
+            vae column: 'prco_vae'
         }
     }
   String toString(){

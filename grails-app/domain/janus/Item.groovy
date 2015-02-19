@@ -30,6 +30,8 @@ class Item implements Serializable {
     String especificaciones
     Persona persona
     String janusId=""
+    String codigoEspecificacion
+    double codigoComprasPublicas
 
     static mapping = {
         table 'item'
@@ -66,6 +68,8 @@ class Item implements Serializable {
             responsable column: 'prsn__id'
             persona column: 'ofrt__id'
             janusId column: 'itemjnid'
+            codigoEspecificacion column: 'itemcdes'
+            codigoComprasPublicas column: 'cpac__id'
         }
     }
     static constraints = {
@@ -96,6 +100,8 @@ class Item implements Serializable {
         responsable(nullable:true,blank:true)
         persona(nullable: true,blank:true)
         janusId(nullable: true,blank: true)
+        codigoEspecificacion(blank: true, nullable: true, size: 1..30)
+        codigoComprasPublicas(blank: true, nullable: true, attributes: [title: 'Código de Compras Públicas'])
     }
 
     String toString() {
