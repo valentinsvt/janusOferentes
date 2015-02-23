@@ -148,6 +148,33 @@ class PreciosService {
 
 
 
+    def vae_rb(obra, rubro){
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from vae_rb_precios_of("+ rubro + ","+ obra +") order by grpocdgo desc "
+        def result = []
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+        return result
+
+    }
+
+
+    def vae_rubros(rubro, persona){
+        def cn = dbConnectionService.getConnection()
+        def sql = "select * from vae_rb_precios_ofrb("+ rubro + ","+ persona +") order by grpocdgo desc "
+        def result = []
+        cn.eachRow(sql.toString()) { r ->
+            result.add(r.toRowResult())
+        }
+        cn.close()
+
+        return result
+
+    }
+
+
     def precioUnitarioVolumenObraSinOrderBy(select, obra, item) {
         def cn = dbConnectionService.getConnection()
         def sql = "select ${select} from vlob_pcun_of(${obra},${item}) "

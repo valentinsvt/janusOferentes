@@ -29,30 +29,10 @@
         <i class="icon-file"></i>
         Lista
     </a>
-%{--
-    <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
-        <i class="icon-file"></i>
-        Nuevo
-    </a>
-    <a href="#" class="btn btn-ajax btn-new" id="guardar">
-        <i class="icon-file"></i>
-        Guardar
-    </a>
---}%
     <a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">
         <i class="icon-file"></i>
         Cancelar
     </a>
-%{--
-    <a href="#" class="btn btn-ajax btn-new" id="borrar">
-        <i class="icon-file"></i>
-        Borrar
-    </a>
---}%
-    %{--<a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">--}%
-    %{--<i class="icon-truck"></i>--}%
-    %{--Transporte--}%
-    %{--</a>--}%
 <g:if test="${rubro}">
     <a href="#" class="btn btn-ajax btn-new" id="calcular" title="Calcular precios">
         <i class="icon-table"></i>
@@ -62,9 +42,17 @@
         <i class="icon-print"></i>
         Imprimir
     </a>
+    <a href="#" class="btn btn-ajax btn-new" id="vae" title="Imprimir Vae">
+        <i class="icon-print"></i>
+        Imprimir Vae
+    </a>
     <a href="#" class="btn btn-ajax btn-new" id="excel" title="Imprimir">
         <i class="icon-print"></i>
         Excel
+    </a>
+    <a href="#" class="btn btn-ajax btn-new" id="excelVae" title="Imprimir Excel Vae">
+        <i class="icon-print"></i>
+        Excel Vae
     </a>
     </g:if>
     <g:if test="${rubro}">
@@ -81,11 +69,6 @@
         </a>
 
     </g:if>
-
-%{--<a href="${g.createLink(controller: 'pdf',action: 'pdfLink',params: [url:g.createLink(controller: 'reportes3',action: 'imprimirRubro',id: rubro?.id)])}" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">--}%
-%{--<i class="icon-print"></i>--}%
-%{--Imprimir--}%
-%{--</a>--}%
 </div>
 
 
@@ -120,56 +103,8 @@
                 %{--<g:select name="rubro.unidad.id" from="${janus.Unidad.list()}" class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.unidad?.id}" readonly=""/>--}%
                 <input type="text" name="unidad.id" class="span72" value="${rubro?.unidad?.descripcion}" readonly="" style="width:60px;">
             </div>
-
-            %{--
-                        <div class="span2" style="visibility:hidden" >
-                            Fecha Creación
-                            <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fecha}" disabled="true" id="fechaCreacion"/>
-                        </div>
-
-                        <div class="span2" style="visibility: hidden">
-                            Fecha Modificación
-                            <elm:datepicker name="rubro.fechaReg" class="span24" value="${rubro?.fechaModificacion}"  format="dd-MM-yyyy hh:mm " disabled="true" id="fchaMod"/>
-                        </div>
-            --}%
-
         </div>
         <div class="row-fluid">
-            %{--
-                        <div class="span2"  >
-                            Solicitante
-                            <g:select name="rubro.grupo.id" id="selClase" from="${grupos}" class="span12" optionKey="id" optionValue="descripcion"
-                                      value="${rubro?.departamento?.subgrupo?.grupo?.id}" noSelection="['': '--Seleccione--']"/>
-                        </div>
-                        <div class="span2">
-                        Grupo
-                        <g:if test="${rubro?.departamento?.subgrupo?.id}">
-                        <g:select id="selGrupo" name="rubro.suggrupoItem.id" from="${janus.SubgrupoItems.findAllByGrupo(rubro?.departamento?.subgrupo?.grupo)}"
-                        class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.subgrupo?.id}" noSelection="['': '--Seleccione--']"/>
-                        </g:if>
-                        <g:else>
-                        <select id="selGrupo" class="span12"></select>
-                        </g:else>
-                        </div>
-
-                        <div class="span3">
-                        Sub grupo
-                        <g:if test="${rubro?.departamento?.id}">
-                        <g:select name="rubro.departamento.id" id="selSubgrupo" from="${janus.DepartamentoItem.findAllBySubgrupo(rubro?.departamento?.subgrupo)}"
-                        class="span12" optionKey="id" optionValue="descripcion" value="${rubro?.departamento?.id}"/>
-                        </g:if>
-                        <g:else>
-                        <select id="selSubgrupo" class="span12"></select>
-                        </g:else>
-                        </div>
-
-            --}%
-
-
-            %{--<div class="span2"  >--}%
-            %{--Rendimiento--}%
-            %{--<input type="text" name="rubro.rendimiento" class="span24">--}%
-            %{--</div>--}%
 
         </div>
     </g:form>
@@ -181,39 +116,10 @@
     <div class="linea" style="height: 100px;"></div>
 
     <div class="row-fluid">
-    %{--<div class="span3">--}%
-    %{--<div style="height: 40px;float: left;width: 100px">Lista de precios</div>--}%
-
-    %{--<div class="btn-group span7" data-toggle="buttons-radio" style="float: right;">--}%
-    %{--<button type="button" class="btn btn-info active tipoPrecio" id="C">Civiles</button>--}%
-    %{--<button type="button" class="btn btn-info tipoPrecio" id="V">Viales</button>--}%
-    %{--</div>--}%
-    %{--</div>--}%
-
-    %{--<div class="span7">--}%
-    %{--Lista de precios de equipos y mano de obra--}%
-    %{--<g:select name="item.ciudad.id" from="${janus.Lugar.list()}" optionKey="id" optionValue="descripcion" class="span10" id="ciudad" style="width: 350px"/>--}%
-    %{--</div>--}%
-
-    %{--<div class="span2">--}%
-    %{--Fecha--}%
-    %{--<elm:datepicker name="item.fecha" class="span8" id="fecha_precios" value="${new java.util.Date()}" format="dd-MM-yyyy"/>--}%
-    %{--</div>--}%
-
-%{--
-        <g:if test="${!items}">
-            <div class="span2">
-                <a class="btn btn-small btn-warning " href="#" rel="tooltip" title="Copiar " id="btn_copiarComp">
-                    Copiar composición
-                </a>
-            </div>
-        </g:if>
---}%
         <div class="span12" style="color: #008">
             Porcentaje de costos indirectos
             <input type="text" style="width: 40px; color: #008; text-align: right" id="costo_indi" value="${(obra)?obra.totales:'21'}">
         </div>
-
     </div>
 
     <div class="row-fluid" style="margin-bottom: 5px">
@@ -1110,20 +1016,6 @@
 //        console.log(totalMa)
         $("#totMat_h").val(totalMa)
         calculaHerramientas()
-//        window.setTimeout(vacio,2000)
-//
-//        equipos.each(function(){
-//            totalE+=parseFloat($(this).find(".col_total").html())
-//        })
-//
-//        td=$("<td class='valor_total'  style='text-align: right;;font-weight: bold'>")
-//        td.html(number_format(totalE, 5, ".", ""))
-//        trE.append(td)
-
-
-//        $("#tabla_equipo").append(trE)
-
-
     }
 
     function tablaIndirectos(){
@@ -1275,16 +1167,6 @@
         });
 
         $("#excel").click(function(){
-            %{--var dsps=$("#dist_peso").val()--}%
-            %{--var dsvs=$("#dist_vol").val()--}%
-            %{--var volqueta=$("#costo_volqueta").val()--}%
-            %{--var chofer=$("#costo_chofer").val()--}%
-            %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()--}%
-            %{--location.href="${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}"+datos--}%
-            %{--var datos = "?dsps="+dsps+"&dsvs="+dsvs+"&prvl="+volqueta+"&prch="+chofer+"&fecha="+$("#fecha_precios").val()+"&id=${rubro?.id}&lugar="+$("#ciudad").val()+"&indi="+$("#costo_indi").val()--}%
-            %{--var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}"+datos--}%
-            %{--location.href=url--}%
-
             var dsp0=$("#dist_p1").val()
             var dsp1=$("#dist_p2").val()
             var dsv0=$("#dist_v1").val()
@@ -1295,17 +1177,11 @@
             var chofer=$("#costo_chofer").val()
 
             datos="id=${rubro?.id}&indi="+$("#costo_indi").val()+"&oferente=${session.usuario.id}" + "&obra=${obra?.id}"
-
-
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcel')}?"+datos
             location.href=url
-
-
         });
 
         $("#imprimir").click(function(){
-
-            %{--console.log("obra" + ${obra?.id})--}%
 
             var dsp0=$("#dist_p1").val()
             var dsp1=$("#dist_p2").val()
@@ -1320,11 +1196,39 @@
             var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubro')}?"+datos
             location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
 
-
-
-//            $("#imprimirTransporteDialog").dialog("open");
-
         });
+
+
+        $("#vae").click(function () {
+            var dsp0=$("#dist_p1").val()
+            var dsp1=$("#dist_p2").val()
+            var dsv0=$("#dist_v1").val()
+            var dsv1=$("#dist_v2").val()
+            var dsv2=$("#dist_v3").val()
+            var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
+            var volqueta=$("#costo_volqueta").val()
+            var chofer=$("#costo_chofer").val()
+
+            datos="dsp0="+dsp0+"Wdsp1="+dsp1+"Wdsv0="+dsv0+"Wdsv1="+dsv1+"Wdsv2="+dsv2+"Wprvl="+volqueta+"Wprch="+chofer+"Woferente=${session.usuario.id}Wid=${rubro?.id}Wlugar="+$("#ciudad").val()+"Wlistas="+listas+"Wchof="+$("#cmb_chof").val()+"Wvolq="+$("#cmb_vol").val()+"Windi="+$("#costo_indi").val()+"Wobra2=${obra?.id}"
+            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroVae')}?"+datos
+            location.href="${g.createLink(controller: 'pdf',action: 'pdfLink')}?url="+url
+        });
+
+        $("#excelVae").click(function(){
+            var dsp0=$("#dist_p1").val()
+            var dsp1=$("#dist_p2").val()
+            var dsv0=$("#dist_v1").val()
+            var dsv1=$("#dist_v2").val()
+            var dsv2=$("#dist_v3").val()
+            var listas = $("#lista_1").val()+","+$("#lista_2").val()+","+$("#lista_3").val()+","+$("#lista_4").val()+","+$("#lista_5").val()+","+$("#ciudad").val()
+            var volqueta=$("#costo_volqueta").val()
+            var chofer=$("#costo_chofer").val()
+
+            datos="id=${rubro?.id}&indi="+$("#costo_indi").val()+"&oferente=${session.usuario.id}" + "&obra=${obra?.id}"
+            var url = "${g.createLink(controller: 'reportes3',action: 'imprimirRubroExcelVae')}?"+datos
+            location.href=url
+        });
+
 
         $("#transporte").click(function(){
             if ($("#fecha_precios").val().length < 8) {

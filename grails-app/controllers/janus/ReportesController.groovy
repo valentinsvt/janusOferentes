@@ -1383,6 +1383,316 @@ class ReportesController {
 
     }
 
+    def imprimirRubrosVae() {
+
+//                println("->>>" + params)
+
+        def obra = Obra.get(params.obra.toLong())
+
+        def oferente = Persona.get(params.oferente)
+
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+//        println("sql:" + sql)
+
+        def cn = dbConnectionService.getConnection()
+
+        def conc = cn.rows(sql.toString())
+
+        def cncrId
+
+        conc.each {
+
+            cncrId = it?.cncr__id
+
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+        def firma = Persona.get(params.oferente).firma
+
+        def lugar = obra.lugar
+        def fecha = obra.fechaPreciosRubros
+        def fechaIngreso = obra.fechaCreacionObra
+        def itemsChofer = [obra.chofer]
+        def itemsVolquete = [obra.volquete]
+
+        def indi = obra.totales
+//         println "aqui es el reporte"
+//        preciosService.ac_rbroObra(obra.id)
+        preciosService.ac_rbroObra(Obra.findByOferente(oferente).id)
+
+
+        def baos = new ByteArrayOutputStream()
+        def name = "rubros_" + new Date().format("ddMMyyyy_hhmm") + ".pdf";
+        com.lowagie.text.Font times12bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times12normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 12, com.lowagie.text.Font.NORMAL);
+        com.lowagie.text.Font times18bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 18, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times16bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 16, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times14bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 14, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times10bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times10normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.NORMAL);
+        com.lowagie.text.Font times8bold = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD)
+        com.lowagie.text.Font times8normal = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.NORMAL)
+        com.lowagie.text.Font times10boldWhite = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 10, com.lowagie.text.Font.BOLD);
+        com.lowagie.text.Font times8boldWhite = new com.lowagie.text.Font(com.lowagie.text.Font.TIMES_ROMAN, 8, com.lowagie.text.Font.BOLD)
+        times8boldWhite.setColor(Color.BLACK)
+        times10boldWhite.setColor(Color.BLACK)
+        def fonts = [times12bold: times12bold, times10bold: times10bold, times8bold: times8bold,
+                     times10boldWhite: times10boldWhite, times8boldWhite: times8boldWhite, times8normal: times8normal]
+
+        Document document
+        document = new Document(PageSize.A4.rotate());
+        // margins: left, right, top, bottom
+        // 1 in = 72, 1cm=28.1, 3cm = 86.4
+        document.setMargins(45.2, 30, 56.2, 56.2);
+        def pdfw = PdfWriter.getInstance(document, baos);
+        document.open();
+        document.addTitle("Rubros " + new Date().format("dd_MM_yyyy"));
+        document.addSubject("Generado por el sistema Janus");
+        document.addKeywords("reporte, janus, rubros");
+        document.addAuthor("Janus");
+        document.addCreator("Tedein SA");
+
+        def prmsHeaderHoja = [border: Color.WHITE]
+        def prmsHeaderHoja2 = [border: Color.WHITE, colspan: 3]
+        def prmsHeaderHoja3 = [border: Color.WHITE, colspan: 2]
+        def prmsHeaderHoja4 = [border: Color.WHITE, colspan: 1]
+        def prmsHeaderHojaLeft = [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT]
+        def prmsHeaderHojaLeft2 = [border: Color.WHITE, align: Element.ALIGN_LEFT, valign: Element.ALIGN_LEFT, bordeTop: "1"]
+        def prmsHeader = [border: Color.WHITE, colspan: 8,
+                          align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeader3 = [border: Color.WHITE, colspan: 8,
+                           align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeader2 = [border: Color.WHITE, colspan: 3,
+                           align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsHeader4 = [border: Color.WHITE, colspan: 12,
+                           align: Element.ALIGN_LEFT, valign: Element.ALIGN_MIDDLE]
+        def prmsCellHead = [border: Color.WHITE,
+                            align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE, bordeTop: "1", bordeBot: "1"]
+        def prmsCellCenter = [border: Color.WHITE, align: Element.ALIGN_CENTER, valign: Element.ALIGN_MIDDLE]
+        def prmsCellLeft = [border: Color.WHITE, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotal = [border: Color.WHITE, colspan: 6,
+                            align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotalMat = [border: Color.WHITE, colspan: 5,
+                               align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsSubtotalTrans = [border: Color.WHITE, colspan: 6,
+                                 align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+        def prmsNum = [border: Color.WHITE, align: Element.ALIGN_RIGHT, valign: Element.ALIGN_MIDDLE]
+
+        def prms = [prmsHeaderHoja: prmsHeaderHoja, prmsHeader: prmsHeader, prmsHeader2: prmsHeader2,
+                    prmsCellHead: prmsCellHead, prmsCell: prmsCellCenter, prmsCellLeft: prmsCellLeft, prmsSubtotal: prmsSubtotal, prmsNum: prmsNum,
+                    prmsHeaderHojaLeft: prmsHeaderHojaLeft, prmsSubtotalMat: prmsSubtotalMat, prmsHeader3: prmsHeader3, prmsSubtotalTrans: prmsSubtotalTrans, prmsHeader4: prmsHeader4]
+
+        VolumenesObra.findAllByObra(obra, [sort: "orden"]).item.unique().each { rubro ->
+
+            Paragraph headers = new Paragraph();
+            addEmptyLine(headers, 1);
+            headers.setAlignment(Element.ALIGN_CENTER);
+            headers.add(new Paragraph("Formulario N° 4", times12bold));
+            Paragraph nombreOferente = new Paragraph();
+            addEmptyLine(nombreOferente, 1);
+            nombreOferente.setAlignment(Element.ALIGN_LEFT);
+            nombreOferente.setIndentationLeft(25)
+            nombreOferente.add(new Paragraph("NOMBRE DEL OFERENTE: " + oferente?.nombre?.toUpperCase() + " " + oferente?.apellido?.toUpperCase(), times12bold));
+            Paragraph proceso = new Paragraph();
+            addEmptyLine(proceso, 1);
+            proceso.setAlignment(Element.ALIGN_CENTER);
+            proceso.add(new Paragraph("PROCESO: " + obra?.codigoConcurso, times12bold));
+            Paragraph analisis = new Paragraph();
+            addEmptyLine(analisis, 1);
+            analisis.setAlignment(Element.ALIGN_LEFT);
+            analisis.setIndentationLeft(25)
+            analisis.add(new Paragraph("ANÁLISIS DE PRECIOS UNITARIOS", times12bold));
+            addEmptyLine(analisis, 1);
+            addEmptyLine(analisis, 1);
+
+            document.add(headers);
+            document.add(nombreOferente)
+            document.add(proceso)
+            document.add(analisis)
+
+            def id = rubro.id
+            def res = preciosService.presioUnitarioVolumenObra("* ", id, obra?.id)
+            def vae = preciosService.vae_rb(obra.id,rubro.id)
+
+            PdfPTable headerRubroTabla = new PdfPTable(4); // 4 columns.
+            headerRubroTabla.setWidthPercentage(90);
+            headerRubroTabla.setWidths(arregloEnteros([12, 66, 12, 10]))
+
+            addCellTabla(headerRubroTabla, new Paragraph("Proyecto:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph(obra.nombre?.toUpperCase(), times8normal), prmsHeaderHoja2)
+            addCellTabla(headerRubroTabla, new Paragraph("Rubro:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph(rubro.nombre, times8normal), prmsHeaderHoja2)
+            addCellTabla(headerRubroTabla, new Paragraph("Unidad:", times8bold), prmsHeaderHoja)
+            addCellTabla(headerRubroTabla, new Paragraph(rubro.unidad.codigo, times8normal), prmsHeaderHoja2)
+
+            PdfPTable tablaHerramientas = new PdfPTable(12);
+            PdfPTable tablaManoObra = new PdfPTable(12);
+            PdfPTable tablaMateriales = new PdfPTable(11);
+            PdfPTable tablaTransporte = new PdfPTable(13);
+            PdfPTable tablaIndirectos = new PdfPTable(3);
+            PdfPTable tablaTotales = new PdfPTable(6);
+
+            creaHeadersTablaVae(tablaHerramientas, fonts, prms, "EQUIPOS")
+            creaHeadersTablaVae(tablaManoObra, fonts, prms, "MANO DE OBRA")
+            creaHeadersTablaVae(tablaMateriales, fonts, prms, "MATERIALES INCLUYE TRANSPORTE")
+            if (params.transporte == '1') {
+                creaHeadersTablaVae(tablaTransporte, fonts, prms, "TRANSPORTE")
+            }
+            creaHeadersTablaVae(tablaIndirectos, fonts, prms, "COSTOS INDIRECTOS")
+
+            def totalTrans = 0, totalHer = 0, totalMan = 0, totalMat = 0, totalHerRel= 0, totalHerVae=0, totalManRel=0, totalManVae=0, totalMatRel=0,totalMatVae=0
+            def totalRubro
+
+            res.eachWithIndex { r, i ->
+                if (r["grpocdgo"] == 3) {
+                    llenaDatosVae(tablaHerramientas, r, fonts, prms, "H",i,vae)
+                    totalHer += r.parcial
+                    totalHerRel += vae[i]?.relativo ?: 0
+                    totalHerVae += vae[i]?.vae_vlor ?: 0
+                }
+                if (r["grpocdgo"] == 2) {
+                    llenaDatosVae(tablaManoObra, r, fonts, prms, "O",i,vae)
+                    totalMan += r.parcial
+                    totalManRel += vae[i]?.relativo ?: 0
+                    totalManVae += vae[i]?.vae_vlor ?: 0
+                }
+                if (r["grpocdgo"] == 1) {
+                    if (params.transporte == "1") {
+                        llenaDatosVae(tablaMateriales, r, fonts, prms, "M",i,vae)
+                    } else {
+                        llenaDatosVae(tablaMateriales, r, fonts, prms, "MNT",i,vae)
+                    }
+                    totalMat += r.parcial
+                    if (params.transporte != "1") {
+                        totalMat += r.parcial_t
+                        totalMatRel += vae[i]?.relativo ?: 0
+                        totalMatVae += vae[i]?.vae_vlor ?: 0
+                    }
+                }
+                if (r["grpocdgo"] == 1 && params.transporte == "1") {
+                    llenaDatosVae(tablaTransporte, r, fonts, prms, "T",i,vae)
+                    totalTrans += r.parcial_t
+
+                }
+            }
+            totalRubro = totalHer + totalMan + totalMat
+            if (params.transporte == "1") {
+                totalRubro += totalTrans
+            }
+            def totalIndi = totalRubro * (indi / 100)
+            def totalRelativo = totalHerRel + totalMatRel + totalManRel
+            def totalVae = totalHerVae + totalMatVae + totalManVae
+
+
+            addSubtotalVae(tablaHerramientas, totalHer,totalHerRel,totalHerVae, fonts, prms)
+            addSubtotalVae(tablaManoObra, totalMan,totalManRel,totalManVae, fonts, prms)
+            addSubtotalMatVae(tablaMateriales, totalMat, totalMatRel, totalMatVae, fonts, prms)
+
+            if (params.transporte == "1") {
+                addSubtotalTransVae(tablaTransporte, totalTrans, fonts, prms)
+            }
+
+            addCellTabla(tablaIndirectos, new Paragraph("Costos Indirectos", fonts.times8normal), prmsCellLeft)
+            addCellTabla(tablaIndirectos, new Paragraph(g.formatNumber(number: indi, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec") + "%", fonts.times8normal), prmsNum)
+            addCellTabla(tablaIndirectos, new Paragraph(g.formatNumber(number: totalIndi, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), prmsNum)
+
+            tablaTotales.setWidthPercentage(90);
+            tablaTotales.setWidths(arregloEnteros([60, 40, 10,10,10,10]))
+
+            addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
+            prmsCellLeft.put("bordeTop", "1")
+            prmsNum.put("bordeTop", "1")
+            addCellTabla(tablaTotales, new Paragraph("COSTO UNITARIO DIRECTO", fonts.times8bold), prmsCellLeft)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRelativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalVae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            prmsCellLeft.remove("bordeTop")
+            prmsNum.remove("bordeTop")
+            addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTotales, new Paragraph("COSTOS INDIRECTOS", fonts.times8bold), prmsCellLeft)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalIndi, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('TOTAL', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('TOTAL', fonts.times8bold), prmsNum)
+
+            addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
+            addCellTabla(tablaTotales, new Paragraph("COSTO TOTAL DEL RUBRO", fonts.times8bold), prmsCellLeft)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro + totalIndi, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('PESO', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('VAE', fonts.times8bold), prmsNum)
+
+            addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
+
+            prmsCellLeft.put("bordeBot", "1")
+            prmsNum.put("bordeBot", "1")
+            addCellTabla(tablaTotales, new Paragraph("PRECIO UNITARIO (\$USD)", fonts.times8bold), prmsCellLeft)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro + totalIndi, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('RELATIVO', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph('(%)', fonts.times8bold), prmsNum)
+            prmsCellLeft.remove("bordeBot")
+            prmsNum.remove("bordeBot")
+
+            PdfPTable pieTabla = new PdfPTable(2);
+            pieTabla.setWidthPercentage(90);
+            pieTabla.setWidths(arregloEnteros([99, 1]))
+
+            addCellTabla(pieTabla, new Paragraph("Nota: Los cálculos se hacen con todos los decimales y el resultado final se lo redondea a dos decimales, estos precios no incluyen IVA.   ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph("Quito, " + printFecha(obra?.fechaOferta), fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph("_____________________________", fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+            addCellTabla(pieTabla, new Paragraph(firma, fonts.times10bold), prmsHeaderHojaLeft)
+            addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
+
+
+
+            addTablaHoja(document, headerRubroTabla, false)
+            addTablaHoja(document, tablaHerramientas, false)
+            addTablaHoja(document, tablaManoObra, false)
+            addTablaHoja(document, tablaMateriales, false)
+            addTablaHoja(document, tablaTransporte, false)
+            addTablaHoja(document, tablaIndirectos, false)
+            addTablaHoja(document, tablaTotales, true)
+            addTablaHoja(document, pieTabla, false)
+
+            document.newPage();
+//            println res
+        }
+
+        document.close();
+        pdfw.close()
+        byte[] b = baos.toByteArray();
+        response.setContentType("application/pdf")
+        response.setHeader("Content-disposition", "attachment; filename=" + name)
+        response.setContentLength(b.length)
+        response.getOutputStream().write(b)
+
+    }
+
     def llenaDatos(table, r, fonts, params, tipo) {
         addCellTabla(table, new Paragraph(r.itemcdgo, fonts.times8normal), params.prmsCellLeft)
         addCellTabla(table, new Paragraph(r.itemnmbr, fonts.times8normal), params.prmsCellLeft)
@@ -1427,11 +1737,67 @@ class ReportesController {
         }
     }
 
+    def llenaDatosVae(table, r, fonts, params, tipo, i, vae) {
+        addCellTabla(table, new Paragraph(r.itemcdgo, fonts.times8normal), params.prmsCellLeft)
+        addCellTabla(table, new Paragraph(r.itemnmbr, fonts.times8normal), params.prmsCellLeft)
+        switch (tipo) {
+            case "H":
+            case "O":
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun * r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rndm, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+
+                break;
+            case "M":
+                addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                break;
+            case "MNT":
+                addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: ((r.parcial + r.parcial_t) / r.rbrocntd), minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: (r.parcial + r.parcial_t), minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                break;
+            case "T":
+
+                addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.itempeso, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.distancia, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.tarifa, minfractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial_t, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                break;
+        }
+    }
+
     def addSubtotal(table, subtotal, fonts, params) {
         addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotal)
         addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
     }
-
 
     def addSubtotalMat(table, subtotal, fonts, params) {
         addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotalMat)
@@ -1443,6 +1809,38 @@ class ReportesController {
         addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
     }
 
+    def addSubtotalVae(table, subtotal, totalRel, totalVae, fonts, params) {
+        addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotal)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: totalRel, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: totalVae, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
+
+    }
+
+
+    def addSubtotalMatVae(table, subtotal,totalRel, totalVae, fonts, params) {
+        addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotalMat)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: totalRel, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: totalVae, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
+
+    }
+
+    def addSubtotalTransVae(table, subtotal, fonts, params) {
+        addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotalTrans)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
+        addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
+    }
 
 
     def creaHeadersTabla(table, fonts, params, String tipo) {
@@ -1460,8 +1858,6 @@ class ReportesController {
         } else {
             if (tipo == "MANO DE OBRA") {
                 table.setWidths(arregloEnteros([10, 38, 12, 13, 10, 15, 13]))
-//                table.setWidths(arregloEnteros([10, 30, 10, 10, 10, 10, 10]))
-
                 addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader)
                 addCellTabla(table, new Paragraph("CÓDIGO", fonts.times8boldWhite), params.prmsCellHead)
                 addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
@@ -1513,6 +1909,104 @@ class ReportesController {
                         addCellTabla(table, new Paragraph("COSTO(\$)", fonts.times8boldWhite), params.prmsCellHead)
                         addCellTabla(table, new Paragraph("RENDIMIENTO", fonts.times8boldWhite), params.prmsCellHead)
                         addCellTabla(table, new Paragraph("C.TOTAL(\$)", fonts.times8boldWhite), params.prmsCellHead)
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+        }
+    }
+
+    def creaHeadersTablaVae(table, fonts, params, String tipo) {
+        table.setWidthPercentage(90);
+        if (tipo == "COSTOS INDIRECTOS") {
+
+
+            addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader)
+            table.setWidths(arregloEnteros([65, 15, 20]))
+            addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
+            addCellTabla(table, new Paragraph("PORCENTAJE", fonts.times8boldWhite), params.prmsCellHead)
+            addCellTabla(table, new Paragraph("VALOR", fonts.times8boldWhite), params.prmsCellHead)
+
+
+        } else {
+            if (tipo == "MANO DE OBRA") {
+                table.setWidths(arregloEnteros([10, 38, 12, 13, 10, 15, 13, 11, 5, 10, 10, 12]))
+
+                addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader4)
+                addCellTabla(table, new Paragraph("CÓDIGO", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("CANTIDAD", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("JORNAL(\$/H)", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("COSTO(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("RENDIMIENTO", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("C.TOTAL(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("PESO RELATIVO(%)", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("CPC", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("NP/EP/ND", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("VAE(%)", fonts.times8boldWhite), params.prmsCellHead)
+                addCellTabla(table, new Paragraph("VAE ELEMENTO(%)", fonts.times8boldWhite), params.prmsCellHead)
+            } else {
+                if (tipo == "MATERIALES INCLUYE TRANSPORTE") {
+
+                    table.setWidths(arregloEnteros([12, 38, 12, 13, 14, 14, 11, 5, 10, 10, 12]))
+                    addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader4)
+                    addCellTabla(table, new Paragraph("CÓDIGO", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("UNIDAD", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("CANTIDAD", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("UNITARIO(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("C.TOTAL(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("PESO RELATIVO(%)", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("CPC", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("NP/EP/ND", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("VAE(%)", fonts.times8boldWhite), params.prmsCellHead)
+                    addCellTabla(table, new Paragraph("VAE ELEMENTO(%)", fonts.times8boldWhite), params.prmsCellHead)
+
+                } else {
+
+
+                    if (tipo == "TRANSPORTE") {
+
+                        table.setWidths(arregloEnteros([9, 24, 8, 10, 12, 11, 11, 11,11,5,10,10,12]))
+                        addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader4)
+                        addCellTabla(table, new Paragraph("CÓDIGO", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("UNIDAD", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("PESO/VOL", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("CANTIDAD", fonts.times8boldWhite), params.prmsCellHead)
+
+
+                        addCellTabla(table, new Paragraph("DISTANCIA", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("TARIFA", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("C.TOTAL(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("PESO RELATIVO(%)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("CPC", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("NP/EP/ND", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("VAE(%)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("VAE ELEMENTO(%)", fonts.times8boldWhite), params.prmsCellHead)
+
+                    } else {
+                        table.setWidths(arregloEnteros([12, 35, 12, 13, 12, 17, 13,11,5,10,10,12]))
+                        addCellTabla(table, new Paragraph(tipo, fonts.times10boldWhite), params.prmsHeader4)
+                        addCellTabla(table, new Paragraph("CÓDIGO", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("DESCRIPCIÓN", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("CANTIDAD", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("TARIFA(\$/H)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("COSTO(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("RENDIMIENTO", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("C.TOTAL(\$)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("PESO RELATIVO(%)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("CPC", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("NP/EP/ND", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("VAE(%)", fonts.times8boldWhite), params.prmsCellHead)
+                        addCellTabla(table, new Paragraph("VAE ELEMENTO(%)", fonts.times8boldWhite), params.prmsCellHead)
 
 
                     }

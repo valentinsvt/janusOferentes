@@ -888,7 +888,8 @@
 
         $("#btnRubros").click(function () {
             var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
-            %{--var url = "${createLink(controller:'reportes', action:'imprimirRubros')}?oferente=${session.usuario.id}Wobra=${obra?.id}Wdesglose=";--}%
+            var urlVae= "${createLink(controller:'reportes', action:'imprimirRubrosVae')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
+
 
             $.box({
                 imageClass: "box_info",
@@ -909,7 +910,12 @@
                             var url = "${createLink(controller:'reportes', action:'imprimirRubrosExcel')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
                             url += "1";
                             location.href = url;
-                        }, "Cancelar": function () {
+                        },
+                        "Pdf Vae": function () {
+                            url += "0";
+                            location.href = urlVae;
+                         },
+                        "Cancelar": function () {
 
                         }
                     }

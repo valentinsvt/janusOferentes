@@ -29,26 +29,6 @@
 </div>
 
 <div class="span12 btn-group" role="navigation" style="margin-left: 0px;">
-    %{--<a href="#" class="btn  " id="btn_lista">--}%
-    %{--<i class="icon-file"></i>--}%
-    %{--Lista--}%
-    %{--</a>--}%
-    %{--<a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">--}%
-    %{--<i class="icon-file"></i>--}%
-    %{--Nuevo--}%
-    %{--</a>--}%
-    %{--<a href="#" class="btn btn-ajax btn-new" id="guardar">--}%
-    %{--<i class="icon-file"></i>--}%
-    %{--Guardar--}%
-    %{--</a>--}%
-    %{--<a href="${g.createLink(action: 'rubroPrincipal')}" class="btn btn-ajax btn-new">--}%
-    %{--<i class="icon-file"></i>--}%
-    %{--Cancelar--}%
-    %{--</a>--}%
-    %{--<a href="#" class="btn btn-ajax btn-new">--}%
-    %{--<i class="icon-file"></i>--}%
-    %{--Borrar--}%
-    %{--</a>--}%
     <a href="${g.createLink(controller: 'obra',action: 'registroObra',params: [obra:obra?.id])}" class="btn btn-ajax btn-new" id="atras" title="Regresar a la obra">
         <i class="icon-arrow-left"></i>
         Regresar
@@ -57,14 +37,6 @@
         <i class="icon-table"></i>
         Calcular
     </a>
-    %{--<a href="#" class="btn btn-ajax btn-new" id="transporte" title="Transporte">--}%
-    %{--<i class="icon-truck"></i>--}%
-    %{--Transporte--}%
-    %{--</a>--}%
-    %{--<a href="#" class="btn btn-ajax btn-new" id="imprimir" title="Imprimir">--}%
-    %{--<i class="icon-print"></i>--}%
-    %{--Imprimir--}%
-    %{--</a>--}%
 </div>
 <div id="list-grupo" class="span12" role="main" style="margin-top: 10px;margin-left: 0px">
     <div class="borde_abajo" style="padding-left: 45px;position: relative;">
@@ -83,38 +55,6 @@
                 <b>Dist. volúmen:</b> ${obra?.distanciaVolumen}
             </div>
         </div>
-        %{--<div class="row-fluid" style="margin-left: 0px">--}%
-            %{--<div class="span4">--}%
-                %{--<b>Subpresupuesto:</b>--}%
-                %{--<g:select name="subpresupuesto" from="${janus.SubPresupuesto.list([order:'descripcion'])}" optionKey="id" optionValue="descripcion" style="width: 335px;;font-size: 10px" id="subPres"></g:select>--}%
-            %{--</div>--}%
-            %{--<div class="span1" style="margin-left: 0px;">--}%
-                %{--<b>Código</b>--}%
-                %{--<input type="text" style="width: 60px;;font-size: 10px" id="item_codigo">--}%
-                %{--<input type="hidden" style="width: 60px" id="item_id">--}%
-            %{--</div>--}%
-            %{--<div class="span4" style="margin-left: 15px;">--}%
-                %{--<b>Rubro</b>--}%
-                %{--<input type="text" style="width: 330px;font-size: 10px" id="item_nombre" disabled="true" >--}%
-
-            %{--</div>--}%
-            %{--<div class="span2" style="margin-left: 0px;">--}%
-                %{--<b>Cantidad</b>--}%
-                %{--<input type="text" style="width: 130px;text-align: right" id="item_cantidad" value="1">--}%
-            %{--</div>--}%
-            %{--<div class="span1" style="margin-left: 15px;">--}%
-                %{--<b>Orden</b>--}%
-                %{--<input type="text" style="width: 30px;text-align: right" id="item_orden" value="${(volumenes?.size()>0)?volumenes.size()+1:1}">--}%
-            %{--</div>--}%
-            %{--<div class="span1" style="margin-left: 15px;padding-top:30px">--}%
-                %{--<input type="hidden" value="" id="vol_id">--}%
-                %{--<g:if test="${obra?.estado!='R'}">--}%
-                    %{--<a href="#" class="btn btn-primary" title="agregar" style="margin-top: -10px" id="item_agregar">--}%
-                        %{--<i class="icon-plus"></i>--}%
-                    %{--</a>--}%
-                %{--</g:if>--}%
-            %{--</div>--}%
-        %{--</div>--}%
     </div>
     <div class="borde_abajo" style="position: relative;float: left;width: 95%;padding-left: 45px">
         <p class="css-vertical-text">Composición</p>
@@ -227,19 +167,12 @@
             }
         });
         $("#item_codigo").keydown(function(ev){
-
             if(ev.keyCode*1!=9 && (ev.keyCode*1<37 || ev.keyCode*1>40)){
-
                 $("#item_id").val("")
                 $("#item_nombre").val("")
-
             }else{
-//                console.log("no reset")
             }
-
-
         });
-
 
         $("#item_agregar").click(function(){
             $("#calcular").removeClass("active")
