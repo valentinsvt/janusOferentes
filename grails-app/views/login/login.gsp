@@ -101,8 +101,8 @@
         <h1 class="titl" style="font-size: 20px;">SEGUIMIENTO Y EJECUCIÓN DE PROYECTOS DE OBRAS Y CONSULTORÍAS<br>
         GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA</h1>
         <h1 class="titl" style="font-size: 24px; color: #06a">Registro de Ofertas en Línea</h1></div>
-
-<div class="dialog ui-corner-all" style="height: 595px;padding: 10px;width: 910px;margin: auto;margin-top: 5px">
+    <h3 style="font-size: 16px; color: #06a; text-align: center; margin-top: -20px">Incluye Módulo VAE</h3>
+<div class="dialog ui-corner-all" style="height: 595px;padding: 10px;width: 910px;margin: auto;margin-top: -15px">
     <div style="text-align: center; margin-top: 10px; color: #810;">
         <img src="${resource(dir: 'images', file: 'logo_gpp3.png')}"/>
     </div>

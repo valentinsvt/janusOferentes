@@ -41,6 +41,7 @@
     <div style="text-align: center;"><h1 class="titl" style="font-size: 20px;">SEGUIMIENTO Y EJECUCIÓN DE PROYECTOS DE OBRAS Y CONSULTORÍAS<br>
             GOBIERNO AUTÓNOMO DESCENTRALIZADO PROVINCIA DE PICHINCHA</h1>
         <h1 class="titl" style="font-size: 24px; color: #06a">Registro de Ofertas en Línea</h1></div>
+        <h3 style="font-size: 16px; color: #06a; text-align: center">Incluye Módulo VAE</h3>
     <div class="body ui-corner-all" style="width: 600px;position: relative;margin: auto;margin-top: 0px;height: 383px;
     background: #2080b0;">
         <img src="${resource(dir: 'images', file: 'oferentes2.jpeg')}"/>
