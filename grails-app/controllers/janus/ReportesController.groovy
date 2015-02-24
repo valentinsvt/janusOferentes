@@ -825,6 +825,329 @@ class ReportesController {
     }
 
 
+    def imprimirRubrosExcelVae(){
+
+        def obra = Obra.get(params.obra.toLong())
+        def lugar = obra.lugar
+        def fecha = obra.fechaPreciosRubros
+        def itemsChofer = [obra.chofer]
+        def itemsVolquete = [obra.volquete]
+        def indi = obra.totales
+        def oferente = Persona.get(params.oferente)
+        def obraOferente = Obra.findByOferente(oferente)
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+        def cn = dbConnectionService.getConnection()
+        def conc = cn.rows(sql.toString())
+        def cncrId
+
+        conc.each {
+            cncrId = it?.cncr__id
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+
+        WorkbookSettings workbookSettings = new WorkbookSettings()
+        workbookSettings.locale = Locale.default
+        def file = File.createTempFile('myExcelDocument', '.xls')
+        file.deleteOnExit()
+        WritableWorkbook workbook = Workbook.createWorkbook(file, workbookSettings)
+        WritableFont font = new WritableFont(WritableFont.ARIAL, 12)
+        WritableCellFormat formatXls = new WritableCellFormat(font)
+        def row = 0
+
+        preciosService.ac_rbroObra(obra.id)
+        VolumenesObra.findAllByObra(obra, [sort: "orden"]).item.eachWithIndex { rubro, i ->
+//            def res = preciosService.presioUnitarioVolumenObra("* ", rubro.id,obra?.id)
+            def res = preciosService.vae_rb(obra.id, rubro.id)
+            WritableSheet sheet = workbook.createSheet(rubro.codigo, i)
+            rubroAExcelVae(sheet, res, rubro, fecha, indi, oferente, concurso, obra)
+        }
+        workbook.write();
+        workbook.close();
+        def output = response.getOutputStream()
+        def header = "attachment; filename=" + "rubro.xls";
+        response.setContentType("application/octet-stream")
+        response.setHeader("Content-Disposition", header);
+        output.write(file.getBytes());
+
+    }
+
+
+    def rubroAExcelVae(sheet, res, rubro, fecha, indi, oferente, concurso, obra) {
+
+
+        WritableFont times16font = new WritableFont(WritableFont.TIMES, 11, WritableFont.BOLD, true);
+        WritableCellFormat times16format = new WritableCellFormat(times16font);
+        WritableFont times10Font = new WritableFont(WritableFont.TIMES, 10, WritableFont.NO_BOLD, true);
+        WritableCellFormat times10 = new WritableCellFormat(times10Font);
+        sheet.setColumnView(0, 20)
+        sheet.setColumnView(1, 50)
+        sheet.setColumnView(2, 15)
+        sheet.setColumnView(3, 15)
+        sheet.setColumnView(4, 15)
+        sheet.setColumnView(5, 15)
+        sheet.setColumnView(6, 15)
+        sheet.setColumnView(7, 15)
+        sheet.setColumnView(8, 15)
+        sheet.setColumnView(9, 15)
+        sheet.setColumnView(10, 15)
+        sheet.setColumnView(11, 15)
+
+        def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
+        if (concurso != null){
+            label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
+        } else {
+            label = new Label(1, 3, "PROCESO:", times16format); sheet.addCell(label);
+        }
+        label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
+        label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
+        label = new Label(1, 8, "UNIDAD:" + rubro?.unidad?.codigo, times16format); sheet.addCell(label);
+
+        def fila = 12
+        def number
+        def totalHer=0
+        def totalMan=0
+        def totalMat=0
+        def total = 0
+        def band=25
+        def number2
+        def totalManRel = 0
+        def totalManVae = 0
+        def totalMatRel = 0
+        def totalMatVae = 0
+        def totalHerRel = 0
+        def totalHerVae = 0
+        def totalTRel = 0
+        def totalTVae = 0
+        def rowsTrans = []
+        res.each { r ->
+            if (r["grpocdgo"] == 3) {
+                if (band != 0) {
+                    fila++
+                    label = new Label(0, fila, "Herramientas", times16format); sheet.addCell(label);
+                    sheet.mergeCells(0, fila, 1, fila)
+                    fila++
+                    label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
+                    label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Tarifa", times16format); sheet.addCell(label);
+                    label = new Label(4, fila, "Costo", times16format); sheet.addCell(label);
+                    label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
+                    label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
+                    fila++
+                }
+                band = 0
+                label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
+                label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
+                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(4, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(5, fila, r["rndm"]); sheet.addCell(number);
+                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
+                totalHerRel += r["relativo"]
+                totalHerVae += r["vae_vlor"]
+                totalHer += r["parcial"]
+                fila++
+            }
+            if (r["grpocdgo"] == 2) {
+                if (band == 1) {
+                    label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+                    number = new Number(6, fila, totalHer); sheet.addCell(number);
+                    number = new Number(7, fila, totalHerRel); sheet.addCell(number);
+                    number = new Number(11, fila, totalHerVae); sheet.addCell(number);
+                    fila++
+                }
+                if (band != 2) {
+                    fila++
+                    label = new Label(0, fila, "Mano de obra", times16format); sheet.addCell(label);
+                    sheet.mergeCells(0, fila, 1, fila)
+                    fila++
+                    label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
+                    label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Jornal", times16format); sheet.addCell(label);
+                    label = new Label(4, fila, "Costo", times16format); sheet.addCell(label);
+                    label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
+                    label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
+                    fila++
+                }
+                band = 2
+                label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
+                label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
+                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(4, fila, r["rbpcpcun"] * r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(5, fila, r["rndm"]); sheet.addCell(number);
+                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
+                totalMan+=r["parcial"]
+                totalManRel += r["relativo"]
+                totalManVae += r["vae_vlor"]
+                fila++
+            }
+            if (r["grpocdgo"] == 1) {
+                if (band == 2) {
+                    label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+                    number = new Number(6, fila, totalMan); sheet.addCell(number);
+                    number = new Number(7, fila, totalManRel); sheet.addCell(number);
+                    number = new Number(11, fila, totalManVae); sheet.addCell(number);
+                    fila++
+                }
+                if (band != 3) {
+                    fila++
+                    label = new Label(0, fila, "Materiales", times16format); sheet.addCell(label);
+                    sheet.mergeCells(0, fila, 1, fila)
+                    fila++
+                    label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
+                    label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
+                    label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
+                    label = new Label(3, fila, "Unitario", times16format); sheet.addCell(label);
+                    label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
+                    fila++
+                }
+                band = 3
+                label = new Label(0, fila, r["itemcdgo"], times10); sheet.addCell(label);
+                label = new Label(1, fila, r["itemnmbr"], times10); sheet.addCell(label);
+                number = new Number(2, fila, r["rbrocntd"]); sheet.addCell(number);
+                number = new Number(3, fila, r["rbpcpcun"]); sheet.addCell(number);
+                number = new Number(6, fila, r["parcial"]); sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
+                totalMat+=r["parcial"]
+                totalMatRel += r["relativo"]
+                totalMatVae += r["vae_vlor"]
+
+                fila++
+
+            }
+            if (r["parcial_t"] > 0) {
+                rowsTrans.add(r)
+                total += r["parcial_t"]
+            }
+
+        }
+        if (band == 3) {
+            label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+            number = new Number(6, fila, totalMat); sheet.addCell(number);
+            number = new Number(7, fila, totalMatRel); sheet.addCell(number);
+            number = new Number(11, fila, totalMatVae); sheet.addCell(number);
+            fila++
+        }
+
+        /*Tranporte*/
+        if (rowsTrans.size() > 0) {
+            fila++
+            label = new Label(0, fila, "Transporte", times16format); sheet.addCell(label);
+            sheet.mergeCells(0, fila, 1, fila)
+            fila++
+            label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
+            label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
+            label = new Label(2, fila, "Peso/Vol", times16format); sheet.addCell(label);
+            label = new Label(3, fila, "Cantidad", times16format); sheet.addCell(label);
+            label = new Label(4, fila, "Distancia", times16format); sheet.addCell(label);
+            label = new Label(5, fila, "Unitario", times16format); sheet.addCell(label);
+            label = new Label(6, fila, "C.Total", times16format); sheet.addCell(label);
+            fila++
+            rowsTrans.each { rt ->
+                label = new Label(0, fila, rt["itemcdgo"], times10); sheet.addCell(label);
+                label = new Label(1, fila, rt["itemnmbr"], times10); sheet.addCell(label);
+                number = new Number(2, fila, rt["itempeso"]); sheet.addCell(number);
+                number = new Number(3, fila, rt["rbrocntd"]); sheet.addCell(number);
+                number = new Number(4, fila, rt["distancia"]); sheet.addCell(number);
+                number = new Number(5, fila, rt["parcial_t"] / (rt["itempeso"] * rt["rbrocntd"] * rt["distancia"])); sheet.addCell(number);
+                number = new Number(6, fila, rt["parcial_t"]); sheet.addCell(number);
+                fila++
+            }
+            label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+            number = new Number(6, fila, total); sheet.addCell(number);
+            fila++
+            fila++
+        }
+
+        /*indirectos */
+
+        label = new Label(0, fila, "Costos Indirectos", times16format); sheet.addCell(label);
+        sheet.mergeCells(0, fila, 1, fila)
+        fila++
+
+        label = new Label(0, fila, "Descripción", times16format); sheet.addCell(label);
+        sheet.mergeCells(0, fila, 1, fila)
+        label = new Label(5, fila, "Porcentaje", times16format); sheet.addCell(label);
+        label = new Label(6, fila, "Valor", times16format); sheet.addCell(label);
+        fila++
+        def totalRubro = total + totalHer + totalMan + totalMat
+        def totalIndi = totalRubro * indi / 100
+        def totalRelativo = totalHerRel + totalMatRel + totalManRel
+        def totalVae = totalHerVae + totalMatVae + totalManVae
+        label = new Label(0, fila, "Costos indirectos", times10); sheet.addCell(label);
+        sheet.mergeCells(0, fila, 1, fila)
+        number = new Number(5, fila, indi); sheet.addCell(number);
+        number = new Number(6, fila, totalIndi); sheet.addCell(number);
+
+        /*Totales*/
+
+        fila += 4
+        label = new Label(4, fila, "Costo unitario directo", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila, 5, fila)
+        label = new Label(4, fila + 1, "Costos indirectos", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 1, 5, fila + 1)
+        label = new Label(4, fila + 2, "Costo total del rubro", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 2, 5, fila + 2)
+        label = new Label(4, fila + 3, "Precio unitario(\$USD)", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 3, 5, fila + 3)
+        number = new Number(6, fila, totalRubro); sheet.addCell(number);
+        number = new Number(6, fila + 1, totalIndi); sheet.addCell(number);
+        number = new Number(6, fila + 2, totalRubro + totalIndi); sheet.addCell(number);
+        number = new Number(6, fila + 3, (totalRubro + totalIndi).toDouble().round(2)); sheet.addCell(number);
+        label = new Label(7, fila+1, "TOTAL", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+1, 5, fila+1)
+        label = new Label(7, fila+2, "PESO", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+2, 5, fila+2)
+        label = new Label(7, fila+3, "RELATIVO(%)", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+3, 5, fila+3)
+        label = new Label(11, fila+1, "TOTAL", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+1, 5, fila+1)
+        label = new Label(11, fila+2, "VAE", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+2, 5, fila+2)
+        label = new Label(11, fila+3, "(%)", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+3, 5, fila+3)
+        number = new Number(7, fila, totalRelativo); sheet.addCell(number);
+        number = new Number(11, fila, totalVae); sheet.addCell(number);
+
+
+
+        return sheet
+    }
+
+
     def imprimirRubrosExcel() {
         def obra = Obra.get(params.obra.toLong())
         def lugar = obra.lugar
@@ -1545,18 +1868,18 @@ class ReportesController {
             def totalTrans = 0, totalHer = 0, totalMan = 0, totalMat = 0, totalHerRel= 0, totalHerVae=0, totalManRel=0, totalManVae=0, totalMatRel=0,totalMatVae=0
             def totalRubro
 
-            res.eachWithIndex { r, i ->
+            vae.eachWithIndex { r, i ->
                 if (r["grpocdgo"] == 3) {
                     llenaDatosVae(tablaHerramientas, r, fonts, prms, "H",i,vae)
-                    totalHer += r.parcial
-                    totalHerRel += vae[i]?.relativo ?: 0
-                    totalHerVae += vae[i]?.vae_vlor ?: 0
+                    totalHer += r["parcial"]
+                    totalHerRel += r["relativo"] ?: 0
+                    totalHerVae += r["vae_vlor"] ?: 0
                 }
                 if (r["grpocdgo"] == 2) {
                     llenaDatosVae(tablaManoObra, r, fonts, prms, "O",i,vae)
-                    totalMan += r.parcial
-                    totalManRel += vae[i]?.relativo ?: 0
-                    totalManVae += vae[i]?.vae_vlor ?: 0
+                    totalMan += r["parcial"]
+                    totalManRel += r["relativo"] ?: 0
+                    totalManVae += r["vae_vlor"] ?: 0
                 }
                 if (r["grpocdgo"] == 1) {
                     if (params.transporte == "1") {
@@ -1564,16 +1887,16 @@ class ReportesController {
                     } else {
                         llenaDatosVae(tablaMateriales, r, fonts, prms, "MNT",i,vae)
                     }
-                    totalMat += r.parcial
+                    totalMat += r["parcial"]
                     if (params.transporte != "1") {
                         totalMat += r.parcial_t
-                        totalMatRel += vae[i]?.relativo ?: 0
-                        totalMatVae += vae[i]?.vae_vlor ?: 0
+                        totalMatRel += r["relativo"]  ?: 0
+                        totalMatVae += r["vae_vlor"] ?: 0
                     }
                 }
                 if (r["grpocdgo"] == 1 && params.transporte == "1") {
                     llenaDatosVae(tablaTransporte, r, fonts, prms, "T",i,vae)
-                    totalTrans += r.parcial_t
+                    totalTrans += r["parcial_t"]
 
                 }
             }
@@ -1605,22 +1928,22 @@ class ReportesController {
             prmsCellLeft.put("bordeTop", "1")
             prmsNum.put("bordeTop", "1")
             addCellTabla(tablaTotales, new Paragraph("COSTO UNITARIO DIRECTO", fonts.times8bold), prmsCellLeft)
-            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
-            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRelativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRelativo, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
-            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalVae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalVae, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
             prmsCellLeft.remove("bordeTop")
             prmsNum.remove("bordeTop")
             addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
             addCellTabla(tablaTotales, new Paragraph("COSTOS INDIRECTOS", fonts.times8bold), prmsCellLeft)
-            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalIndi, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalIndi, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('TOTAL', fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('TOTAL', fonts.times8bold), prmsNum)
 
             addCellTabla(tablaTotales, new Paragraph(" ", fonts.times8bold), prmsHeaderHoja)
             addCellTabla(tablaTotales, new Paragraph("COSTO TOTAL DEL RUBRO", fonts.times8bold), prmsCellLeft)
-            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro + totalIndi, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
+            addCellTabla(tablaTotales, new Paragraph(g.formatNumber(number: totalRubro + totalIndi, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('PESO', fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('', fonts.times8bold), prmsNum)
             addCellTabla(tablaTotales, new Paragraph('VAE', fonts.times8bold), prmsNum)
@@ -1743,53 +2066,53 @@ class ReportesController {
         switch (tipo) {
             case "H":
             case "O":
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun * r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rndm, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun * r.rbrocntd, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rndm, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["relativo"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(r["tpbncdgo"], fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae_vlor"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
 
                 break;
             case "M":
                 addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbpcpcun, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number:r["relativo"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(r["tpbncdgo"], fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae_vlor"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 break;
             case "MNT":
                 addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: ((r.parcial + r.parcial_t) / r.rbrocntd), minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: (r.parcial + r.parcial_t), minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: ((r.parcial + r.parcial_t) / r.rbrocntd), minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: (r.parcial + r.parcial_t), minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["relativo"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(r["tpbncdgo"], fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["vae_vlor"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 break;
             case "T":
 
                 addCellTabla(table, new Paragraph(r.unddcdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.itempeso, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.distancia, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.tarifa, minfractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial_t, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i]?.relativo, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.itempeso, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.rbrocntd, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.distancia, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.tarifa, minfractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r.parcial_t, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number: r["relativo"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 addCellTabla(table, new Paragraph('', fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(vae[i].tpbncdgo, fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
-                addCellTabla(table, new Paragraph(g.formatNumber(number: vae[i].vae_vlor, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(r["tpbncdgo"], fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number:  r["vae"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8normal), params.prmsNum)
+                addCellTabla(table, new Paragraph(g.formatNumber(number:  r["vae_vlor"], minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8normal), params.prmsNum)
                 break;
         }
     }
@@ -1811,7 +2134,7 @@ class ReportesController {
 
     def addSubtotalVae(table, subtotal, totalRel, totalVae, fonts, params) {
         addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotal)
-        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph(g.formatNumber(number: totalRel, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
@@ -1823,7 +2146,7 @@ class ReportesController {
 
     def addSubtotalMatVae(table, subtotal,totalRel, totalVae, fonts, params) {
         addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotalMat)
-        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph(g.formatNumber(number: totalRel, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec").toString(), fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsNum)
@@ -1834,7 +2157,7 @@ class ReportesController {
 
     def addSubtotalTransVae(table, subtotal, fonts, params) {
         addCellTabla(table, new Paragraph("TOTAL", fonts.times8bold), params.prmsSubtotalTrans)
-        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 5, maxFractionDigits: 5, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
+        addCellTabla(table, new Paragraph(g.formatNumber(number: subtotal, minFractionDigits: 2, maxFractionDigits: 2, format: "##,##0", locale: "ec"), fonts.times8bold), params.prmsNum)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)
         addCellTabla(table, new Paragraph("", fonts.times8bold), params.prmsSubtotalTrans)

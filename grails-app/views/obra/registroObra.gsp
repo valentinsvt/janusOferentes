@@ -816,60 +816,39 @@
         });
 
         $("#nuevo").click(function () {
-//            $("input[type=text]").val("");
-//            $("textarea").val("");
-//            $("select").val("-1");
-
             location.href = "${g.createLink(action: 'registroObra')}";
-
         });
 
         $("#cancelarObra").click(function () {
-
             location.href = "${g.createLink(action: 'registroObra')}" + "?obra=" + "${obra?.id}";
-
         });
 
         $("#eliminarObra").click(function () {
-
             if (${obra?.id != null}) {
-
                 $("#eliminarObraDialog").dialog("open");
-
             }
 
         });
 
         $("#cambiarEstado").click(function () {
-
             if (${obra?.id != null}) {
-
                 $("#estadoDialog").dialog("open")
-
             }
-
         });
 
         $("#btnDocumentos").click(function () {
 
             if (${obra?.estado == 'R'}) {
-
                 $("#dlgLoad").dialog("open");
-
                 location.href = "${g.createLink(controller: 'documentosObra', action: 'documentosObra', id: obra?.id)}"
-
             }
             else {
                 $("#documentosDialog").dialog("open")
-
             }
-
         });
 
         $("#btnMapa").click(function () {
-
             location.href = "${g.createLink(action: 'mapaObra', id: obra?.id)}"
-
         });
 
         $("#btn-aceptar").click(function () {
@@ -897,6 +876,7 @@
                 title: "Impresión",
                 iconClose: false,
                 dialog: {
+                    width: 400,
                     resizable: false,
                     draggable: false,
                     buttons: {
@@ -915,6 +895,12 @@
                             url += "0";
                             location.href = urlVae;
                          },
+                        "Excel Vae": function () {
+                            var urlExcelVae = "${createLink(controller:'reportes', action:'imprimirRubrosExcelVae')}?oferente=${session.usuario.id}&obra=${obra?.id}&transporte=";
+                            urlExcelVae += "1";
+                            location.href = urlExcelVae;
+
+                        },
                         "Cancelar": function () {
 
                         }

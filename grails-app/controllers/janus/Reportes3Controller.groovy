@@ -110,9 +110,9 @@ class Reportes3Controller {
 
         preciosService.ac_rbroObra(obra.id)
         if (params.sub && params.sub != "-1") {
-            detalle = preciosService.rbro_pcun_v5(obra.id, params.sub, orden)
+            detalle = preciosService.rbro_pcun_v5(obra.id, params.sub, 'asc')
               } else {
-            detalle = preciosService.rbro_pcun_v4(obra.id, orden)
+            detalle = preciosService.rbro_pcun_v4(obra.id, 'asc')
         }
 
 
@@ -142,6 +142,59 @@ class Reportes3Controller {
 //                precio = res["precio"][0]
 //            precios.put(it.id.toString(),(precio+precio*indirecto).toDouble().round(2))
 //        }
+
+        [detalle:detalle,precios:precios,subPres:subPres,subPre:subPre,obra: obra,indirectos:indirecto*100, oferente: oferente, fechaHoy: fechaHoy, concurso: concurso, fechaOferta: fechaOferta, firma: firma]
+
+    }
+
+    def imprimirTablaSubVae(){
+//        println "imprimir tabla sub "+params
+        def obra = Obra.get(params.obra)
+        def detalle
+        def subPre
+        def orden
+        def fechaHoy = printFecha(new Date())
+        def oferente = Persona.get(params.oferente)
+        def sql = "SELECT * FROM cncr WHERE obra__id=${obra?.idJanus}"
+
+
+        def cn = dbConnectionService.getConnection()
+        def conc = cn.rows(sql.toString())
+        def cncrId
+
+        conc.each {
+            cncrId = it?.cncr__id
+        }
+
+        def concurso = janus.pac.Concurso.get(cncrId)
+        def fechaOferta = printFecha(obra?.fechaOferta);
+
+        def firma = Persona.get(params.oferente).firma
+
+        if (params.ord == '1') {
+            orden = 'asc'
+        } else {
+            orden = 'desc'
+        }
+
+        preciosService.ac_rbroObra(obra.id)
+        if (params.sub && params.sub != "-1") {
+//            detalle = preciosService.rbro_pcun_v5(obra.id, params.sub, orden)
+            detalle = preciosService.vae_sub(obra.id)
+        } else {
+//            detalle = preciosService.rbro_pcun_v4(obra.id, orden)
+            detalle = preciosService.vae_sub(obra.id)
+        }
+
+        def subPres = VolumenesObra.findAllByObra(obra,[sort:"orden"]).subPresupuesto.unique()
+        def precios = [:]
+        if (params.sub != '-1'){
+            subPre= SubPresupuesto.get(params.sub).descripcion
+        }else {
+            subPre= -1
+        }
+
+        def indirecto = obra.totales/100
 
         [detalle:detalle,precios:precios,subPres:subPres,subPre:subPre,obra: obra,indirectos:indirecto*100, oferente: oferente, fechaHoy: fechaHoy, concurso: concurso, fechaOferta: fechaOferta, firma: firma]
 
@@ -618,7 +671,7 @@ class Reportes3Controller {
         tablaMat2 += "<thead><tr><th colspan='12' class='tituloHeader'>MATERIALES INCLUIDO TRANSPORTE</th></tr><tr><th colspan='12' class='theader'></th></tr><tr><th style='width: 100px;' class='padTopBot'>CÓDIGO</th><th style='width:420px'>DESCRIPCIÓN</th><th></th><th style='width: 45px;'>UNIDAD</th><th style='width: 45px;'>CANTIDAD</th><th style='width: 45px;'>UNITARIO(\$)</th><th style='width: 45px;'>C.TOTAL(\$)</th><th style='width: 45px;text-align: center'>PESO RELAT(%)</th><th style='width: 45px;text-align: center'>CPC</th><th style='width: 45px;text-align: center'>NP/EP/  ND</th><th style='width: 45px;text-align: right'>VAE(%)</th><th style='width: 45px; text-align: center'>VAE(%) ELEMENTO</th></tr> <tr><th colspan='12' class='theaderup'></th></tr></thead><tbody>"
 
 
-        res.eachWithIndex { r, i ->
+        vae.eachWithIndex { r, i ->
 //            println "res "+res
             if (r["grpocdgo"] == 3) {
                 tablaHer += "<tr>"
@@ -629,14 +682,14 @@ class Reportes3Controller {
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"] * r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rndm"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + '' + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 totalHer += r["parcial"]
-                totalHerRel += vae[i].relativo
-                totalHerVae += vae[i].vae_vlor
+                totalHerRel += r["relativo"]
+                totalHerVae += r["vae_vlor"]
                 tablaHer += "</tr>"
 
             }
@@ -649,14 +702,14 @@ class Reportes3Controller {
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"] * r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rndm"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'> " + '' + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 totalMan += r["parcial"]
-                totalManRel += vae[i].relativo
-                totalManVae += vae[i].vae_vlor
+                totalManRel += r["relativo"]
+                totalManVae += r["vae_vlor"]
                 tablaMano += "</tr>"
             }
             if (r["grpocdgo"] == 1) {
@@ -670,14 +723,14 @@ class Reportes3Controller {
                     tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'>" + r["parcial"] + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'> " + ' '+ "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                     totalMat += r["parcial"]
-                    totalMatRel += vae[i].relativo
-                    totalMatVae += vae[i].vae_vlor
+                    totalMatRel += r["relativo"]
+                    totalMatVae += r["vae_vlor"]
 
                 } else {
 
@@ -710,11 +763,11 @@ class Reportes3Controller {
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["distancia"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["tarifa"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial_t"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number:  r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + '' + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number:r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 total += r["parcial_t"]
 //                totalTRel += vae[i].relativo_t
 //                totalTVae += vae[i].vae_vlor_t
@@ -1072,7 +1125,7 @@ class Reportes3Controller {
         def sql = "SELECT * FROM cncr WHERE obra__id=${obra2?.idJanus}"
 
         def cn = dbConnectionService.getConnection()
-        def conc = cn.row(sql.toString())
+        def conc = cn.rows(sql.toString())
         def cncrId
 
         conc.each {
@@ -1090,7 +1143,8 @@ class Reportes3Controller {
 
         def parametros = ""+rubro.id+","+oferente.id
         preciosService.ac_rbroV2(rubro?.id, oferente?.id)
-        def res = preciosService.rb_preciosV3(parametros)
+//        def res = preciosService.rb_preciosV3(parametros)
+        def vae = preciosService.vae_rubros(rubro.id, oferente.id)
 
 
 
@@ -1114,37 +1168,49 @@ class Reportes3Controller {
         sheet.setColumnView(4, 15)
         sheet.setColumnView(5, 15)
         sheet.setColumnView(6, 15)
+        sheet.setColumnView(7, 15)
+        sheet.setColumnView(8, 15)
+        sheet.setColumnView(9, 15)
+        sheet.setColumnView(10, 15)
+        sheet.setColumnView(11, 15)
 
         def label = new Label(1, 2, "NOMBRE DEL OFERENTE: " + oferente?.nombre.toUpperCase() + " " + oferente?.apellido.toUpperCase(), times16format); sheet.addCell(label);
-
         if (concurso != null){
-
             label = new Label(1, 3, "PROCESO:" + concurso?.codigo.toUpperCase(), times16format); sheet.addCell(label);
         } else {
             label = new Label(1, 3, "PROCESO:", times16format); sheet.addCell(label);
-
         }
-
         label = new Label(1, 4, "Análisis de precios unitarios".toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 6, "PROYECTO: " + obra?.nombre.toUpperCase(), times16format); sheet.addCell(label);
         label = new Label(1, 7, "RUBRO: " + rubro?.nombre, times16format); sheet.addCell(label);
         label = new Label(1, 8, "UNIDAD:" + rubro?.unidad?.codigo, times16format); sheet.addCell(label);
 
-        def fila = 9
-        label = new Label(0, fila,"Herramientas", times16format); sheet.addCell(label);
-        sheet.mergeCells(0,fila, 1, fila)
-        fila++
+        def fila = 12
         def number
         def totalHer=0
         def totalMan=0
         def totalMat=0
         def total = 0
-        def band=0
+        def band=25
+        def number2
+        def totalManRel = 0
+        def totalManVae = 0
+        def totalMatRel = 0
+        def totalMatVae = 0
+        def totalHerRel = 0
+        def totalHerVae = 0
+        def totalTRel = 0
+        def totalTVae = 0
+
         def rowsTrans=[]
-        res.each {r->
+        vae.each{r ->
 //            println "r "+r
             if(r["grpocdgo"]==3){
-                if(band==0){
+                if(band!=0){
+                    fila++
+                    label = new Label(0, fila, "Herramientas", times16format); sheet.addCell(label);
+                    sheet.mergeCells(0, fila, 1, fila)
+                    fila++
                     label = new Label(0, fila, "Código", times16format); sheet.addCell(label);
                     label = new Label(1, fila, "Descripción", times16format); sheet.addCell(label);
                     label = new Label(2, fila, "Cantidad", times16format); sheet.addCell(label);
@@ -1152,9 +1218,14 @@ class Reportes3Controller {
                     label = new Label(4, fila, "Costo(\$)", times16format); sheet.addCell(label);
                     label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
                     label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
                     fila++
                 }
-                band=1
+                band=0
                 label = new Label(0, fila,r["itemcdgo"], times10); sheet.addCell(label);
                 label = new Label(1, fila,r["itemnmbr"], times10); sheet.addCell(label);
                 number = new Number(2, fila, r["rbrocntd"]);sheet.addCell(number);
@@ -1162,13 +1233,22 @@ class Reportes3Controller {
                 number = new Number(4, fila, r["rbpcpcun"]*r["rbrocntd"]);sheet.addCell(number);
                 number = new Number(5, fila, r["rndm"]);sheet.addCell(number);
                 number = new Number(6, fila, r["parcial"]);sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
+                totalHerRel += r["relativo"]
+                totalHerVae += r["vae_vlor"]
                 totalHer+=r["parcial"]
                 fila++
             }
             if(r["grpocdgo"]==2){
-                if(band==1){
-                    label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+                if(band == 1){
+                    label = new Label(5, fila, "SUBTOTAL", times10); sheet.addCell(label);
                     number = new Number(6, fila, totalHer);sheet.addCell(number);
+                    number = new Number(7, fila, totalHerRel); sheet.addCell(number);
+                    number = new Number(11, fila, totalHerVae); sheet.addCell(number);
                     fila++
                 }
                 if(band!=2){
@@ -1183,6 +1263,11 @@ class Reportes3Controller {
                     label = new Label(4, fila, "Costo(\$)", times16format); sheet.addCell(label);
                     label = new Label(5, fila, "Rendimiento", times16format); sheet.addCell(label);
                     label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
                     fila++
                 }
                 band=2
@@ -1192,14 +1277,24 @@ class Reportes3Controller {
                 number = new Number(3, fila, r["rbpcpcun"]);sheet.addCell(number);
                 number = new Number(4, fila, r["rbpcpcun"]*r["rbrocntd"]);sheet.addCell(number);
                 number = new Number(5, fila, r["rndm"]);sheet.addCell(number);
+
                 number = new Number(6, fila, r["parcial"]);sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
                 totalMan+=r["parcial"]
+                totalManRel += r["relativo"]
+                totalManVae += r["vae_vlor"]
                 fila++
             }
             if(r["grpocdgo"]==1){
                 if(band==2){
-                    label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+                    label = new Label(5, fila, "SUBTOTAL", times10); sheet.addCell(label);
                     number = new Number(6, fila, totalMan);sheet.addCell(number);
+                    number = new Number(7, fila, totalManRel); sheet.addCell(number);
+                    number = new Number(11, fila, totalManVae); sheet.addCell(number);
                     fila++
                 }
                 if(band!=3){
@@ -1213,6 +1308,11 @@ class Reportes3Controller {
                     label = new Label(3, fila, "Unitario", times16format); sheet.addCell(label);
                     label = new Label(4, fila, "Unidad", times16format); sheet.addCell(label);
                     label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+                    label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+                    label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+                    label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+                    label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+                    label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
                     fila++
                 }
                 band=3
@@ -1222,7 +1322,14 @@ class Reportes3Controller {
                 number = new Number(3, fila, r["rbpcpcun"]);sheet.addCell(number);
                 label = new Label(4, fila,r["unddcdgo"], times10); sheet.addCell(label);
                 number = new Number(6, fila, r["parcial"]);sheet.addCell(number);
+                number = new Number(7, fila, r["relativo"]); sheet.addCell(number);
+                label = new Label(8, fila, ''); sheet.addCell(label);
+                label = new Label(9, fila, r.tpbncdgo); sheet.addCell(label);
+                number = new Number(10, fila, r["vae"]); sheet.addCell(number);
+                number = new Number(11, fila, r["vae_vlor"]); sheet.addCell(number);
                 totalMat+=r["parcial"]
+                totalMatRel += r["relativo"]
+                totalMatVae += r["vae_vlor"]
                 fila++
 
             }
@@ -1233,8 +1340,10 @@ class Reportes3Controller {
 
         }
         if(band==3){
-            label = new Label(0, fila, "SUBTOTAL", times10); sheet.addCell(label);
+            label = new Label(5, fila, "SUBTOTAL", times10); sheet.addCell(label);
             number = new Number(6, fila, totalMat);sheet.addCell(number);
+            number = new Number(7, fila, totalMatRel); sheet.addCell(number);
+            number = new Number(11, fila, totalMatVae); sheet.addCell(number);
             fila++
         }
 
@@ -1251,6 +1360,11 @@ class Reportes3Controller {
             label = new Label(4, fila, "Distancia", times16format); sheet.addCell(label);
             label = new Label(5, fila, "Unitario", times16format); sheet.addCell(label);
             label = new Label(6, fila, "C.Total(\$)", times16format); sheet.addCell(label);
+            label = new Label(7, fila, "Peso Relat(%)", times16format); sheet.addCell(label);
+            label = new Label(8, fila, "CPC", times16format); sheet.addCell(label);
+            label = new Label(9, fila, "NP/EP/ND", times16format); sheet.addCell(label);
+            label = new Label(10, fila, "VAE(%)", times16format); sheet.addCell(label);
+            label = new Label(11, fila, "VAE(%) Elemento", times16format); sheet.addCell(label);
             fila++
             rowsTrans.each {rt->
                 label = new Label(0, fila,rt["itemcdgo"], times10); sheet.addCell(label);
@@ -1281,6 +1395,8 @@ class Reportes3Controller {
         fila++
         def totalRubro=total+totalHer+totalMan+totalMat
         def totalIndi=totalRubro*indi/100
+        def totalRelativo = totalHerRel + totalMatRel + totalManRel
+        def totalVae = totalHerVae + totalMatVae + totalManVae
         label = new Label(0, fila, "Costos indirectos", times10); sheet.addCell(label);
         sheet.mergeCells(0,fila, 1, fila)
         number = new Number(5, fila, indi);sheet.addCell(number);
@@ -1288,19 +1404,33 @@ class Reportes3Controller {
 
 
         /*Totales*/
-        fila+=4
-        label = new Label(4, fila,"Costo unitario directo", times16format); sheet.addCell(label);
-        sheet.mergeCells(4,fila, 5, fila)
-        label = new Label(4, fila+1,"Costos indirectos", times16format); sheet.addCell(label);
-        sheet.mergeCells(4,fila+1, 5, fila+1)
-        label = new Label(4, fila+2,"Costo total del rubro", times16format); sheet.addCell(label);
-        sheet.mergeCells(4,fila+2, 5, fila+2)
-        label = new Label(4, fila+3,"Precio unitario(\$USD)", times16format); sheet.addCell(label);
-        sheet.mergeCells(4,fila+3, 5, fila+3)
-        number = new Number(6, fila, totalRubro.toDouble().round(5));sheet.addCell(number);
-        number = new Number(6, fila+1, (totalIndi).toDouble().round(5));sheet.addCell(number);
-        number = new Number(6, fila+2, (totalRubro+totalIndi).toDouble().round(5));sheet.addCell(number);
-        number = new Number(6, fila+3, (totalRubro+totalIndi).toDouble().round(2));sheet.addCell(number);
+        fila += 4
+        label = new Label(4, fila, "Costo unitario directo", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila, 5, fila)
+        label = new Label(4, fila + 1, "Costos indirectos", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 1, 5, fila + 1)
+        label = new Label(4, fila + 2, "Costo total del rubro", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 2, 5, fila + 2)
+        label = new Label(4, fila + 3, "Precio unitario(\$USD)", times16format); sheet.addCell(label);
+        sheet.mergeCells(4, fila + 3, 5, fila + 3)
+        number = new Number(6, fila, totalRubro); sheet.addCell(number);
+        number = new Number(6, fila + 1, totalIndi); sheet.addCell(number);
+        number = new Number(6, fila + 2, totalRubro + totalIndi); sheet.addCell(number);
+        number = new Number(6, fila + 3, (totalRubro + totalIndi).toDouble().round(2)); sheet.addCell(number);
+        label = new Label(7, fila+1, "TOTAL", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+1, 5, fila+1)
+        label = new Label(7, fila+2, "PESO", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+2, 5, fila+2)
+        label = new Label(7, fila+3, "RELATIVO(%)", times16format); sheet.addCell(label);
+        sheet.mergeCells(7, fila+3, 5, fila+3)
+        label = new Label(11, fila+1, "TOTAL", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+1, 5, fila+1)
+        label = new Label(11, fila+2, "VAE", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+2, 5, fila+2)
+        label = new Label(11, fila+3, "(%)", times16format); sheet.addCell(label);
+        sheet.mergeCells(11, fila+3, 5, fila+3)
+        number = new Number(7, fila, totalRelativo); sheet.addCell(number);
+        number = new Number(11, fila, totalVae); sheet.addCell(number);
 
 
         workbook.write();
@@ -1614,7 +1744,7 @@ class Reportes3Controller {
         tablaMat2 += "<thead><tr><th colspan='12' class='tituloHeader'>MATERIALES</th></tr><tr><th colspan='12' class='theader'></th></tr><tr><th style='width: 100px;' class='padTopBot'>CÓDIGO</th><th style='width:420px'>DESCRIPCIÓN</th><th></th><th style='width: 45px;'>UNIDAD</th><th style='width: 45px;'>CANTIDAD</th><th style='width: 45px;'>UNITARIO(\$)</th><th style='width: 45px;'>C.TOTAL(\$)</th><th style='width: 45px;text-align: center'>PESO RELAT(%)</th><th style='width: 45px;text-align: center'>CPC</th><th style='width: 45px;text-align: center'>NP/EP/  ND</th><th style='width: 45px;text-align: right'>VAE(%)</th><th style='width: 45px; text-align: center'>VAE(%) ELEMENTO</th></tr> <tr><th colspan='12' class='theaderup'></th></tr></thead><tbody>"
 
 
-        res.eachWithIndex { r, i ->
+        vae.eachWithIndex { r, i ->
 //            println "res "+res
             if (r["grpocdgo"] == 3) {
                 tablaHer += "<tr>"
@@ -1625,14 +1755,14 @@ class Reportes3Controller {
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"] * r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rndm"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaHer += "<td style='width: 45px;text-align: right'>" + '' + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaHer += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 totalHer += r["parcial"]
-                totalHerRel += vae[i].relativo
-                totalHerVae += vae[i].vae_vlor
+                totalHerRel += r["relativo"]
+                totalHerVae += r["vae_vlor"]
                 tablaHer += "</tr>"
 
             }
@@ -1645,14 +1775,14 @@ class Reportes3Controller {
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"] * r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rndm"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaMano += "<td style='width: 45px;text-align: right'> " + '' + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaMano += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 totalMan += r["parcial"]
-                totalManRel += vae[i].relativo
-                totalManVae += vae[i].vae_vlor
+                totalManRel += r["relativo"]
+                totalManVae += r["vae_vlor"]
                 tablaMano += "</tr>"
             }
             if (r["grpocdgo"] == 1) {
@@ -1666,14 +1796,14 @@ class Reportes3Controller {
                     tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbrocntd"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["rbpcpcun"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'>" + r["parcial"] + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                     tablaMat += "<td style='width: 45px;text-align: right'> " + ' '+ "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                    tablaMat += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                     totalMat += r["parcial"]
-                    totalMatRel += vae[i].relativo
-                    totalMatVae += vae[i].vae_vlor
+                    totalMatRel += r["relativo"]
+                    totalMatVae += r["vae_vlor"]
 
                 } else {
 
@@ -1706,11 +1836,11 @@ class Reportes3Controller {
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["distancia"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["tarifa"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["parcial_t"], format: "##,#####0", minFractionDigits: "5", maxFractionDigits: "5", locale: "ec") + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].relativo, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["relativo"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 tablaTrans += "<td style='width: 45px;text-align: right'>" + '' + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: center'>" + vae[i].tpbncdgo + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
-                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: vae[i].vae_vlor, format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: center'>" + r["tpbncdgo"] + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number: r["vae"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
+                tablaTrans += "<td style='width: 45px;text-align: right'>" + g.formatNumber(number:r["vae_vlor"], format: "##,#####0", minFractionDigits: "2", maxFractionDigits: "2", locale: "ec") + "</td>"
                 total += r["parcial_t"]
 //                totalTRel += vae[i].relativo_t
 //                totalTVae += vae[i].vae_vlor_t
