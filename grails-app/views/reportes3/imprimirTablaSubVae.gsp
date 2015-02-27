@@ -172,6 +172,19 @@
     <g:set var="totalPrueba" value="${0}"/>
     <g:set var="totales" value="${0}"/>
     <g:set var="totalPresupuesto" value="${0}"/>
+    <g:set var="totalRelativo1" value="${0}"/>
+    <g:set var="finalRelativo" value="${0}"/>
+    <g:set var="totalRelativo2" value="${0}"/>
+    <g:set var="totalR1" value="${0}"/>
+    <g:set var="totalR2" value="${0}"/>
+
+    <g:set var="totalVae1" value="${0}"/>
+    <g:set var="totalVae2" value="${0}"/>
+    <g:set var="finalVae" value="${0}"/>
+    <g:set var="totalV1" value="${0}"/>
+    <g:set var="totalV2" value="${0}"/>
+
+
 
     <g:if test="${subPre == -1}">
         <g:each in="${subPres}" var="sp" status="sub">
@@ -242,6 +255,18 @@
                             <g:hiddenField name="totales" value="${totales = vol.totl}"/>
                             <g:hiddenField name="totalPrueba" value="${totalPrueba = total2+=totales}"/>
                             <g:hiddenField name="totalPresupuesto" value="${totalPresupuesto = total1 += totales}"/>
+
+                            <g:hiddenField name="totalRelativo1" value="${totalRelativo1 = vol.relativo}"/>
+                            <g:hiddenField name="totalRelativo2" value="${totalRelativo2 = totalR2+=totalRelativo1}"/>
+                            <g:hiddenField name="finalRelativo" value="${finalRelativo = totalR1 += totalRelativo1}"/>
+
+                            <g:hiddenField name="totalVae1" value="${totalVae1 = vol.vae_totl}"/>
+                            <g:hiddenField name="totalVae2" value="${totalVae2 = totalV2 += totalVae1}"/>
+                            <g:hiddenField name="finalVae" value="${finalVae = totalV1 += totalVae1}"/>
+
+
+
+
                         </tr>
                     </g:if>
                 </g:each>
@@ -262,8 +287,10 @@
             <tbody>
             <tr>
                 <td colspan="11" class="theaderBot theaderup padTopBot">
-                <td style="text-align: right; width: 900px"><b>TOTAL PRESUPUESTO:  </b></td>
-                <td style="text-align: right; width: 100px "><b><g:formatNumber number="${totalPresupuesto}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b></td>
+                <td style="text-align: right; width: 880px"><b>TOTAL PRESUPUESTO:  </b></td>
+                <td style="text-align: right; width: 80px "><b><g:formatNumber number="${totalPresupuesto}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b></td>
+                <td style="text-align: right; width: 70px "><b><g:formatNumber number="${finalRelativo}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b></td>
+                <td style="text-align: right; width: 100px "><b><g:formatNumber number="${finalVae}" format="##,##0" minFractionDigits="2" maxFractionDigits="2" locale="ec"/></b></td>
             </td>
             </tr>
             </tbody>
