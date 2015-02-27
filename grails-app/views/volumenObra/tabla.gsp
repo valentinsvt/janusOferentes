@@ -14,7 +14,7 @@
         </a>
         <a href="#" class="btn  " id="imprimir_sub_vae">
             <i class="icon-print"></i>
-            Imprimir VAE
+            Subpresupuesto VAE
         </a>
         <a href="#" class="btn  " id="imprimir_excel" style="margin-left:-5px" >
             <i class="icon-table"></i>
