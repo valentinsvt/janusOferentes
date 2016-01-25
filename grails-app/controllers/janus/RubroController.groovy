@@ -89,7 +89,7 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def getDatosItem() {
-        println "get datos items "+params
+//        println "get datos items "+params
         def item = Item.get(params.id)
         def precio = Precio.findByItemAndPersona(item,session.usuario)
 //        println "render "+  item.id + "&" + item.codigo + "&" + item.nombre + "&" + item.unidad.codigo + "&" + item.rendimiento+"&"+((item.tipoLista)?item.tipoLista?.id:"0")
@@ -156,7 +156,7 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def buscaItem() {
-        println "busca item "+params
+//        println "busca item "+params
         def listaTitulos = ["Código", "Descripción"]
         def listaCampos = ["codigo", "nombre"]
         def funciones = [null, null]
@@ -214,7 +214,7 @@ class RubroController extends janus.seguridad.Shield {
             lista.pop()
             render(view: '../tablaBuscador', model: [listaTitulos: listaTitulos, listaCampos: listaCampos, lista: lista, funciones: funciones, url: url, controller: "llamada", numRegistros: numRegistros, funcionJs: funcionJs])
         } else {
-            println "entro reporte"
+//            println "entro reporte"
             /*De esto solo cambiar el dominio, el parametro tabla, el paramtero titulo y el tamaño de las columnas (anchos)*/
             session.dominio = Item
             session.funciones = funciones
@@ -264,7 +264,7 @@ class RubroController extends janus.seguridad.Shield {
             lista.pop()
             render(view: '../tablaBuscador', model: [listaTitulos: listaTitulos, listaCampos: listaCampos, lista: lista, funciones: funciones, url: url, controller: "llamada", numRegistros: numRegistros, funcionJs: funcionJs])
         } else {
-            println "entro reporte"
+//            println "entro reporte"
             /*De esto solo cambiar el dominio, el parametro tabla, el paramtero titulo y el tamaño de las columnas (anchos)*/
             session.dominio = Item
             session.funciones = funciones
@@ -274,7 +274,7 @@ class RubroController extends janus.seguridad.Shield {
     }
 
     def copiarComposicion() {
-        println "copiar " + params
+//        println "copiar " + params
         if (request.method == "POST") {
             def rubro = Item.get(params.rubro)
             def copiar = Item.get(params.copiar)
@@ -321,7 +321,7 @@ class RubroController extends janus.seguridad.Shield {
     } //form_ajax
 
     def save() {
-        println "save rubro " + params.rubro
+//        println "save rubro " + params.rubro
         def rubro
         if (params.rubro.id) {
             rubro = Item.get(params.rubro.id)
@@ -430,7 +430,7 @@ class RubroController extends janus.seguridad.Shield {
     } //delete
 
     def getPrecios() {
-        println "get precios sin item " + params
+//        println "get precios sin item " + params
         def items = []
         def parts = params.ids.split("#")
         def res =""
@@ -449,13 +449,13 @@ class RubroController extends janus.seguridad.Shield {
 
 
 
-        println "precios final " + res
+//        println "precios final " + res
 //        println "--------------------------------------------------------------------------"
         render res
     }
 
     def getPreciosItem() {
-        println "get precios item " + params
+//        println "get precios item " + params
 
 //        def tipo = params.tipo
 //        def items = []
@@ -506,8 +506,8 @@ class RubroController extends janus.seguridad.Shield {
             }
         }
 
-        println "precios final item " + res
-        println "--------------------------------------------------------------------------"
+//        println "precios final item " + res
+//        println "--------------------------------------------------------------------------"
         render res
     }
 
@@ -523,7 +523,7 @@ class RubroController extends janus.seguridad.Shield {
                 items.add(Item.get(it))
         }
         def precios = preciosService.getPrecioItemsString(fecha, lugar, items)
-        println "precios transporte " + precios
+//        println "precios transporte " + precios
         render precios
     }
 

@@ -892,12 +892,9 @@
 
     function calculaHerramientas(){
 //        console.log("calc herramientas")
-//        var h2 = $("#i_3490")
-//        var h3 = $("#i_5124")
-//        var h5 = $("#i_5125")
-        var h2 = $("#i_818")
-        var h3 = $("#i_819")
-        var h5 = $("#i_820")
+        var h2 = $("#i_820")  //herramientas al 2% no se usa
+        var h3 = $("#i_818")  //herramientas al 3%
+        var h5 = $("#i_819")  //herramientas al 5%
         var h
         var precio =0
         if(h2.html()){
