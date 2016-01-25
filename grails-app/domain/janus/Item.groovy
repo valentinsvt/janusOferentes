@@ -31,7 +31,7 @@ class Item implements Serializable {
     Persona persona
     String janusId=""
     String codigoEspecificacion
-    double codigoComprasPublicas
+    double codigoComprasPublicas  = 0
 
     static mapping = {
         table 'item'
