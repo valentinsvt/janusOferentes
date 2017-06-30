@@ -159,7 +159,7 @@ class BuscadorService {
     }
 
     List buscar(dominio, tabla, tipo, params, ignoreCase,extras="") {
-//        println "params "+params
+        println "tipo: $tipo"
         def sql = "from " + tabla
         def mapa = toMap(dominio)
         def parametros =[:]
@@ -193,7 +193,7 @@ class BuscadorService {
             }
         }
         def res
-        if(tipo=="excluyente")
+        if(tipo == "excluyente")
             res = filtro("and", parametros, common, mapa, ignoreCase)
         else
             res = filtro("or", parametros, common, mapa, ignoreCase)
@@ -206,14 +206,17 @@ class BuscadorService {
             else
                 sql+= " where "+extras.replaceFirst(" and ","").replaceFirst(" or ","")
         }
-        println "sql " + sql  + orderby+" pars "+res
-        lista = dominio.findAll(sql+orderby, res,[max: 200])
+        println "1... sql " + sql  + orderby + " pars " + res
+//        lista = dominio.findAll(sql+orderby, res,[max: 200])
+        lista = dominio.findAll(sql+orderby)
         lista.add(lista.size())
+        println "sql " + sql  + orderby + " pars " + res
+
         if (lista.size() < 1 && tipo != "excluyente") {
             res = filtro("or", parametros, common, mapa, ignoreCase)
-            sql ="from " + tabla+" "+res[0]
+            sql ="from " + tabla + " " + res[0]
             res.remove(0)
-            lista = dominio.findAll(sql+orderby, res,[max: 200])
+            lista = dominio.findAll(sql + orderby, res,[max: 200])
             lista.add(lista.size())
         }
         return lista

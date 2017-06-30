@@ -10,8 +10,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
 
     def addItemFormula() {
 
-//        println "add item"
-//        println params
+        println "add item: $params"
 
         def parts = params.formula.split("_")
         def formula = FormulaPolinomica.get(parts[1])
@@ -24,6 +23,7 @@ class FormulaPolinomicaController extends janus.seguridad.Shield {
         def total = 0
         items.each { itemStr ->
             def parts2 = itemStr.split("_")
+            println "...${parts2}"
             def itemId = parts2[0]
             def valor = parts2[1].toDouble()
             def itemFormula = new ItemsFormulaPolinomica()
