@@ -34,6 +34,8 @@ class ObraController extends janus.seguridad.Shield {
             render msg
             return
         }
+
+/*
         def crono = 0
         vols.each {
             def tmp = Cronograma.findAllByVolumenObra(it)
@@ -45,52 +47,28 @@ class ObraController extends janus.seguridad.Shield {
             if (crono.toDouble().round(2) != 100.00) {
                 println "crono $crono, ${crono.toDouble().round(2)}"
                 msg += "<br><span class='label-azul'>Error:</span> La suma de porcentajes de el volumen de obra: ${it.item.codigo} (${crono.toDouble().round(2)}) en el cronograma es diferente de 100%"
-
             }
             crono = 0
-
-
         }
         if (msg != "") {
             render msg
             return
         }
-
-/*
-        def res = obrafp.verificaMatriz(obra.id)
-        if (res != "") {
-            msg = res
-//            println "1 res "+msg
-            render msg
-            return
-        }
-
-        res = obrafp.verifica_precios(obra.id)
-        if (res.size() > 0) {
-            msg = "<span style='color:red'>Errores detectados</span><br> <span class='label-azul'>No se encontraron precios para los siguientes items:</span><br>"
-            msg += res.collect { "<b>ITEM</b>: $it.key ${it.value.join(", <b>Lista</b>: ")}" }.join('<br>')
-            render msg
-            return
-        }
-//        println "2 res "+msg
-
 */
 
+/*
         def fps = FormulaPolinomica.findAllByObra(obra)
-//        println "fps "+fps
         def totalP = 0
         fps.each { fp ->
             if (fp.numero =~ "p") {
-//                println "sumo "+fp.numero+"  "+fp.valor
                 totalP += fp.valor
             }
         }
-//        println "totp "+totalP
         if (totalP.toDouble().round(6) != 1.000) {
             render "La suma de los coeficientes de la formula polinómica (${totalP}) es diferente a 1.000"
             return
         }
-
+*/
 
 
         obraService.registrarObra(obra)

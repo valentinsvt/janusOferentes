@@ -516,7 +516,7 @@
 <div id="estadoDialog">
 
     <fieldset>
-        <div class="span3">
+        <div class="span4">
             Está seguro de querer cambiar el estado de la obra:<div style="font-weight: bold;">${obra?.nombre} ?
 
         </div>
@@ -1065,7 +1065,7 @@
             resizable: false,
             modal: true,
             draggable: false,
-            width: 350,
+            width: 450,
             height: 260,
             position: 'center',
             title: 'Cambiar estado de la Obra',
