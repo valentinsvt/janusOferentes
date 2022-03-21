@@ -1658,6 +1658,7 @@ class ReportesController {
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
 
+/*
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
@@ -1681,6 +1682,7 @@ class ReportesController {
             addCellTabla(pieTabla, new Paragraph(firma, fonts.times10bold), prmsHeaderHojaLeft)
             addCellTabla(pieTabla, new Paragraph(" ", fonts.times8normal), prmsHeaderHojaLeft)
 
+*/
 
 
             addTablaHoja(document, headerRubroTabla, false)

@@ -340,7 +340,7 @@ class PreciosService {
         def cn = dbConnectionService.getConnection()
 //        def sql = "select ${select} from vlob_pcun_v2(${obra},${item}) "
 //        def sql = "select ${select} from rb_precios_of(${item},${persona}) "
-        def sql = "select ${select} from rb_precios_of(${item}, ${obra}) "
+        def sql = "select ${select} from rb_precios_of(${item}, ${obra}) order by grpocdgo desc"
 //        println "----sql "+sql
         def result = []
         cn.eachRow(sql.toString()) { r ->
